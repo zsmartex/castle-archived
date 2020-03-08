@@ -1,0 +1,154 @@
+@import "~themes/antd/themes/default";
+@import "~themes/antd/mixins/index";
+
+@layout-prefix-cls: ~"@{ant-prefix}-layout";
+
+.@{layout-prefix-cls} {
+  display: flex;
+  flex: auto;
+  flex-direction: column;
+  /* fix firefox can't set height smaller than content on flex item */
+  min-height: 100%;
+  background: @layout-body-background;
+
+  &,
+  * {
+    box-sizing: border-box;
+  }
+
+  &&-has-sider {
+    flex-direction: row;
+    > .@{layout-prefix-cls},
+    > .@{layout-prefix-cls}-content {
+      overflow-x: hidden;
+    }
+  }
+
+  &-header,
+  &-footer {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  &-header {
+    height: @layout-header-height;
+    line-height: @layout-header-height;
+    background: @layout-header-background;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+  }
+
+  &-footer {
+    padding: @layout-footer-padding;
+    color: @text-color;
+    font-size: @font-size-base;
+    background: @layout-footer-background;
+  }
+
+  &-content {
+    flex: auto;
+    /* fix firefox can't set height smaller than content on flex item */
+    min-height: 0;
+  }
+
+  &-sider {
+    position: relative;
+
+    /* fix firefox can't set width smaller than content on flex item */
+    min-width: 100%;
+    background: @layout-sider-background;
+    transition: all 0.2s;
+    box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
+
+    &-logo {
+      position: relative;
+      height: 64px;
+      padding-left: 24px;
+      overflow: hidden;
+      line-height: 64px;
+      background: #002140;
+      transition: all 0.3s;
+
+      img {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        vertical-align: middle;
+      }
+
+      h1 {
+        display: inline-block;
+        margin: 0 0 0 12px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 20px;
+        vertical-align: middle;
+        animation: fade-in;
+        animation-duration: 0.3s;
+      }
+    }
+
+    &-children {
+      height: 100%;
+      margin-top: -0.1px;
+      // Hack for fixing margin collaspe bug
+      // https://github.com/ant-design/ant-design/issues/7967
+      // solution from https://stackoverflow.com/a/33132624/3040605
+      padding-top: 0.1px;
+    }
+
+    &-has-trigger {
+      padding-bottom: @layout-trigger-height;
+    }
+
+    &-right {
+      order: 1;
+    }
+
+    &-trigger {
+      position: fixed;
+      top: 0;
+      z-index: 1;
+      font-size: 20px;
+      padding: @layout-trigger-padding;
+      height: @layout-trigger-height;
+      color: @layout-trigger-color;
+      line-height: @layout-trigger-height;
+      text-align: center;
+      background: @layout-trigger-background;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    &-zero-width {
+      & > * {
+        overflow: hidden;
+      }
+
+      &-trigger {
+        position: absolute;
+        top: @layout-header-height;
+        right: -@layout-zero-trigger-width;
+        width: @layout-zero-trigger-width;
+        height: @layout-zero-trigger-height;
+        color: @layout-trigger-color;
+        font-size: @layout-zero-trigger-width / 2;
+        line-height: @layout-zero-trigger-height;
+        text-align: center;
+        background: @layout-sider-background;
+        border-radius: 0 @border-radius-base @border-radius-base 0;
+        cursor: pointer;
+        transition: background 0.3s ease;
+
+        &:hover {
+          background: tint(@layout-sider-background, 10%);
+        }
+
+        &-right {
+          left: -@layout-zero-trigger-width;
+        }
+      }
+    }
+  }
+}
+
+@import "./light";

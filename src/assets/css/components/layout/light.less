@@ -1,0 +1,25 @@
+.@{layout-prefix-cls} {
+  &-header {
+    &-light {
+      background: #fff;
+    }
+  }
+
+  &-sider {
+    &-light {
+      background: @layout-sider-background-light;
+    }
+    &-light &-trigger {
+      color: @layout-trigger-color-light;
+      background: #fff;
+    
+      &:hover {
+        background: rgba(0, 0, 0, 0.025);
+      }
+    }
+    &-light &-zero-width-trigger {
+      color: @layout-trigger-color-light;
+      background: #fff;
+    }
+  }
+}
