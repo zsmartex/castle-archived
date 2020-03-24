@@ -30,7 +30,7 @@ const configWebPack = {
     resolve: {
       extensions: ["*", "ts", "tsx", ".js", ".vue", "less", ".json"],
       alias: {
-        themes: path.resolve(__dirname, "src/assets/css/themes")
+        "@styles": path.resolve(__dirname, "src/assets/css")
       }
     },
     module: {
@@ -93,14 +93,6 @@ const configWebPack = {
 };
 
 if (isProduction) {
-  configWebPack.configureWebpack.optimization.minimizer.push(
-    new TerserPlugin({
-      cache: true,
-      parallel: true,
-      sourceMap: false,
-      terserOptions: {}
-    })
-  );
   configWebPack.configureWebpack.plugins.push(
     new webpack.optimize.ModuleConcatenationPlugin(),
     new CompressionPlugin(),
@@ -114,10 +106,6 @@ if (isProduction) {
         // (default: 50 MB) big in bytes.
         sizeThreshold: 1024 * 1024 * 1024
       }
-    }),
-    new MiniCssExtractPlugin({
-      filename: "[name].css",
-      chunkFilename: "[id].css"
     }),
     new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   );

@@ -12,6 +12,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "typeRoots": [
       "node_modules/@zsmartex",
@@ -29,6 +30,9 @@
     "paths": {
       "@/*": [
         "src/*"
+      ],
+      "@styles/*": [
+        "src/assets/css/*"
       ]
     },
     "lib": [

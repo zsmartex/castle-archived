@@ -3,6 +3,7 @@
     :visible="modal.enabled"
     :footer="null"
     :width="width"
+    :title="title"
     :closable="true"
     :wrap-class-name="wrapClassName"
     @cancel="$emit('cancel')"
@@ -16,8 +17,9 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
-  @Prop({ default: 400 }) protected readonly width!: number;
-  @Prop() protected readonly wrapClassName!: string;
+  @Prop() readonly title!: string;
+  @Prop({ default: 400 }) readonly width!: number;
+  @Prop() readonly wrapClassName!: string;
 
   protected modal: { enabled: boolean };
   constructor() {

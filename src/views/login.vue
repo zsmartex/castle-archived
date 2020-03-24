@@ -37,11 +37,10 @@ export default class App extends Vue {
   constructor() {
     super();
 
-    this.email = "demo@zsmart.tech";
-    this.password = "J\\=v<Sfn7>8%W6S6";
+    this.email = "admin@zsmart.tech";
+    this.password = "0lDHd9ufs9t@";
     this.captcha_response = "";
     this.loading = true;
-    console.log(this.password);
   }
 
   get need2fa() {
@@ -79,3 +78,7 @@ export default class App extends Vue {
   }
 }
 </script>
+
+<style lang="less">
+@import "~@styles/views/login.less";
+</style>

@@ -1,0 +1,54 @@
+@import "~ant-design-vue/es/style/themes/default.less";
+
+.z-table {
+  position: relative;
+  height: auto;
+  background-color: #fff;
+  border-radius: 8px;
+  padding-bottom: 20px;
+
+  dd p,
+  dt {
+    display: flex;
+    line-height: 32px;
+    padding-left: 16px;
+    padding-right: 16px;
+    user-select: none;
+    border-bottom: @border-width-base @border-style-base @border-color-split;
+    > * {
+      flex: 1;
+      vertical-align: middle;
+      i {
+        line-height: inherit;
+        font-size: 16px;
+        vertical-align: middle;
+      }
+    }
+  }
+
+  &.no-scroll {
+    dt,
+    dd {
+      position: relative;
+    }
+  }
+
+  dt {
+    position: absolute;
+    top: 0;
+    font-weight: normal;
+  }
+
+  dd {
+    position: absolute;
+    height: calc(100% - 32px);
+    overflow-y: auto;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+  }
+
+  .action {
+    cursor: pointer;
+  }
+}

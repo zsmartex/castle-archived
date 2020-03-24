@@ -1,19 +1,28 @@
 <template>
   <div class="auth-input" :class="{ 'has-error': isError }">
     <div class="ant-input-affix-wrapper">
-      <span v-if="$slots.prefix" class="ant-input-prefix">
-        <slot name="prefix" />
-      </span>
-      <input
+      <a-input-password
+        v-if="input_type === 'password'"
         :value="value"
         :type="input_type"
         :placeholder="placeholder"
-        :maxlength="maxlength"
-        class="ant-input"
+        :max-length="maxlength"
         ref="input"
         @input="$emit('input', $event.target.value)"
-        @keypress="onlyNumberInput"
-      />
+      >
+        <slot slot="prefix" name="prefix" />
+      </a-input-password>
+      <a-input
+        v-else
+        :value="value"
+        :type="input_type"
+        :placeholder="placeholder"
+        :max-length="maxlength"
+        ref="input"
+        @input="$emit('input', $event.target.value)"
+      >
+        <slot slot="prefix" name="prefix" />
+      </a-input>
     </div>
     <div v-if="isError" class="ant-form-explain">
       Please input your Password!

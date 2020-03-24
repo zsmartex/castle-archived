@@ -1,0 +1,218 @@
+@import "~ant-design-vue/es/style/themes/default";
+
+.page-dashboard-users {
+  &-head {
+  }
+
+  &-content {
+    margin-top: 24px;
+
+    .ant-tabs-bar {
+      padding: 0 12px;
+      background-color: #fff;
+      border: @border-width-base @border-style-base @border-color-split;
+      box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+      margin-bottom: 12px;
+    }
+  }
+
+  &-profile {
+    .profile-container {
+      height: auto;
+      font-size: 14px;
+      .user-profile {
+        display: flex;
+        > * {
+          flex: 1;
+        }
+        .left-panel {
+          margin-right: 12px;
+        }
+        .right-panel {
+          .user-setting {
+            margin-top: 12px;
+          }
+        }
+        .user-info,
+        .user-level,
+        .user-setting {
+          padding: 24px;
+          background-color: #fff;
+          border: @border-width-base @border-style-base @border-color-split;
+          box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+          &-head {
+            .title {
+              font-size: 20px;
+              font-weight: bold;
+            }
+          }
+        }
+        .user-info,
+        .user-setting {
+          &-row {
+            margin-top: 20px;
+            display: inline-block;
+            input,
+            .ant-select-selection {
+              height: 30px;
+              border: none;
+              border-bottom: @border-width-base @border-style-base
+                @border-color-split;
+              width: 100%;
+              border-radius: 0;
+            }
+          }
+        }
+      }
+    }
+
+    .user-info {
+      display: block;
+      &-head {
+        justify-content: space-between;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+
+        .action button {
+          width: 100px;
+        }
+
+        .last-activity {
+          color: @text-color-secondary;
+          font-weight: normal;
+          font-size: 12px;
+        }
+      }
+
+      &-content {
+      }
+
+      &-row {
+        width: 50%;
+        margin-top: 20px;
+      }
+
+      .title {
+        font-weight: bold;
+      }
+    }
+
+    .user-level {
+      &-row {
+        justify-content: space-between;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        margin-top: 16px;
+        .title {
+          font-size: 16px;
+          .desc {
+            font-size: 14px;
+            color: @text-color-secondary;
+          }
+        }
+        .value {
+          margin: auto 0;
+        }
+      }
+    }
+
+    .user-setting {
+      &-content {
+      }
+      &-row {
+        width: 40%;
+        .title {
+          font-size: 12px;
+          color: @text-color-secondary;
+        }
+        .value {
+          margin-top: 12px;
+          .ant-select {
+            width: 100%;
+          }
+        }
+        .input-setting {
+          display: flex;
+          button {
+            margin-left: 30px;
+          }
+        }
+      }
+    }
+
+    .user-labels {
+      margin-top: 12px;
+      padding: 24px;
+      background-color: #fff;
+      border: @border-width-base @border-style-base @border-color-split;
+      box-shadow: 0 1px 16px rgba(0, 21, 41, 0.08);
+
+      &-head {
+        justify-content: space-between;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      .title {
+        font-weight: bold;
+        font-size: 20px;
+      }
+
+      &-content {
+        margin-top: 16px;
+
+        .ant-tag {
+          position: relative;
+          width: auto;
+          height: 32px;
+          line-height: 32px;
+          cursor: pointer;
+          padding: 0 32px 0 24px;
+          text-align: center;
+          font-size: 14px;
+          font-weight: bold;
+          border-radius: 24px;
+          vertical-align: middle;
+          margin-bottom: 12px;
+          .content, .closeable {
+            display: inline-block;
+          }
+          .closeable {
+            position: absolute;
+            right: 8px;
+          }
+        }
+      }
+    }
+  }
+
+  .z-table {
+    
+  }
+}
+
+.modal-label {
+  .ant-modal-body {
+    > * {
+      margin-bottom: 12px;
+    }
+
+    .ant-select {
+      width: 100%;
+    }
+    .ant-input,
+    .ant-select-selection {
+      border: none;
+      border-bottom: @border-width-base @border-style-base @border-color-split;
+      border-radius: 0;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+    }
+  }
+}

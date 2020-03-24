@@ -1,0 +1,11 @@
+export const GET_METRICS = "admin/GET_METRICS";
+export const GET_USERS = "admin/GET_USERS";
+export const GET_USER_INFO = "admin/GET_USER_INFO";
+export const UPDATE_USER_INFO = "admin/UPDATE_USER_INFO";
+export const UPDATE_USER_LABEL = "admin/UPDATE_USER_LABEL";
+export const CREATE_USER_LABEL = "admin/CREATE_USER_LABEL";
+export const DELETE_USER_LABEL = "admin/DELETE_USER_LABEL";
+export const GET_MEMBER_INFO = "admin/GET_MEMBER_INFO";
+export const UPDATE_MEMBER_INFO = "admin/UPDATE_MEMBER_INFO";
+export const UPDATE_USER_ROLE = "admin/UPDATE_USER_ROLE";
+export const GET_USER_ORDER = "admin/GET_USER_ORDER";

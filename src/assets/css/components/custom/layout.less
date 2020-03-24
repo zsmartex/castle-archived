@@ -1,0 +1,55 @@
+@import "~ant-design-vue/es/style/themes/default.less";
+
+@layout-prefix-cls: ~'@{ant-prefix}-layout';
+
+.@{layout-prefix-cls} {
+  min-height: 100%;
+  background: #f0f2f5;
+  &-content {
+    margin: 24px;
+  }
+
+  &-header {
+    padding: 0;
+    z-index: 1;
+    box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    &-trigger {
+      display: inline-block;
+      height: 64px;
+      padding: 0 24px;
+      font-size: 20px;
+      cursor: pointer;
+      transition: all 0.3s, padding 0s;
+    }
+  }
+
+  &-sider {
+    &-logo {
+      position: relative;
+      height: 64px;
+      padding-left: 24px;
+      overflow: hidden;
+      line-height: 64px;
+      background: #002140;
+      transition: all 0.3s;
+
+      img {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        vertical-align: middle;
+      }
+
+      h1 {
+        display: inline-block;
+        margin: 0 0 0 12px;
+        color: #fff;
+        font-weight: 600;
+        font-size: 20px;
+        vertical-align: middle;
+        animation: fade-in;
+        animation-duration: 0.3s;
+      }
+    }
+  }
+}
