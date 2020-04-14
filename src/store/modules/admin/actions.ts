@@ -9,11 +9,19 @@ import {
   GET_MEMBER_INFO,
   UPDATE_MEMBER_INFO,
   UPDATE_USER_ROLE,
-  DELETE_USER_LABEL
+  DELETE_USER_LABEL,
+  GET_OPERATORS,
+  GET_CURRENCIES,
+  GET_CURRENCY,
+  UPDATE_CURRENCY,
+  GET_MARKETS,
+  GET_ORDERS,
+  GET_TRADES,
+  GET_MARKET,
+  UPDATE_MARKET
 } from "./action-types";
 import { ActionTree } from "vuex";
 import { StoreTypes } from "types";
-import { GET_USER_ORDER } from './action-types';
 
 const actions: ActionTree<StoreTypes.AdminState, any> = {
   async [GET_METRICS]({ commit }) {
@@ -24,13 +32,8 @@ const actions: ActionTree<StoreTypes.AdminState, any> = {
       return error;
     }
   },
-  async [GET_USERS]({ commit }) {
-    try {
-      const { data, headers } = await new ApiClient("auth").get("admin/users");
-      commit("SET_USERS", { data, headers });
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  [GET_USERS](store, payload) {
+    return new ApiClient("auth").get("admin/users", payload);
   },
   async [GET_USER_INFO]({ commit }, uid) {
     try {
@@ -102,14 +105,32 @@ const actions: ActionTree<StoreTypes.AdminState, any> = {
       return Promise.reject(error);
     }
   },
-  async [GET_USER_ORDER]({ commit }, payload) {
-    try {
-      const { headers, data } = await new ApiClient("trade").get("admin/orders", payload);
-
-      commit("SET_USER_ORDER", { headers, data });
-    } catch (error) {
-      return Promise.reject(error);
-    }
+  [GET_ORDERS](store, payload) {
+    return new ApiClient("trade").get("admin/orders", payload);
+  },
+  [GET_TRADES](store, payload) {
+    return new ApiClient("trade").get("admin/trades", payload);
+  },
+  [GET_OPERATORS](store, payload) {
+    return new ApiClient("auth").get("admin/activities/admin", payload);
+  },
+  [GET_CURRENCIES](store, payload) {
+    return new ApiClient("trade").get("admin/currencies", payload);
+  },
+  [GET_CURRENCY](store, code) {
+    return new ApiClient("trade").get("admin/currencies/" + code);
+  },
+  [UPDATE_CURRENCY](store, payload) {
+    return new ApiClient("trade").post("admin/currencies/update", payload);
+  },
+  [GET_MARKETS]({ commit, state }, payload) {
+    return new ApiClient("trade").get("admin/markets", payload);
+  },
+  [GET_MARKET]({ commit }, market_id) {
+    return new ApiClient("trade").get("admin/markets/" + market_id);
+  },
+  [UPDATE_MARKET]({ commit }, payload) {
+    return new ApiClient("trade").post("admin/markets/update", payload);
   }
 };
 

@@ -5,11 +5,6 @@ const mutations: MutationTree<StoreTypes.AdminState> = {
   SET_METRICS(state, payload) {
     state.metrics = payload;
   },
-  SET_USERS(state, { data, headers }) {
-    state.users.data = data;
-    state.users.page = headers.page;
-    state.users.total = headers.total;
-  },
   SET_USER_INFO(state, payload) {
     state.user_info = payload;
   },
@@ -41,12 +36,6 @@ const mutations: MutationTree<StoreTypes.AdminState> = {
     if (Object.hasOwnProperty.call(payload, "role")) {
       user_info.role = payload.role;
     }
-  },
-  SET_USER_ORDER(state, { headers, data }) {
-    state.user_orders.data = data;
-    state.user_orders.total = headers.total;
-    state.user_orders.page = headers.page;
-    state.user_orders["per-page"] = headers["per-page"];
   }
 };
 

@@ -1,12 +1,16 @@
 <template>
   <a-layout class="page-dashboard ant-layout-has-sider">
     <dashboard-menu :collapsed="collapsed" />
-    <div class="ant-layout ant-layout-sider ant-layout-sider-light">
+    <div
+      class="page-dashboard-body ant-layout ant-layout-sider ant-layout-sider-light"
+    >
       <dashboard-header
         :collapsed="collapsed"
         @change-collapsed="changeCollapsed"
       />
-      <router-view />
+      <div class="page-dashboard-content">
+        <router-view />
+      </div>
     </div>
   </a-layout>
 </template>
@@ -21,12 +25,7 @@ import { Vue, Component } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  collapsed: boolean;
-  constructor() {
-    super();
-
-    this.collapsed = false;
-  }
+  collapsed = false;
 
   changeCollapsed() {
     this.collapsed = !this.collapsed;

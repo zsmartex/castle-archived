@@ -20,19 +20,8 @@ const state: StoreTypes.AdminState = {
     failed_logins: {},
     pending_applications: 0
   },
-  users: {
-    data: [],
-    page: 0,
-    total: 0
-  },
   member_info: null,
-  user_info: null,
-  user_orders: {
-    data: [],
-    page: 0,
-    "per-page": 0,
-    total: 0
-  }
+  user_info: null
 };
 
 export default state;

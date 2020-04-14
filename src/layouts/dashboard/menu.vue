@@ -13,8 +13,8 @@
       </router-link>
     </div>
     <a-menu
-      :defaultSelectedKeys="[`${isSubMenuSelected}`]"
       :defaultOpenKeys="[`${isMenuSelected}`]"
+      :selectedKeys="[`${isSubMenuSelected}`]"
       mode="inline"
       theme="dark"
     >
@@ -50,6 +50,7 @@
         </a-menu-item>
       </template>
     </a-menu>
+    <div class="ant-layout-sider-footer"><a-icon type="logout" /> LOGOUT</div>
   </a-layout-sider>
 </template>
 
@@ -103,9 +104,86 @@ export default class App extends Vue {
       children: [
         {
           name: "Users directory",
-          icon: "user",
+          icon: "team",
           attrs: {
             to: "/users/user-directory",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Operators",
+          icon: "user",
+          attrs: {
+            to: "/users/operators",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        }
+      ]
+    },
+    {
+      key: "exchange",
+      name: "Exchange",
+      icon: "line-chart",
+      children: [
+        {
+          name: "Currencies",
+          icon: "dollar",
+          attrs: {
+            to: "/exchange/currencies",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Markets",
+          icon: "bar-chart",
+          attrs: {
+            to: "/exchange/markets",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Orders",
+          icon: "database",
+          attrs: {
+            to: "/exchange/orders",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Trades",
+          icon: "carry-out",
+          attrs: {
+            to: "/exchange/trades",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        }
+      ]
+    },
+    {
+      key: "accountings",
+      name: "Accountings",
+      icon: "calculator",
+      children: [
+        {
+          name: "Deposits",
+          icon: "cloud-download",
+          attrs: {
+            to: "/accountings/deposits",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Withdrawals",
+          icon: "cloud-upload",
+          attrs: {
+            to: "/accountings/withdrawals",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -116,7 +194,7 @@ export default class App extends Vue {
 
   get isMenuSelected() {
     const { MENUS } = this;
-    const { path } = this.$router.currentRoute;
+    const { path } = this.$route;
 
     return `menu-${MENUS.findIndex(menu => {
       if (menu.children) {
@@ -129,9 +207,9 @@ export default class App extends Vue {
     })}`;
   }
 
-  public get isSubMenuSelected() {
+  get isSubMenuSelected() {
     const { MENUS, isMenuSelected } = this;
-    const { path } = this.$router.currentRoute;
+    const { path } = this.$route;
     const indexMenu = Number(isMenuSelected.split("menu-")[1]);
 
     if (!MENUS[indexMenu].children) return isMenuSelected;

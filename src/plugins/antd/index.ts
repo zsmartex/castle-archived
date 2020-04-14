@@ -14,7 +14,13 @@ import {
   Select,
   Col,
   Tabs,
-  Tag
+  Tag,
+  Empty,
+  Pagination,
+  Spin,
+  Popover,
+  Drawer,
+  DatePicker
 } from "ant-design-vue";
 import Vue from "vue";
 
@@ -34,3 +40,9 @@ Vue.use(Select);
 Vue.use(Col);
 Vue.use(Tabs);
 Vue.use(Tag);
+Vue.use(Empty);
+Vue.use(Pagination);
+Vue.use(Spin);
+Vue.use(Popover);
+Vue.use(Drawer);
+Vue.use(DatePicker);

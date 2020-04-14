@@ -1,0 +1,65 @@
+<template>
+  <div class="user-info">
+    <div class="user-info-head">
+      <div class="title">
+        <div class="email">{{ user_info.email }}</div>
+        <div class="last-activity">
+          Last activity: {{ getDate(user_info.updated_at) }}
+        </div>
+      </div>
+      <div class="action">
+        <a-button type="primary" @click="start_edit">
+          {{ edit ? "Save" : "Edit" }}
+        </a-button>
+      </div>
+    </div>
+    <div class="user-info-content">
+      <z-info-row
+        v-for="setting in INFO_LIST"
+        :key="setting.key"
+        :item="setting"
+      />
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import helpers from "@zsmartex/z-helpers";
+import { StoreTypes } from "types";
+import { Vue, Component, Prop } from "vue-property-decorator";
+
+@Component
+export default class App extends Vue {
+  protected edit = false;
+  @Prop() readonly user_info!: StoreTypes.UserInfo;
+
+  get INFO_LIST() {
+    return [
+      {
+        title: "UID",
+        key: "uid",
+        value: this.user_info.uid,
+        style: "width: 45%",
+        type: "input",
+        edit: false
+      },
+      {
+        title: "Created at",
+        key: "created_at",
+        value: this.getDate(this.user_info.created_at),
+        style: "width: 45%",
+        type: "input",
+        edit: false
+      }
+    ];
+  }
+
+  start_edit() {
+    this.edit = !this.edit;
+  }
+
+  getDate(date: Date) {
+    return helpers.getDate(date, true);
+  }
+}
+</script>
