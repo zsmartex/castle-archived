@@ -46,7 +46,7 @@ export default class App extends Vue {
       {
         title: "Created at",
         key: "created_at",
-        value: this.getDate(this.user_info.created_at),
+        value: this.getDate(this.user_info.created_at as Date),
         style: "width: 45%",
         type: "input",
         edit: false

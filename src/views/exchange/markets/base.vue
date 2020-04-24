@@ -23,6 +23,7 @@
 </template>
 
 <script lang="ts">
+import ZSmartModel from "@zsmartex/z-eventbus";
 import store from "@/store";
 import helpers from "@zsmartex/z-helpers";
 import { StoreTypes } from "types";
@@ -50,15 +51,36 @@ export default class App extends Vue {
     { title: "", key: "info", algin: "center", scopedSlots: true }
   ];
 
-  mounted() {
-    this.get_markets({ limit: this.limit, page: this.page });
-  }
-
   get markets_data() {
     return this.data.map(market => {
-      (market as any).created_at = helpers.getDate(market.created_at, true);
+      (market as any).created_at = helpers.getDate(
+        market.created_at as Date,
+        true
+      );
 
       return market;
+    });
+  }
+
+  mounted() {
+    this.get_markets({ limit: this.limit, page: this.page });
+    this.set_action_header();
+  }
+
+  set_action_header() {
+    this.$route.meta["action-header"] = [
+      {
+        title: "Add Market",
+        key: "add_market",
+        icon: "plus-circle",
+        callback: () => {
+          this.$router.push("/exchange/markets/add");
+        }
+      }
+    ];
+
+    this.$nextTick(() => {
+      ZSmartModel.emit("set-action-header");
     });
   }
 

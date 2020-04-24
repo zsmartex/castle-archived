@@ -37,8 +37,8 @@ export default class App extends Vue {
   constructor() {
     super();
 
-    this.email = "admin@zsmart.tech";
-    this.password = "0lDHd9ufs9t@";
+    this.email = "demo@zsmart.tech";
+    this.password = "J" + "\\" + "=v<Sfn7>8%W6S6";
     this.captcha_response = "";
     this.loading = true;
   }

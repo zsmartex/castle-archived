@@ -116,14 +116,17 @@ export default class App extends Vue {
         value: this.payload_filter.order_id,
         type: "input",
         edit: true
-      },
+      }
     ];
   }
 
   get trades_data() {
     return this.data.map(trade => {
       trade.market = trade.market.toUpperCase();
-      (trade as any).created_at = helpers.getDate(trade.created_at, true);
+      (trade as any).created_at = helpers.getDate(
+        trade.created_at as Date,
+        true
+      );
 
       return trade;
     });

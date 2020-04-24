@@ -1,0 +1,97 @@
+<template>
+  <a-layout-content class="page-settings-blockchains">
+    <z-table
+      :loading="loading"
+      :columns="COLUMN"
+      :data="currencies_data"
+      :hover="true"
+      :scroll="false"
+      :pagination="true"
+      :total="total"
+      :page="page"
+      :page-size="limit"
+      @change-pagination="get_blockchains"
+      @click="on_table_click"
+    >
+      <template slot="status" slot-scope="{ item, column }">
+        <span
+          :class="
+            `status text-${column.algin} ${
+              item.status === 'active' ? 'text-up' : 'text-down'
+            }`
+          "
+        >
+          {{ item.status }}
+        </span>
+      </template>
+      <template slot="action" slot-scope="{ item, column }">
+        <span :class="`action text-${column.algin}`">
+          <a-icon type="right" />
+        </span>
+      </template>
+    </z-table>
+  </a-layout-content>
+</template>
+
+<script lang="ts">
+import helpers from "@zsmartex/z-helpers";
+import store from "@/store";
+import { GET_BLOCKCHAINS } from "@/store/types";
+import { StoreTypes } from "types";
+import { Vue, Component } from "vue-property-decorator";
+
+@Component
+export default class App extends Vue {
+  loading = false;
+  data: StoreTypes.Blockchain[] = [];
+  page = 1;
+  total = 0;
+  limit = 50;
+  private readonly COLUMN = [
+    { title: "Id", key: "id", algin: "left" },
+    { title: "key", key: "key", algin: "left" },
+    { title: "Name", key: "name", algin: "left" },
+    { title: "Client", key: "client", algin: "left" },
+    { title: "Height", key: "height", algin: "left" },
+    { title: "Created", key: "created_at", algin: "left" },
+    { title: "Status", key: "status", algin: "left", scopedSlots: true },
+    { title: "", key: "action", algin: "center", scopedSlots: true }
+  ];
+
+  get currencies_data() {
+    return this.data.map(blockchain => {
+      (blockchain.created_at as any) = helpers.getDate(
+        blockchain.created_at as Date
+      );
+
+      return blockchain;
+    });
+  }
+
+  mounted() {
+    this.get_blockchains({
+      page: this.page,
+      limit: this.limit
+    });
+  }
+
+  async get_blockchains(payload) {
+    this.loading = true;
+    try {
+      const { data, headers } = await store.dispatch(GET_BLOCKCHAINS, payload);
+      this.total = Number(headers.total);
+      this.page = Number(headers.page);
+      this.limit = Number(headers["per-page"]);
+      this.data = data;
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+      return error;
+    }
+  }
+
+  on_table_click(item) {
+    this.$router.push(`/settings/blockchains/${item.id}/edit`);
+  }
+}
+</script>

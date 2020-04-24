@@ -1,58 +1,52 @@
 <template>
-  <a-layout-content class="page-exchange-currencies edit">
-    <div v-if="!loading" class="edit-panel">
-      <div class="edit-panel-left">
-        <div class="edit-panel-content">
+  <a-layout-content v-if="!loading" class="page-exchange-currencies edit">
+    <z-configuration>
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-content">
           <z-info-row
             v-for="setting in SETTING_PANEL_LEFT"
             v-model="currency[setting.key]"
             :key="setting.key"
             :item="setting"
           >
-            <template slot="visible">
-              <span>{{ currency.visible ? "Enabled" : "Disabled" }}</span>
+            <template v-if="setting.type === 'slot'" :slot="setting.key">
               <span>
-                <a-switch v-model="currency.visible" />
+                {{ currency[setting.key] ? "Enabled" : "Disabled" }}
+              </span>
+              <span>
+                <a-switch v-model="currency[setting.key]" />
               </span>
             </template>
           </z-info-row>
         </div>
       </div>
-      <div class="edit-panel-right">
-        <div class="edit-panel-content">
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-content">
           <z-info-row
             v-for="setting in SETTING_PANEL_RIGHT"
             v-model="currency[setting.key]"
             :key="setting.key"
             :item="setting"
           >
-            <template slot="deposit_enabled">
+            <template v-if="setting.type === 'slot'" :slot="setting.key">
               <span>
-                {{ currency.deposit_enabled ? "Enabled" : "Disabled" }}
+                {{ currency[setting.key] ? "Enabled" : "Disabled" }}
               </span>
               <span>
-                <a-switch v-model="currency.deposit_enabled" />
-              </span>
-            </template>
-            <template slot="withdrawal_enabled">
-              <span>
-                {{ currency.withdrawal_enabled ? "Enabled" : "Disabled" }}
-              </span>
-              <span>
-                <a-switch v-model="currency.withdrawal_enabled" />
+                <a-switch v-model="currency[setting.key]" />
               </span>
             </template>
           </z-info-row>
         </div>
       </div>
-    </div>
-    <div class="edit-panel">
-      <div class="edit-panel-left">
-        <div class="edit-panel-head">
-          <div class="edit-panel-title">
+    </z-configuration>
+    <z-configuration>
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-head">
+          <div class="z-edit-panel-title">
             Properties
           </div>
-          <div class="edit-panel-action add-property">
+          <div class="add-property">
             <a-popover placement="bottomRight" trigger="click">
               <template slot="content">
                 <z-info-row
@@ -80,7 +74,7 @@
             </a-popover>
           </div>
         </div>
-        <div class="edit-panel-content">
+        <div class="z-edit-panel-content">
           <z-info-row
             v-for="setting in PROPERTIES()"
             :key="setting.key"
@@ -96,39 +90,67 @@
           </z-info-row>
         </div>
       </div>
-      <div class="edit-panel-right">
-        <div class="edit-panel-content">
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-content">
           <div class="note-borderable">
             <p class="note-borderable-head">JSON</p>
             <pre>{{ properties_as_string() }}</pre>
           </div>
-          <div class="edit-panel-action">
-            <a-button @click="update_currency" type="primary">Submit</a-button>
+          <div class="z-edit-panel-action">
+            <a-button @click="onSubmit" type="primary">Submit</a-button>
           </div>
         </div>
       </div>
-    </div>
+    </z-configuration>
   </a-layout-content>
 </template>
 
 <script lang="ts">
 import store from "@/store";
 import { StoreTypes } from "types";
-import { GET_CURRENCY, UPDATE_CURRENCY } from "@/store/types";
+import { GET_CURRENCY, CREATE_CURRENCY, UPDATE_CURRENCY } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   new_property_value = "";
   loading = false;
-  currency: StoreTypes.Currency | null = null;
+  currency: StoreTypes.Currency = {
+    name: "",
+    symbol: "",
+    explorer_transaction: "",
+    explorer_address: "",
+    type: "",
+    deposit_enabled: false,
+    withdrawal_enabled: false,
+    deposit_fee: "0",
+    min_deposit_amount: "0",
+    withdraw_fee: "0",
+    min_withdraw_amount: "0",
+    withdraw_limit_24h: "0",
+    withdraw_limit_72h: "0",
+    base_factor: 0,
+    precision: 0,
+    position: 0,
+    min_confirmations: 0,
+    code: "",
+    blockchain_key: "",
+    min_collection_amount: "0",
+    visible: true,
+    subunits: 0,
+    options: {}
+  };
+
+  get type() {
+    return this.$route.meta.type;
+  }
 
   get SETTING_PANEL_LEFT() {
     return [
       {
         title: "Name",
         key: "name",
-        value: this.currency?.name,
+        value: this.currency.name,
         type: "input",
         style: "width: 47.5%",
         edit: true
@@ -136,7 +158,7 @@ export default class App extends Vue {
       {
         title: "Visible",
         key: "visible",
-        value: this.currency?.visible,
+        value: this.currency.visible,
         style: "float: right;width: 47.5%",
         style_content:
           "justify-content: space-between;display: flex;flex-wrap: wrap",
@@ -145,21 +167,21 @@ export default class App extends Vue {
       {
         title: "Code",
         key: "code",
-        value: this.currency?.code,
+        value: this.currency.code,
         type: "input",
         edit: true
       },
       {
         title: "Symbol",
         key: "symbol",
-        value: this.currency?.symbol,
+        value: this.currency.symbol,
         type: "input",
         edit: true
       },
       {
         title: "Type",
         key: "type",
-        value: this.currency?.type,
+        value: this.currency.type,
         type: "select",
         list: {
           coin: "coin",
@@ -169,21 +191,21 @@ export default class App extends Vue {
       {
         title: "Subunits",
         key: "subunits",
-        value: this.currency?.subunits,
+        value: this.currency.subunits,
         type: "input",
         edit: true
       },
       {
         title: "Precision",
         key: "precision",
-        value: this.currency?.precision,
+        value: this.currency.precision,
         type: "input",
         edit: true
       },
       {
         title: "Blockchain key",
         key: "blockchain_key",
-        value: this.currency?.blockchain_key,
+        value: this.currency.blockchain_key,
         type: "input",
         edit: true
       }
@@ -195,7 +217,7 @@ export default class App extends Vue {
       {
         title: "Deposit",
         key: "deposit_enabled",
-        value: this.currency?.deposit_enabled,
+        value: this.currency.deposit_enabled,
         style: "float: left;width: 47.5%",
         style_content:
           "justify-content: space-between;display: flex;flex-wrap: wrap",
@@ -204,7 +226,7 @@ export default class App extends Vue {
       {
         title: "Withdrawal",
         key: "withdrawal_enabled",
-        value: this.currency?.withdrawal_enabled,
+        value: this.currency.withdrawal_enabled,
         style: "float: right;width: 47.5%",
         style_content:
           "justify-content: space-between;display: flex;flex-wrap: wrap",
@@ -213,14 +235,14 @@ export default class App extends Vue {
       {
         title: "Deposit Fee",
         key: "deposit_fee",
-        value: this.currency?.deposit_fee,
+        value: this.currency.deposit_fee,
         type: "input",
         edit: true
       },
       {
         title: "Min Deposit Amount",
         key: "min_deposit_amount",
-        value: this.currency?.min_deposit_amount,
+        value: this.currency.min_deposit_amount,
         style: "float: left;width: 47.5%",
         type: "input",
         edit: true
@@ -228,7 +250,7 @@ export default class App extends Vue {
       {
         title: "Min Collection Amount",
         key: "min_collection_amount",
-        value: this.currency?.min_collection_amount,
+        value: this.currency.min_collection_amount,
         style: "float: right;width: 47.5%",
         type: "input",
         edit: true
@@ -236,21 +258,21 @@ export default class App extends Vue {
       {
         title: "Withdraw Fee",
         key: "withdraw_fee",
-        value: this.currency?.withdraw_fee,
+        value: this.currency.withdraw_fee,
         type: "input",
         edit: true
       },
       {
         title: "Min Withdraw Amount",
         key: "min_withdraw_amount",
-        value: this.currency?.min_withdraw_amount,
+        value: this.currency.min_withdraw_amount,
         type: "input",
         edit: true
       },
       {
         title: "Withdraw Limit 24h",
         key: "withdraw_limit_24h",
-        value: this.currency?.withdraw_limit_24h,
+        value: this.currency.withdraw_limit_24h,
         style: "float: left;width: 47.5%",
         type: "input",
         edit: true
@@ -258,7 +280,7 @@ export default class App extends Vue {
       {
         title: "Withdraw Limit 72h",
         key: "withdraw_limit_72h",
-        value: this.currency?.withdraw_limit_72h,
+        value: this.currency.withdraw_limit_72h,
         style: "float: right;width: 47.5%",
         type: "input",
         edit: true
@@ -266,7 +288,7 @@ export default class App extends Vue {
       {
         title: "Position",
         key: "position",
-        value: this.currency?.position,
+        value: this.currency.position,
         type: "input",
         edit: true
       }
@@ -274,7 +296,7 @@ export default class App extends Vue {
   }
 
   PROPERTIES() {
-    const options = this.currency?.options;
+    const options = this.currency.options;
     if (typeof options == "object") {
       return Object.keys(options).map(key => {
         return {
@@ -291,7 +313,7 @@ export default class App extends Vue {
   }
 
   properties_as_string() {
-    return JSON.stringify(this.currency?.options, undefined, 2);
+    return JSON.stringify(this.currency.options, undefined, 2);
   }
 
   get code() {
@@ -299,7 +321,7 @@ export default class App extends Vue {
   }
 
   async beforeMount() {
-    await this.get_currency();
+    if (this.type === "edit") await this.get_currency();
     if (!this.currency) return;
   }
 
@@ -343,13 +365,16 @@ export default class App extends Vue {
     });
   }
 
-  async update_currency() {
-    const { currency } = this;
+  async onSubmit() {
+    const { type, currency } = this;
 
-    delete currency?.created_at;
-    delete currency?.updated_at;
+    delete currency.created_at;
+    delete currency.updated_at;
     try {
-      await store.dispatch(UPDATE_CURRENCY, currency);
+      await store.dispatch(
+        type === "edit" ? UPDATE_CURRENCY : CREATE_CURRENCY,
+        currency
+      );
 
       this.$router.push("/exchange/currencies");
     } catch (error) {

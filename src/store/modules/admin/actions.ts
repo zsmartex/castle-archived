@@ -1,27 +1,7 @@
 import ApiClient from "@zsmartex/z-apiclient";
-import {
-  GET_METRICS,
-  GET_USERS,
-  GET_USER_INFO,
-  UPDATE_USER_INFO,
-  UPDATE_USER_LABEL,
-  CREATE_USER_LABEL,
-  GET_MEMBER_INFO,
-  UPDATE_MEMBER_INFO,
-  UPDATE_USER_ROLE,
-  DELETE_USER_LABEL,
-  GET_OPERATORS,
-  GET_CURRENCIES,
-  GET_CURRENCY,
-  UPDATE_CURRENCY,
-  GET_MARKETS,
-  GET_ORDERS,
-  GET_TRADES,
-  GET_MARKET,
-  UPDATE_MARKET
-} from "./action-types";
-import { ActionTree } from "vuex";
 import { StoreTypes } from "types";
+import { ActionTree } from "vuex";
+import { CREATE_CURRENCY, CREATE_MARKET, CREATE_USER_LABEL, DELETE_USER_LABEL, GET_BLOCKCHAIN, GET_BLOCKCHAINS, GET_BLOCKCHAIN_CLIENTS, GET_CURRENCIES, GET_CURRENCY, GET_MARKET, GET_MARKETS, GET_MEMBER_INFO, GET_METRICS, GET_OPERATORS, GET_ORDERS, GET_TRADES, GET_TRADING_FEES, GET_USERS, GET_USER_INFO, GET_WALLETS, UPDATE_CURRENCY, UPDATE_MARKET, UPDATE_MEMBER_INFO, UPDATE_USER_INFO, UPDATE_USER_LABEL, UPDATE_USER_ROLE } from "./action-types";
 
 const actions: ActionTree<StoreTypes.AdminState, any> = {
   async [GET_METRICS]({ commit }) {
@@ -120,6 +100,9 @@ const actions: ActionTree<StoreTypes.AdminState, any> = {
   [GET_CURRENCY](store, code) {
     return new ApiClient("trade").get("admin/currencies/" + code);
   },
+  [CREATE_CURRENCY](store, payload) {
+    return new ApiClient("trade").post("admin/currencies/new", payload);
+  },
   [UPDATE_CURRENCY](store, payload) {
     return new ApiClient("trade").post("admin/currencies/update", payload);
   },
@@ -129,8 +112,32 @@ const actions: ActionTree<StoreTypes.AdminState, any> = {
   [GET_MARKET]({ commit }, market_id) {
     return new ApiClient("trade").get("admin/markets/" + market_id);
   },
+  [CREATE_MARKET](store, payload) {
+    return new ApiClient("trade").post("admin/markets/new", payload);
+  },
   [UPDATE_MARKET]({ commit }, payload) {
     return new ApiClient("trade").post("admin/markets/update", payload);
+  },
+  [GET_BLOCKCHAINS]({ commit }, payload) {
+    return new ApiClient("trade").get("admin/blockchains", payload);
+  },
+  [GET_BLOCKCHAIN](store, id) {
+    return new ApiClient("trade").get(`admin/blockchains/${id}`)
+  },
+  async [GET_BLOCKCHAIN_CLIENTS]({ commit }) {
+    try {
+      const { data } = await new ApiClient("trade").get("admin/blockchains/clients");
+
+      commit("SET_BLOCKCHAIN_CLIENTS", data);
+    } catch (error) {
+      return error;
+    }
+  },
+  [GET_WALLETS](store, payload) {
+    return new ApiClient("trade").get("admin/wallets", payload);
+  },
+  [GET_TRADING_FEES](store, payload) {
+    return new ApiClient("trade").get("admin/trading_fees", payload);
   }
 };
 

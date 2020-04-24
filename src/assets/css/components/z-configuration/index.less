@@ -1,0 +1,75 @@
+@import "~ant-design-vue/es/style/themes/default";
+
+@configuration-cls: ~"z-configuration";
+@edit-panel-cls: ~"z-edit-panel";
+
+.@{configuration-cls} {
+  padding: 12px;
+  background-color: white;
+  box-shadow: 0 1px 16px rgba(0, 21, 41, 0.08);
+  border: @border-width-base @border-style-base @border-color-split;
+  display: flex;
+
+  &:not(:first-child) {
+    margin-top: 12px;
+  }
+
+  .@{edit-panel-cls} {
+    flex: 1;
+    padding: 10px 20px;
+
+    &:nth-child(2) {
+      border-left: @border-width-base @border-style-base @border-color-split;
+    }
+
+    &-head {
+      justify-content: space-between;
+      display: flex;
+      flex-wrap: wrap;
+      line-height: 30px;
+      margin-bottom: 20px;
+    }
+
+    &-content {
+      justify-content: space-between;
+      display: flex;
+      flex-wrap: wrap;
+      > * {
+        margin-top: 12px;
+      }
+    }
+
+    &-title {
+      font-weight: bold;
+      font-size: 20px;
+      .note {
+        font-size: 12px;
+        font-weight: normal;
+        line-height: 1;
+        color: @text-color-secondary;
+      }
+    }
+
+    &-action {
+      width: 100%;
+      text-align: right;
+    }
+  }
+
+  .note-borderable {
+    position: relative;
+    width: 100%;
+    border: @border-width-base @border-style-base @border-color-split;
+    padding: 20px;
+    position: relative;
+    margin-top: 48px;
+    border-radius: 5px;
+    &-head {
+      position: absolute;
+      top: -11px;
+      background: white;
+      padding: 0 2px;
+      font-weight: bold;
+    }
+  }
+}

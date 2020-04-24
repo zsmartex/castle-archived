@@ -95,8 +95,14 @@ export default class App extends Vue {
   get orders_data() {
     return this.data.map(order => {
       order["market"] = order["market"].toUpperCase();
-      (order as any)["created_at"] = helpers.getDate(order["created_at"], true);
-      (order as any)["updated_at"] = helpers.getDate(order["created_at"], true);
+      (order as any)["created_at"] = helpers.getDate(
+        order.created_at as Date,
+        true
+      );
+      (order as any)["updated_at"] = helpers.getDate(
+        order.created_at as Date,
+        true
+      );
       return order;
     });
   }

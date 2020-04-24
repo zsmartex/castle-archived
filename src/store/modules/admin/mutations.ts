@@ -1,5 +1,5 @@
-import { MutationTree } from "vuex";
 import { StoreTypes } from "types";
+import { MutationTree } from "vuex";
 
 const mutations: MutationTree<StoreTypes.AdminState> = {
   SET_METRICS(state, payload) {
@@ -36,6 +36,9 @@ const mutations: MutationTree<StoreTypes.AdminState> = {
     if (Object.hasOwnProperty.call(payload, "role")) {
       user_info.role = payload.role;
     }
+  },
+  SET_BLOCKCHAIN_CLIENTS(state, payload) {
+    state.clients = payload;
   }
 };
 

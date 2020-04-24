@@ -21,7 +21,8 @@ const state: StoreTypes.AdminState = {
     pending_applications: 0
   },
   member_info: null,
-  user_info: null
+  user_info: null,
+  clients: []
 };
 
 export default state;

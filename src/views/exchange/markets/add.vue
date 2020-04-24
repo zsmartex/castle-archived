@@ -1,38 +1,43 @@
 <template>
-  <a-layout-content class="page-exchange-markets info">
-    <a-tabs v-if="!loading" defaultActiveKey="1">
-      <a-tab-pane tab="Orderbook" key="1">
-        <orderbook :market="market" />
-      </a-tab-pane>
-      <a-tab-pane tab="Configuration" key="2">
-        <configuration
-          :market="market"
-          :setting_list="setting_list"
-          @submit="update_market"
-        />
-      </a-tab-pane>
-    </a-tabs>
+  <a-layout-content class="page-exchange-markets add">
+    <configuration
+      :market="market"
+      :setting_list="setting_list"
+      @submit="create_market"
+    />
   </a-layout-content>
 </template>
 
 <script lang="ts">
 import store from "@/store";
 import { StoreTypes } from "types";
-import { GET_MARKET, UPDATE_MARKET } from "@/store/types";
+import { CREATE_MARKET, GET_CURRENCIES } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   components: {
-    orderbook: () => import("./orderbook.vue"),
-    configuration: () => import("./configuration.vue")
+    configuration: () => import("./info/configuration.vue")
   }
 })
 export default class App extends Vue {
-  loading = false;
-  market: StoreTypes.Market | null = null;
+  market: StoreTypes.Market = {
+    id: "",
+    name: "ETH/USDT",
+    base_unit: "",
+    quote_unit: "",
+    min_price: "0",
+    max_price: "0",
+    min_amount: "0",
+    amount_precision: 0,
+    price_precision: 0,
+    total_precision: 0,
+    state: "disabled",
+    position: 1
+  };
+  currencies: string[] = [];
 
-  get market_id() {
-    return this.$route.params.market;
+  get currencies_list() {
+    return this.currencies.reduce((a, b) => ((a[b] = b.toUpperCase()), a), {});
   }
 
   get setting_list() {
@@ -40,7 +45,7 @@ export default class App extends Vue {
       {
         title: "Market name",
         key: "name",
-        value: `${this.market?.base_unit}/${this.market?.quote_unit}`.toUpperCase(),
+        value: `${this.market.base_unit}/${this.market.quote_unit}`.toUpperCase(),
         style: "width: 30%",
         type: "input",
         edit: false
@@ -48,23 +53,23 @@ export default class App extends Vue {
       {
         title: "Base currency",
         key: "base_unit",
-        value: this.market?.base_unit,
+        value: this.market.base_unit,
         style: "width: 30%",
-        type: "input",
-        edit: false
+        type: "select",
+        list: this.currencies_list
       },
       {
         title: "Quote currency",
         key: "quote_unit",
-        value: this.market?.quote_unit,
+        value: this.market.quote_unit,
         style: "width: 30%",
-        type: "input",
-        edit: false
+        type: "select",
+        list: this.currencies_list
       },
       {
         title: "Min price",
         key: "min_price",
-        value: this.market?.min_price,
+        value: this.market.min_price,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -72,7 +77,7 @@ export default class App extends Vue {
       {
         title: "Max price",
         key: "max_price",
-        value: this.market?.max_price,
+        value: this.market.max_price,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -80,7 +85,7 @@ export default class App extends Vue {
       {
         title: "Min amount",
         key: "min_amount",
-        value: this.market?.min_amount,
+        value: this.market.min_amount,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -88,7 +93,7 @@ export default class App extends Vue {
       {
         title: "Price precision",
         key: "price_precision",
-        value: this.market?.price_precision,
+        value: this.market.price_precision,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -96,7 +101,7 @@ export default class App extends Vue {
       {
         title: "Amount precision",
         key: "amount_precision",
-        value: this.market?.amount_precision,
+        value: this.market.amount_precision,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -104,7 +109,7 @@ export default class App extends Vue {
       {
         title: "Total precision",
         key: "total_precision",
-        value: this.market?.total_precision,
+        value: this.market.total_precision,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -112,7 +117,7 @@ export default class App extends Vue {
       {
         title: "Position",
         key: "position",
-        value: this.market?.position,
+        value: this.market.position,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -120,28 +125,24 @@ export default class App extends Vue {
     ];
   }
 
-  beforeMount() {
-    this.get_market();
+  mounted() {
+    this.get_currencies();
   }
 
-  async get_market() {
-    const { market_id } = this;
-    this.loading = true;
-
+  async get_currencies() {
     try {
-      const { data } = await store.dispatch(GET_MARKET, market_id);
-      this.market = data;
-      this.loading = false;
+      const { data } = await store.dispatch(GET_CURRENCIES, { limit: 100 });
+      this.currencies = data.map(currency => currency.code);
     } catch (error) {
-      this.loading = false;
       return error;
     }
   }
 
-  async update_market() {
+  async create_market() {
     try {
-      await store.dispatch(UPDATE_MARKET, {
-        id: this.market?.id,
+      await store.dispatch(CREATE_MARKET, {
+        base_currency: this.market?.base_unit,
+        quote_currency: this.market?.quote_unit,
         min_price: this.market?.min_price,
         max_price: this.market?.max_price,
         min_amount: this.market?.min_amount,
@@ -151,6 +152,7 @@ export default class App extends Vue {
         position: this.market?.position,
         state: this.market?.state
       });
+
       this.$router.push("/exchange/markets");
     } catch (error) {
       return error;
@@ -158,7 +160,3 @@ export default class App extends Vue {
   }
 }
 </script>
-
-<style lang="less">
-@import "~@styles/views/exchange/markets/info";
-</style>

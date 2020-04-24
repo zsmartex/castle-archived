@@ -6,7 +6,7 @@
         :value="value"
         :type="input_type"
         :placeholder="placeholder"
-        :max-length="maxlength"
+        :max-length="Number(maxlength)"
         ref="input"
         @input="$emit('input', $event.target.value)"
       >
@@ -17,7 +17,7 @@
         :value="value"
         :type="input_type"
         :placeholder="placeholder"
-        :max-length="maxlength"
+        :max-length="Number(maxlength)"
         ref="input"
         @input="$emit('input', $event.target.value)"
       >

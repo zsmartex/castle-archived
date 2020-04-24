@@ -29,7 +29,7 @@
             :key="`sub-${menu.key}-${subindex}`"
           >
             <router-link
-              :to="sub.attrs.to"
+              :to="change_route(menu.path, sub.path)"
               :exact-active-class="sub.attrs['exact-active-class']"
               :active-class="sub.attrs['active-class']"
             >
@@ -40,7 +40,7 @@
         </a-sub-menu>
         <a-menu-item v-else :key="`menu-${mindex}`">
           <router-link
-            :to="menu.attrs.to"
+            :to="change_route(menu.path)"
             :exact-active-class="menu.attrs['exact-active-class']"
             :active-class="menu.attrs['active-class']"
           >
@@ -58,7 +58,6 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 interface MenuAttrs {
-  to: string;
   "exact-active-class"?: string;
   "active-class"?: string;
 }
@@ -66,6 +65,7 @@ interface MenuAttrs {
 interface SubMenu {
   name: string;
   icon: string;
+  path: string;
   attrs?: MenuAttrs;
 }
 
@@ -73,6 +73,7 @@ interface Menu {
   key: string;
   name: string;
   icon: string;
+  path: string;
   attrs?: MenuAttrs;
   children?: SubMenu[];
 }
@@ -85,12 +86,13 @@ export default class App extends Vue {
       key: "dashboard",
       name: "Dashboard",
       icon: "dashboard",
+      path: "dashboard",
       children: [
         {
           name: "Analysis",
           icon: "fund",
+          path: "analysis",
           attrs: {
-            to: "/dashboard/analysis",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -101,12 +103,13 @@ export default class App extends Vue {
       key: "user",
       name: "Users",
       icon: "user",
+      path: "users",
       children: [
         {
           name: "Users directory",
           icon: "team",
+          path: "user-directory",
           attrs: {
-            to: "/users/user-directory",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -114,8 +117,8 @@ export default class App extends Vue {
         {
           name: "Operators",
           icon: "user",
+          path: "operators",
           attrs: {
-            to: "/users/operators",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -126,12 +129,13 @@ export default class App extends Vue {
       key: "exchange",
       name: "Exchange",
       icon: "line-chart",
+      path: "exchange",
       children: [
         {
           name: "Currencies",
           icon: "dollar",
+          path: "currencies",
           attrs: {
-            to: "/exchange/currencies",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -139,8 +143,8 @@ export default class App extends Vue {
         {
           name: "Markets",
           icon: "bar-chart",
+          path: "markets",
           attrs: {
-            to: "/exchange/markets",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -148,8 +152,8 @@ export default class App extends Vue {
         {
           name: "Orders",
           icon: "database",
+          path: "orders",
           attrs: {
-            to: "/exchange/orders",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -157,8 +161,8 @@ export default class App extends Vue {
         {
           name: "Trades",
           icon: "carry-out",
+          path: "trades",
           attrs: {
-            to: "/exchange/trades",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -169,12 +173,13 @@ export default class App extends Vue {
       key: "accountings",
       name: "Accountings",
       icon: "calculator",
+      path: "accountings",
       children: [
         {
           name: "Deposits",
           icon: "cloud-download",
+          path: "deposits",
           attrs: {
-            to: "/accountings/deposits",
             "exact-active-class": "",
             "active-class": ""
           }
@@ -182,8 +187,88 @@ export default class App extends Vue {
         {
           name: "Withdrawals",
           icon: "cloud-upload",
+          path: "withdrawals",
           attrs: {
-            to: "/accountings/withdrawals",
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Withdrawals pending",
+          icon: "cloud-sync",
+          path: "withdrawals-pending",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Adjustments",
+          icon: "file-sync",
+          path: "adjustments",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Operations",
+          icon: "sync",
+          path: "operations",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        }
+      ]
+    },
+    {
+      key: "settings",
+      name: "Settings",
+      icon: "setting",
+      path: "settings",
+      children: [
+        {
+          name: "Blockchains",
+          icon: "fork",
+          path: "blockchains",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Wallets",
+          icon: "wallet",
+          path: "wallets",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Fees Schedule",
+          icon: "percentage",
+          path: "fees-schedules",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Permissions",
+          icon: "solution",
+          path: "permissions",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Restrictions",
+          icon: "stop",
+          path: "restrictions",
+          attrs: {
             "exact-active-class": "",
             "active-class": ""
           }
@@ -196,15 +281,7 @@ export default class App extends Vue {
     const { MENUS } = this;
     const { path } = this.$route;
 
-    return `menu-${MENUS.findIndex(menu => {
-      if (menu.children) {
-        return menu.children?.find(sub => {
-          if (sub.attrs) return path.includes(sub.attrs.to);
-        });
-      } else {
-        if (menu.attrs) return path.includes(menu.attrs.to);
-      }
-    })}`;
+    return `menu-${MENUS.findIndex(menu => path.split("/")[1] === menu.path)}`;
   }
 
   get isSubMenuSelected() {
@@ -215,10 +292,15 @@ export default class App extends Vue {
     if (!MENUS[indexMenu].children) return isMenuSelected;
 
     return `sub-${MENUS[indexMenu].key}-${MENUS[indexMenu].children?.findIndex(
-      sub => {
-        if (sub.attrs) return path.includes(sub.attrs.to);
-      }
+      sub => path.split("/")[2] === sub.path
     )}`;
+  }
+
+  change_route() {
+    // eslint-disable-next-line prefer-rest-params
+    const args = [...(arguments as any)];
+
+    return ["", ...args].join("/");
   }
 }
 </script>

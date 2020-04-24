@@ -13,8 +13,8 @@
       @change-pagination="get_currencies"
       @click="on_table_click"
     >
-      <template slot="info" slot-scope="{ item, column }">
-        <span :class="`info text-${column.algin}`">
+      <template slot="action" slot-scope="{ item, column }">
+        <span :class="`action text-${column.algin}`">
           <a-icon type="right" />
         </span>
       </template>
@@ -58,7 +58,7 @@ export default class App extends Vue {
     { title: "Visible", key: "visible", algin: "left" },
     { title: "Deposit", key: "deposit_enabled", algin: "left" },
     { title: "Withdrawal", key: "withdrawal_enabled", algin: "left" },
-    { title: "", key: "info", algin: "center", scopedSlots: true }
+    { title: "", key: "action", algin: "center", scopedSlots: true }
   ];
 
   get filter_list() {
@@ -76,7 +76,10 @@ export default class App extends Vue {
   get currencies_data() {
     return this.data.map(currency => {
       currency.code = currency.code.toUpperCase();
-      (currency as any).created_at = helpers.getDate(currency.created_at, true);
+      (currency as any).created_at = helpers.getDate(
+        currency.created_at as Date,
+        true
+      );
 
       return currency;
     });
@@ -92,6 +95,14 @@ export default class App extends Vue {
 
   set_action_header() {
     this.$route.meta["action-header"] = [
+      {
+        title: "Add Currency",
+        key: "add_currency",
+        icon: "plus-circle",
+        callback: () => {
+          this.$router.push("/exchange/currencies/add");
+        }
+      },
       {
         title: "Filter",
         key: "filter",

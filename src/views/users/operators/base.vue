@@ -126,7 +126,10 @@ export default class App extends Vue {
 
   get operators_data() {
     return this.data.map(operator => {
-      (operator as any).created_at = helpers.getDate(operator.created_at, true);
+      (operator as any).created_at = helpers.getDate(
+        operator.created_at as Date,
+        true
+      );
 
       return operator;
     });

@@ -79,7 +79,7 @@ const configWebPack = {
       }*/
       //Test Server
       "^/api": {
-        target: "https://demo.zsmart.tech",
+        target: "http://www.test.local",
         secure: false,
         ws: true,
         changeOrigin: true

@@ -42,15 +42,27 @@ const routes = [
             component: () => import("@/views/exchange/currencies/base.vue")
           },
           {
+            path: "currencies/add",
+            meta: { type: "new" },
+            component: () => import("@/views/exchange/currencies/new-edit.vue")
+          },
+          {
             path: "currencies/:code/edit",
-            component: () => import("@/views/exchange/currencies/edit.vue")
+            meta: { type: "edit" },
+            component: () => import("@/views/exchange/currencies/new-edit.vue")
           },
           {
             path: "markets",
             component: () => import("@/views/exchange/markets/base.vue")
           },
           {
+            path: "markets/add",
+            meta: { type: "new" },
+            component: () => import("@/views/exchange/markets/add.vue")
+          },
+          {
             path: "markets/:market/info",
+            meta: { type: "info" },
             component: () => import("@/views/exchange/markets/info/base.vue")
           },
           {
@@ -74,6 +86,48 @@ const routes = [
           {
             path: "withdrawals",
             component: () => import("@/views/accountings/withdrawals/base.vue"),
+          },
+          {
+            path: "withdrawals-pending",
+            component: () => import("@/views/accountings/withdrawals-pending/base.vue"),
+          },
+          {
+            path: "adjustments",
+            component: () => import("@/views/accountings/adjustments/base.vue"),
+          },
+          {
+            path: "operations",
+            component: () => import("@/views/accountings/operations/base.vue"),
+          }
+        ]
+      },
+      {
+        path: "settings",
+        component: () => import("@/views/settings/base.vue"),
+        children: [
+          {
+            path: "blockchains",
+            component: () => import("@/views/settings/blockchains/base.vue"),
+          },
+          {
+            path: "blockchains/:id/edit",
+            component: () => import("@/views/settings/blockchains/edit.vue"),
+          },
+          {
+            path: "wallets",
+            component: () => import("@/views/settings/wallets/base.vue"),
+          },
+          {
+            path: "fees-schedules",
+            component: () => import("@/views/settings/fees-schedules/base.vue"),
+          },
+          {
+            path: "permissions",
+            component: () => import("@/views/settings/permissions/base.vue"),
+          },
+          {
+            path: "restrictions",
+            component: () => import("@/views/settings/restrictions/base.vue"),
           }
         ]
       }

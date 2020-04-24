@@ -93,6 +93,7 @@ export default class App extends Vue {
 
   onChange(value: string) {
     this.$emit("change", { key: this.item.key, value: value });
+    this.$emit("input", value);
   }
 }
 </script>
