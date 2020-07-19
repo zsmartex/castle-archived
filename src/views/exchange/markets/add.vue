@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { StoreTypes } from "types";
+import { runNotice } from "@zsmartex/z-helpers";
 import { CREATE_MARKET, GET_CURRENCIES } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
@@ -20,9 +20,9 @@ import { Vue, Component } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  market: StoreTypes.Market = {
+  market: Market = {
     id: "",
-    name: "ETH/USDT",
+    name: "",
     base_unit: "",
     quote_unit: "",
     min_price: "0",
@@ -141,18 +141,24 @@ export default class App extends Vue {
   async create_market() {
     try {
       await store.dispatch(CREATE_MARKET, {
-        base_currency: this.market?.base_unit,
-        quote_currency: this.market?.quote_unit,
-        min_price: this.market?.min_price,
-        max_price: this.market?.max_price,
-        min_amount: this.market?.min_amount,
-        price_precision: this.market?.price_precision,
-        amount_precision: this.market?.amount_precision,
-        total_precision: this.market?.total_precision,
-        position: this.market?.position,
-        state: this.market?.state
+        base_currency: this.market.base_unit,
+        quote_currency: this.market.quote_unit,
+        min_price: this.market.min_price,
+        max_price: this.market.max_price,
+        min_amount: this.market.min_amount,
+        price_precision: this.market.price_precision,
+        amount_precision: this.market.amount_precision,
+        total_precision: this.market.total_precision,
+        position: this.market.position,
+        state: this.market.state
       });
 
+      runNotice(
+        "success",
+        `Market ${[this.market.base_unit, this.market.quote_unit]
+          .join("/")
+          .toUpperCase()} created successfully`
+      );
       this.$router.push("/exchange/markets");
     } catch (error) {
       return error;

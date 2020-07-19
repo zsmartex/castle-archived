@@ -34,20 +34,20 @@
 </template>
 
 <script lang="ts">
-import helpers from "@zsmartex/z-helpers";
+import ZSmartModel from "@zsmartex/z-eventbus";
+import { getDate } from "@zsmartex/z-helpers";
 import store from "@/store";
 import { GET_BLOCKCHAINS } from "@/store/types";
-import { StoreTypes } from "types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   loading = false;
-  data: StoreTypes.Blockchain[] = [];
+  data: Blockchain[] = [];
   page = 1;
   total = 0;
   limit = 50;
-  private readonly COLUMN = [
+  readonly COLUMN = [
     { title: "Id", key: "id", algin: "left" },
     { title: "key", key: "key", algin: "left" },
     { title: "Name", key: "name", algin: "left" },
@@ -60,15 +60,31 @@ export default class App extends Vue {
 
   get currencies_data() {
     return this.data.map(blockchain => {
-      (blockchain.created_at as any) = helpers.getDate(
-        blockchain.created_at as Date
-      );
+      (blockchain.created_at as any) = getDate(blockchain.created_at as Date);
 
       return blockchain;
     });
   }
 
+  set_action_header() {
+    this.$route.meta["action-header"] = [
+      {
+        title: "Add Blockchain",
+        key: "add_blockchain",
+        icon: "plus-circle",
+        callback: () => {
+          this.$router.push("/settings/blockchains/add");
+        }
+      }
+    ];
+
+    this.$nextTick(() => {
+      ZSmartModel.emit("set-action-header");
+    });
+  }
+
   mounted() {
+    this.set_action_header();
     this.get_blockchains({
       page: this.page,
       limit: this.limit

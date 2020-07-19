@@ -11,7 +11,6 @@
 
 <script lang="ts">
 import ZTable from "@/components/z-table";
-import { StoreTypes } from "types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
@@ -22,7 +21,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
+  @Prop() readonly user_info!: User;
 }
 </script>
 

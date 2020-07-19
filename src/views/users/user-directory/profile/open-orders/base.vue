@@ -1,66 +1,36 @@
 <template>
-  <z-table
-    class="page-user-directory open-orders"
+  <orders
+    type="open"
     :loading="loading"
-    :columns="COLUMN"
-    :data="orders_data"
-    :scroll="false"
-    :pagination="true"
+    :data="data"
     :total="total"
     :page="page"
     :page-size="limit"
+    :disabled_columns="['email']"
     @change-pagination="get_orders"
-  >
-    <template slot="side" slot-scope="{ item, column }">
-      <span
-        :class="[
-          'side',
-          `text-${column.algin}`,
-          `text-${item.side === 'buy' ? 'up' : 'down'}`
-        ]"
-      >
-        {{ item.side }}
-      </span>
-    </template>
-    <template slot="action" slot-scope="{ item, column }">
-      <span :class="`action text-${column.algin}`">
-        <span @click="cancel_order(item.id)">
-          Cancel
-          <a-icon type="close-circle" />
-        </span>
-      </span>
-    </template>
-  </z-table>
+  />
 </template>
 
 <script lang="ts">
 import store from "@/store";
-import helpers from "@zsmartex/z-helpers";
-import { StoreTypes } from "types";
+import { CANCEL_ORDER } from "@/store/types";
+import { getDate, runNotice } from "@zsmartex/z-helpers";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { GET_ORDERS } from "@/store/types";
 
-@Component
+@Component({
+  components: {
+    orders: () => import("@/layouts/orders")
+  }
+})
 export default class App extends Vue {
   loading = false;
+  data: UserOrder[] = [];
   total = 0;
   page = 1;
   limit = 50;
-  data: StoreTypes.UserOrder[] = [];
 
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
-  protected readonly COLUMN = [
-    { title: "Order ID", key: "id", algin: "left" },
-    { title: "Market", key: "market", algin: "left" },
-    { title: "Type", key: "ord_type", algin: "left" },
-    { title: "Amount", key: "origin_volume", algin: "left" },
-    { title: "Executed", key: "executed_volume", algin: "left" },
-    { title: "Price", key: "price", algin: "left" },
-    { title: "Side", key: "side", algin: "left", scopedSlots: true },
-    { title: "Created", key: "created_at", algin: "left" },
-    { title: "Updated", key: "updated_at", algin: "left" },
-    { title: "Action", key: "action", algin: "center", scopedSlots: true }
-  ];
+  @Prop() readonly user_info!: User;
 
   mounted() {
     this.get_orders({
@@ -95,20 +65,26 @@ export default class App extends Vue {
   get orders_data() {
     return this.data.map(order => {
       order["market"] = order["market"].toUpperCase();
-      (order as any)["created_at"] = helpers.getDate(
-        order.created_at as Date,
-        true
-      );
-      (order as any)["updated_at"] = helpers.getDate(
-        order.created_at as Date,
-        true
-      );
+      (order as any)["created_at"] = getDate(order.created_at as Date, true);
+      (order as any)["updated_at"] = getDate(order.created_at as Date, true);
+
       return order;
     });
   }
 
-  cancel_order(id: number) {
-    console.log(id);
+  async cancel_order(id: number) {
+    try {
+      await store.dispatch(CANCEL_ORDER, id);
+
+      runNotice("success", "Order has been canceled");
+      const index = this.data.findIndex(order => order.id === id);
+      if (index < 0) return;
+
+      this.data.splice(index, 1);
+      this.total--;
+    } catch (error) {
+      return error;
+    }
   }
 }
 </script>

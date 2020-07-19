@@ -1,20 +1,20 @@
 <template>
-  <a-layout-content class="page-user-directory profile">
+  <a-layout-content v-if="!loading" class="page-user-directory profile">
     <profile-header class="profile-head" :UID="UID" />
     <a-tabs class="profile-content" v-model="active_tab_key">
       <a-tab-pane tab="User profile" key="1">
         <div
-          v-if="active_tab_key === '1' && user_info && member_info"
+          v-if="active_tab_key === '1' && user_info && member"
           class="profile-container"
         >
-          <user-info :user_info="user_info" :member_info="member_info" />
+          <user-info :user_info="user_info" :member_info="member" />
           <user-labels :user_info="user_info" />
         </div>
       </a-tab-pane>
       <a-tab-pane tab="Balance" key="2">
         <user-balance
-          v-if="active_tab_key === '2' && member_info"
-          :member_info="member_info"
+          v-if="active_tab_key === '2' && member"
+          :member_info="member"
         />
       </a-tab-pane>
       <a-tab-pane tab="Open orders" key="3">
@@ -35,7 +35,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { GET_USER_INFO, GET_MEMBER_INFO } from "@/store/types";
+import { GET_USER_INFO, GET_MEMBER } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
@@ -49,8 +49,9 @@ import { Vue, Component } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  active_tab_key = "1";
   loading = false;
+  active_tab_key = "1";
+  member!: Member;
 
   beforeMount() {
     this.get_user_info();
@@ -64,17 +65,23 @@ export default class App extends Vue {
     return store.state.admin.user_info;
   }
 
-  get member_info() {
-    return store.state.admin.member_info;
-  }
-
   async get_user_info() {
     const { UID } = this;
 
     this.loading = true;
     await store.dispatch(GET_USER_INFO, UID);
-    await store.dispatch(GET_MEMBER_INFO, UID);
+    await this.get_member();
     this.loading = false;
+  }
+
+  async get_member() {
+    try {
+      const { data } = await store.dispatch(GET_MEMBER, this.UID);
+
+      this.member = data;
+    } catch (error) {
+      return error;
+    }
   }
 }
 </script>

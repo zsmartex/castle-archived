@@ -1,45 +1,32 @@
 <template>
+  <!-- TODO: Add v-for -->
   <div class="orderbook">
-    <a-card class="ant-card-no-padding" title="Buy orders">
+    <a-card
+      v-for="side in ['bids', 'asks']"
+      :key="side"
+      class="ant-card-no-padding"
+      title="Buy orders"
+    >
       <z-table
-        :loading="loading.bids"
+        :loading="loading[side]"
         :columns="ORDERS_COLUMN"
-        :data="data.bids"
+        :data="data[side]"
         :hover="true"
         :scroll="false"
         :pagination="true"
-        :total="total.bids"
-        :page="page.bids"
-        :page-size="limit.bids"
-        @change-pagination="get_orders_bids"
+        :total="total[side]"
+        :page="page[side]"
+        :page-size="limit[side]"
+        @change-pagination="payload => get_orders(side, payload)"
       >
-        <template slot="total" slot-scope="{ item, column }">
-          <span :class="['total', `text-${column.algin}`]">
-            {{ get_total(item) }}
-          </span>
+        <template slot="uid" slot-scope="{ item, column }">
+          <router-link
+            :class="['uid', `text-${column.algin}`]"
+            :to="`/users/user-directory/${item.uid}`"
+          >
+            {{ item.uid }}
+          </router-link>
         </template>
-        <template slot="action" slot-scope="{ item, column }">
-          <span :class="['action', `text-${column.algin}`]">
-            <span @click="close_order(item.id)">
-              Cancel <a-icon type="close-circle" />
-            </span>
-          </span>
-        </template>
-      </z-table>
-    </a-card>
-    <a-card class="ant-card-no-padding" title="Sell orders">
-      <z-table
-        :loading="loading.asks"
-        :columns="ORDERS_COLUMN"
-        :data="data.asks"
-        :hover="true"
-        :scroll="false"
-        :pagination="true"
-        :total="total.asks"
-        :page="page.asks"
-        :page-size="limit.asks"
-        @change-pagination="get_orders_asks"
-      >
         <template slot="total" slot-scope="{ item, column }">
           <span :class="['total', `text-${column.algin}`]">
             {{ get_total(item) }}
@@ -59,19 +46,19 @@
 
 <script lang="ts">
 import store from "@/store";
-import { StoreTypes } from "types";
-import { GET_ORDERS } from "@/store/types";
+import { runNotice } from "@zsmartex/z-helpers";
+import { GET_ORDERS, CANCEL_ORDER } from "@/store/types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
-  @Prop() readonly market!: StoreTypes.Market;
+  @Prop() readonly market!: Market;
 
   loading = {
     asks: false,
     bids: true
   };
-  data: { asks: StoreTypes.UserOrder[]; bids: StoreTypes.UserOrder[] } = {
+  data: { asks: UserOrder[]; bids: UserOrder[] } = {
     asks: [],
     bids: []
   };
@@ -90,7 +77,7 @@ export default class App extends Vue {
 
   private readonly ORDERS_COLUMN = [
     { title: "Order ID", key: "id", algin: "left" },
-    { title: "UID", key: "uid", algin: "left" },
+    { title: "UID", key: "uid", algin: "left", scopedSlots: true },
     { title: "Type", key: "ord_type", algin: "left" },
     { title: "Price", key: "price", algin: "left" },
     { title: "Amount", key: "origin_volume", algin: "left" },
@@ -99,17 +86,11 @@ export default class App extends Vue {
   ];
 
   mounted() {
-    this.get_orders_asks({
-      page: this.page.asks,
-      limit: this.limit.asks
-    });
-    this.get_orders_bids({
-      page: this.page.bids,
-      limit: this.limit.bids
-    });
+    this.get_orders("asks");
+    this.get_orders("bids");
   }
 
-  get_total(order: StoreTypes.UserOrder) {
+  get_total(order: UserOrder) {
     return Number(
       (Number(order.price) * Number(order.origin_volume)).toFixed(
         this.market.total_precision
@@ -117,7 +98,13 @@ export default class App extends Vue {
     );
   }
 
-  async get_orders_asks(payload) {
+  async get_orders(
+    side: "asks" | "bids",
+    payload = {
+      page: this.page[side],
+      limit: this.limit[side]
+    }
+  ) {
     try {
       this.loading.asks = true;
       const { data, headers } = await store.dispatch(
@@ -132,43 +119,35 @@ export default class App extends Vue {
           payload
         )
       );
-      this.total.asks = Number(headers.total);
-      this.page.asks = Number(headers.page);
-      this.limit.asks = Number(headers["per-page"]);
-      this.data.asks = data;
-      this.loading.asks = false;
+      this.total[side] = Number(headers.total);
+      this.page[side] = Number(headers.page);
+      this.limit[side] = Number(headers["per-page"]);
+      this.data[side] = data;
+      this.loading[side] = false;
     } catch (error) {
+      this.loading[side] = false;
       return error;
     }
   }
 
-  async get_orders_bids(payload) {
+  async cancel_order(id: number) {
     try {
-      this.loading.bids = true;
-      const { data, headers } = await store.dispatch(
-        GET_ORDERS,
-        Object.assign(
-          {
-            market: this.market.id,
-            state: "wait",
-            type: "buy",
-            order_by: "desc"
-          },
-          payload
-        )
-      );
-      this.total.bids = Number(headers.total);
-      this.page.bids = Number(headers.page);
-      this.limit.bids = Number(headers["per-page"]);
-      this.data.bids = data;
-      this.loading.bids = false;
+      await store.dispatch(CANCEL_ORDER, id);
+
+      runNotice("success", "Order has been canceled");
+
+      const SIDE = ["asks", "bids"];
+
+      SIDE.forEach(side => {
+        const index = this.data[side].findIndex(order => order.id === id);
+        if (index < 0) return;
+
+        this.data[side].splice(index, 1);
+        this.total[side]--;
+      });
     } catch (error) {
       return error;
     }
-  }
-
-  async close_order(id: number) {
-    console.log(id);
   }
 }
 </script>

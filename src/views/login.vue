@@ -1,15 +1,8 @@
 <template>
   <z-content class="page-login">
     <logo-box />
-    <form-box
-      :email="email"
-      :password="password"
-      :captcha_response="captcha_response"
-      :loading="loading"
-      @on-changed="onFormValueChanged"
-      @on-login="login"
-    />
-    <modal-otp ref="ModalOTP" @submit="login" @cancel="need2fa = false" />
+    <form-box :loading="loading" ref="form-box" @submit="login" />
+    <modal-otp ref="modal-otp" @submit="login" @cancel="need2fa = false" />
   </z-content>
 </template>
 
@@ -27,20 +20,23 @@ import { Vue, Component, Watch } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  protected email: string;
-  protected password: string;
-  protected captcha_response: string;
-  protected loading: boolean;
-  $refs!: {
-    ModalOTP: ModalOTP;
-  };
-  constructor() {
-    super();
+  loading = false;
 
-    this.email = "demo@zsmart.tech";
-    this.password = "J" + "\\" + "=v<Sfn7>8%W6S6";
-    this.captcha_response = "";
-    this.loading = true;
+  $refs!: {
+    "form-box": FormBox;
+    "modal-otp": ModalOTP;
+  };
+
+  get email() {
+    return this.$refs["form-box"].email;
+  }
+
+  get password() {
+    return this.$refs["form-box"].password;
+  }
+
+  get captcha_response() {
+    return this.$refs["form-box"].captcha_response;
   }
 
   get need2fa() {
@@ -49,10 +45,6 @@ export default class App extends Vue {
 
   set need2fa(value) {
     store.state.user.need2fa = value;
-  }
-
-  onFormValueChanged(type, value) {
-    this[type] = value;
   }
 
   async login(otp_code = "") {
@@ -74,7 +66,7 @@ export default class App extends Vue {
   @Watch("need2fa")
   onNeed2FAChanged(need2fa: boolean) {
     if (!need2fa) return;
-    this.$refs.ModalOTP.create();
+    this.$refs["modal-otp"].create();
   }
 }
 </script>

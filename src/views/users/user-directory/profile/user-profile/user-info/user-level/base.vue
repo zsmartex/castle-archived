@@ -28,13 +28,12 @@ import {
   CREATE_USER_LABEL,
   DELETE_USER_LABEL
 } from "@/store/modules/admin/action-types";
-import { StoreTypes } from "types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   loading = -1;
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
+  @Prop() readonly user_info!: User;
 
   get LABEL_LIST() {
     return [

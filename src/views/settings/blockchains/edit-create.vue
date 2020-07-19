@@ -20,7 +20,7 @@
           </z-info-row>
         </div>
       </div>
-      <div class="z-edit-panel">
+      <div class="z-edit-panel" :style="{ paddingBottom: '60px' }">
         <div class="z-edit-panel-content">
           <z-info-row
             v-for="setting in SETTING_PANEL_RIGHT"
@@ -43,17 +43,36 @@
 
 <script lang="ts">
 import store from "@/store";
-import { GET_BLOCKCHAIN, GET_BLOCKCHAIN_CLIENTS } from "@/store/types";
-import { StoreTypes } from "types";
+import { runNotice } from "@zsmartex/z-helpers";
+import {
+  GET_BLOCKCHAIN,
+  GET_BLOCKCHAIN_CLIENTS,
+  CREATE_BLOCKCHAIN,
+  UPDATE_BLOCKCHAIN
+} from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   loading = false;
-  blockchain: StoreTypes.Blockchain | null = null;
+  blockchain: Blockchain = {
+    key: "",
+    name: "",
+    client: "",
+    server: "",
+    height: 0,
+    explorer_address: "",
+    explorer_transaction: "",
+    min_confirmations: 0,
+    status: "disabled"
+  };
 
   get id() {
     return this.$route.params.id;
+  }
+
+  get page_type() {
+    return this.$route.meta.type;
   }
 
   get clients() {
@@ -141,8 +160,8 @@ export default class App extends Vue {
   }
 
   mounted() {
-    this.get_blockchain();
-    if (!store.state.admin.clients.length) this.get_client();
+    if (this.page_type === "edit") this.get_blockchain();
+    if (!store.state.admin.clients.length) this.get_clients();
   }
 
   async get_blockchain() {
@@ -158,12 +177,28 @@ export default class App extends Vue {
     }
   }
 
-  async get_client() {
+  async get_clients() {
     await store.dispatch(GET_BLOCKCHAIN_CLIENTS);
   }
 
-  onSubmit() {
-    return;
+  async onSubmit() {
+    try {
+      await store.dispatch(
+        this.page_type === "edit" ? UPDATE_BLOCKCHAIN : CREATE_BLOCKCHAIN,
+        this.blockchain
+      );
+
+      runNotice(
+        "success",
+        `Blockchain ${this.blockchain.name} ${
+          this.page_type === "edit" ? "updated" : "created"
+        } successfully`
+      );
+
+      this.$router.push("/settings/blockchains");
+    } catch (error) {
+      return error;
+    }
   }
 }
 </script>

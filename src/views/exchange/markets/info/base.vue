@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { StoreTypes } from "types";
+import { runNotice } from "@zsmartex/z-helpers";
 import { GET_MARKET, UPDATE_MARKET } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
@@ -29,7 +29,7 @@ import { Vue, Component } from "vue-property-decorator";
 })
 export default class App extends Vue {
   loading = false;
-  market: StoreTypes.Market | null = null;
+  market!: Market;
 
   get market_id() {
     return this.$route.params.market;
@@ -40,7 +40,7 @@ export default class App extends Vue {
       {
         title: "Market name",
         key: "name",
-        value: `${this.market?.base_unit}/${this.market?.quote_unit}`.toUpperCase(),
+        value: `${this.market.base_unit}/${this.market.quote_unit}`.toUpperCase(),
         style: "width: 30%",
         type: "input",
         edit: false
@@ -48,7 +48,7 @@ export default class App extends Vue {
       {
         title: "Base currency",
         key: "base_unit",
-        value: this.market?.base_unit,
+        value: this.market.base_unit,
         style: "width: 30%",
         type: "input",
         edit: false
@@ -56,7 +56,7 @@ export default class App extends Vue {
       {
         title: "Quote currency",
         key: "quote_unit",
-        value: this.market?.quote_unit,
+        value: this.market.quote_unit,
         style: "width: 30%",
         type: "input",
         edit: false
@@ -64,7 +64,7 @@ export default class App extends Vue {
       {
         title: "Min price",
         key: "min_price",
-        value: this.market?.min_price,
+        value: this.market.min_price,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -72,7 +72,7 @@ export default class App extends Vue {
       {
         title: "Max price",
         key: "max_price",
-        value: this.market?.max_price,
+        value: this.market.max_price,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -80,7 +80,7 @@ export default class App extends Vue {
       {
         title: "Min amount",
         key: "min_amount",
-        value: this.market?.min_amount,
+        value: this.market.min_amount,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -88,7 +88,7 @@ export default class App extends Vue {
       {
         title: "Price precision",
         key: "price_precision",
-        value: this.market?.price_precision,
+        value: this.market.price_precision,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -96,7 +96,7 @@ export default class App extends Vue {
       {
         title: "Amount precision",
         key: "amount_precision",
-        value: this.market?.amount_precision,
+        value: this.market.amount_precision,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -104,7 +104,7 @@ export default class App extends Vue {
       {
         title: "Total precision",
         key: "total_precision",
-        value: this.market?.total_precision,
+        value: this.market.total_precision,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -112,7 +112,7 @@ export default class App extends Vue {
       {
         title: "Position",
         key: "position",
-        value: this.market?.position,
+        value: this.market.position,
         style: "width: 30%",
         type: "input",
         edit: true
@@ -141,16 +141,23 @@ export default class App extends Vue {
   async update_market() {
     try {
       await store.dispatch(UPDATE_MARKET, {
-        id: this.market?.id,
-        min_price: this.market?.min_price,
-        max_price: this.market?.max_price,
-        min_amount: this.market?.min_amount,
-        price_precision: this.market?.price_precision,
-        amount_precision: this.market?.amount_precision,
-        total_precision: this.market?.total_precision,
-        position: this.market?.position,
-        state: this.market?.state
+        id: this.market.id,
+        min_price: this.market.min_price,
+        max_price: this.market.max_price,
+        min_amount: this.market.min_amount,
+        price_precision: this.market.price_precision,
+        amount_precision: this.market.amount_precision,
+        total_precision: this.market.total_precision,
+        position: this.market.position,
+        state: this.market.state
       });
+
+      runNotice(
+        "success",
+        `Market ${[this.market.base_unit, this.market.quote_unit]
+          .join("/")
+          .toUpperCase()} updated successfully`
+      );
       this.$router.push("/exchange/markets");
     } catch (error) {
       return error;

@@ -25,13 +25,15 @@
 
   &-sider {
     &-logo {
-      position: relative;
+      position: absolute;
+      width: 100%;
       height: 64px;
       padding-left: 24px;
       overflow: hidden;
       line-height: 64px;
       background: #002140;
       transition: all 0.3s;
+      z-index: 1;
 
       img {
         display: inline-block;
@@ -52,6 +54,10 @@
       }
     }
 
+    &-children {
+      overflow: auto;
+    }
+
     &-footer {
       color: #fff;
       line-height: 50px;
@@ -62,9 +68,28 @@
       width: 100%;
       bottom: 0;
       cursor: pointer;
+
       &:hover {
         background-color: @menu-dark-item-active-bg;
       }
+    }
+  }
+}
+
+.ant-menu {
+  &-root {
+    height: calc(100% - 64px - 50px);
+    overflow: auto;
+    margin-top: 64px;
+    margin-bottom: 50px;
+
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0px;
+      background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: transparent;
     }
   }
 }

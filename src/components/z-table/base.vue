@@ -4,7 +4,8 @@
     :class="{
       'z-table-no-scroll': !scroll,
       'z-table-hoverable': hover,
-      'z-table-empty': !data.length
+      'z-table-empty': !data.length,
+      'z-table-loading': loading
     }"
   >
     <div class="z-table-head">
@@ -16,15 +17,15 @@
       />
     </div>
     <div class="z-table-content">
-      <a-spin v-if="loading" class="z-table-loading">
+      <a-spin v-if="loading" class="z-table-loading-wrapper">
         <a-icon slot="indicator" type="loading" spin />
       </a-spin>
       <a-empty v-else-if="!data.length" />
       <p
-        v-for="(item, index) of data"
+        v-for="item of data"
         class="z-table-row"
-        :key="index"
-        @click="$emit('click', item)"
+        :key="item.key"
+        @click="onClick(item)"
       >
         <template v-for="column of columns">
           <slot
@@ -81,6 +82,10 @@ export default class ZTable extends Vue {
 
   onChange(page: number, pageSize: number) {
     this.$emit("change-pagination", { page, limit: pageSize });
+  }
+
+  onClick(item) {
+    this.$emit("click", item);
   }
 
   value_by_key(item: any, key: string) {

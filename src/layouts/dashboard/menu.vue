@@ -50,11 +50,14 @@
         </a-menu-item>
       </template>
     </a-menu>
-    <div class="ant-layout-sider-footer"><a-icon type="logout" /> LOGOUT</div>
+    <div class="ant-layout-sider-footer" @click="logout">
+      <a-icon type="logout" /> LOGOUT
+    </div>
   </a-layout-sider>
 </template>
 
 <script lang="ts">
+import store from "@/store";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 interface MenuAttrs {
@@ -79,7 +82,7 @@ interface Menu {
 }
 
 @Component
-export default class App extends Vue {
+export default class MenuComponent extends Vue {
   @Prop() private readonly collapsed!: boolean;
   private readonly MENUS: Menu[] = [
     {
@@ -301,6 +304,10 @@ export default class App extends Vue {
     const args = [...(arguments as any)];
 
     return ["", ...args].join("/");
+  }
+
+  logout() {
+    store.dispatch("user/LOGOUT");
   }
 }
 </script>

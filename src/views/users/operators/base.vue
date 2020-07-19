@@ -77,16 +77,15 @@
 
 <script lang="ts">
 import { UAParser } from "ua-parser-js";
-import helpers from "@zsmartex/z-helpers";
+import { getDate } from "@zsmartex/z-helpers";
 import store from "@/store";
-import { StoreTypes } from "types";
 import { GET_OPERATORS } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   loading = false;
-  data: StoreTypes.Operator[] = [];
+  data: Operator[] = [];
   page = 1;
   total = 0;
   limit = 50;
@@ -126,10 +125,7 @@ export default class App extends Vue {
 
   get operators_data() {
     return this.data.map(operator => {
-      (operator as any).created_at = helpers.getDate(
-        operator.created_at as Date,
-        true
-      );
+      (operator as any).created_at = getDate(operator.created_at as Date, true);
 
       return operator;
     });

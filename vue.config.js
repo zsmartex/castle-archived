@@ -14,7 +14,7 @@ const smp = new SpeedMeasurePlugin();
 const isProduction = process.env.NODE_ENV === "production";
 
 const configWebPack = {
-  publicPath: process.env.NODE_ENV === "production" ? "/" : "/",
+  publicPath: process.env.NODE_ENV === "production" ? "/castle" : "/",
   chainWebpack: config => {
     config.plugins.delete("prefetch");
   },
@@ -51,7 +51,6 @@ const configWebPack = {
     plugins: [
       new webpack.ProvidePlugin({}),
       new TransformModulesPlugin(),
-      new BundleAnalyzerPlugin(),
       new PreloadWebpackPlugin()
     ]
   }),
@@ -79,7 +78,7 @@ const configWebPack = {
       }*/
       //Test Server
       "^/api": {
-        target: "http://www.test.local",
+        target: "https://demo.zsmart.tech",
         secure: false,
         ws: true,
         changeOrigin: true
@@ -107,7 +106,8 @@ if (isProduction) {
         sizeThreshold: 1024 * 1024 * 1024
       }
     }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
+    new BundleAnalyzerPlugin()
   );
 }
 

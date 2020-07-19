@@ -6,7 +6,7 @@
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
-export default class App extends Vue {
+export default class PageView extends Vue {
   constructor() {
     super();
   }

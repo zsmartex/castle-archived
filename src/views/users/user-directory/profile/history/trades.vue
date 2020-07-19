@@ -1,10 +1,7 @@
 <template>
-  <z-table
+  <trades
     :loading="loading"
-    :columns="COLUMN"
-    :data="trades_data"
-    :scroll="false"
-    :pagination="true"
+    :data="data"
     :total="total"
     :page="page"
     :page-size="limit"
@@ -13,16 +10,13 @@
 </template>
 
 <script lang="ts">
-import helpers from "@zsmartex/z-helpers";
 import store from "@/store";
-import ZTable from "@/components/z-table";
 import { GET_TRADES } from "@/store/types";
-import { StoreTypes } from "types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
   components: {
-    "z-table": ZTable
+    trades: () => import("@/layouts/trades")
   }
 })
 export default class App extends Vue {
@@ -30,35 +24,9 @@ export default class App extends Vue {
   total = 0;
   page = 1;
   limit = 50;
-  data: StoreTypes.UserTrade[] = [];
+  data: UserTrade[] = [];
 
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
-
-  private readonly COLUMN = [
-    { title: "Trade ID", key: "id", algin: "left" },
-    { title: "Marker order email", key: "maker_order_email", algin: "left" },
-    { title: "Taker order email", key: "taker_order_email", algin: "left" },
-    { title: "Marker UID", key: "maker_uid", algin: "left" },
-    { title: "Taker UID", key: "taker_uid", algin: "left" },
-    { title: "Market", key: "market", algin: "left" },
-    { title: "Price", key: "price", algin: "left" },
-    { title: "Amount", key: "amount", algin: "left" },
-    { title: "Side", key: "taker_type", algin: "left" },
-    { title: "Trade time", key: "created_at", algin: "right" }
-  ];
-
-  get trades_data() {
-    return this.data.map(trade => {
-      trade.market = trade.market.toUpperCase();
-      (trade as any).created_at = helpers.getDate(
-        trade.created_at as Date,
-        true
-      );
-
-      return trade;
-    });
-  }
-
+  @Prop() readonly user_info!: User;
   mounted() {
     this.get_trades({
       page: this.page,

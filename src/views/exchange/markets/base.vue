@@ -25,15 +25,14 @@
 <script lang="ts">
 import ZSmartModel from "@zsmartex/z-eventbus";
 import store from "@/store";
-import helpers from "@zsmartex/z-helpers";
-import { StoreTypes } from "types";
+import { getDate } from "@zsmartex/z-helpers";
 import { GET_MARKETS } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   loading = false;
-  data: StoreTypes.Market[] = [];
+  data: Market[] = [];
   page = 1;
   total = 0;
   limit = 50;
@@ -53,10 +52,7 @@ export default class App extends Vue {
 
   get markets_data() {
     return this.data.map(market => {
-      (market as any).created_at = helpers.getDate(
-        market.created_at as Date,
-        true
-      );
+      (market as any).created_at = getDate(market.created_at as Date, true);
 
       return market;
     });

@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { StoreTypes } from "types";
+import { runNotice } from "@zsmartex/z-helpers";
 import { GET_CURRENCY, CREATE_CURRENCY, UPDATE_CURRENCY } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
@@ -115,7 +115,7 @@ import { Vue, Component } from "vue-property-decorator";
 export default class App extends Vue {
   new_property_value = "";
   loading = false;
-  currency: StoreTypes.Currency = {
+  currency: Currency = {
     name: "",
     symbol: "",
     explorer_transaction: "",
@@ -138,6 +138,7 @@ export default class App extends Vue {
     min_collection_amount: "0",
     visible: true,
     subunits: 0,
+    icon_url: "",
     options: {}
   };
 
@@ -291,6 +292,13 @@ export default class App extends Vue {
         value: this.currency.position,
         type: "input",
         edit: true
+      },
+      {
+        title: "Icon URL",
+        key: "icon_url",
+        value: this.currency.icon_url,
+        type: "input",
+        edit: true
       }
     ];
   }
@@ -358,6 +366,9 @@ export default class App extends Vue {
     });
   }
 
+  /**
+   * @method $forceUpdate for update value input when it changed
+   */
   set_options_value(key: string, value) {
     (this.currency as any).options[key] = value;
     this.$nextTick(() => {
@@ -376,6 +387,12 @@ export default class App extends Vue {
         currency
       );
 
+      runNotice(
+        "success",
+        type === "edit"
+          ? "Currency updated successfully"
+          : "Currency created successfully"
+      );
       this.$router.push("/exchange/currencies");
     } catch (error) {
       return error;

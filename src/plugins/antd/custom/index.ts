@@ -1,4 +1,3 @@
-import message from "./message";
-import notification from "./notification";
+export { default as message } from "./message";
+export { default as notification } from "./notification";
 
-export { notification, message };

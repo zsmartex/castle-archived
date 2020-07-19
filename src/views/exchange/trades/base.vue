@@ -1,18 +1,19 @@
 <template>
   <a-layout-content class="page-exchange-trades">
-    <z-table
+    <trades
       :loading="loading"
-      :columns="COLUMN"
-      :data="trades_data"
-      :hover="true"
-      :scroll="false"
-      :pagination="true"
+      :data="data"
       :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_trades"
     />
-    <z-filter-drawer ref="filter" @submit="onFilterSubmit">
+
+    <z-filter-drawer
+      ref="filter"
+      @reset="onDrawerReset"
+      @submit="onFilterSubmit"
+    >
       <z-info-row
         v-for="item in filter_list"
         v-model="payload_filter[item.key]"
@@ -20,24 +21,21 @@
         :item="item"
         :key="item.key"
       >
-        <template slot="from">
+        <template
+          v-for="date_picker in [
+            { key: 'from', placeholder: 'From date' },
+            { key: 'to', placeholder: 'To date' }
+          ]"
+          :slot="date_picker.key"
+        >
           <a-date-picker
-            placeholder="From date"
+            :key="date_picker.key"
+            :placeholder="date_picker.placeholder"
             @change="
-              moment => (payload_filter.from = moment.toDate().toISOString())
+              moment => {
+                payload_filter[date_picker.key] = moment.toDate().toISOString();
+              }
             "
-            @focus="$refs['z-info-row-from'][0].focus()"
-            @blur="$refs['z-info-row-from'][0].blur()"
-          />
-        </template>
-        <template slot="to">
-          <a-date-picker
-            placeholder="To date"
-            @change="
-              moment => (payload_filter.to = moment.toDate().toISOString())
-            "
-            @focus="$refs['z-info-row-to'][0].focus()"
-            @blur="$refs['z-info-row-to'][0].blur()"
           />
         </template>
       </z-info-row>
@@ -47,20 +45,19 @@
 
 <script lang="ts">
 import ZSmartModel from "@zsmartex/z-eventbus";
-import helpers from "@zsmartex/z-helpers";
+import { jsonToCSV, saveFile } from "@zsmartex/z-helpers";
 import store from "@/store";
 import { GET_TRADES } from "@/store/types";
-import { StoreTypes } from "types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   components: {
-    "z-table": () => import("@/components/z-table")
+    trades: () => import("@/layouts/trades")
   }
 })
 export default class App extends Vue {
   loading = false;
-  data: StoreTypes.UserTrade[] = [];
+  data: UserTrade[] = [];
   page = 1;
   total = 0;
   limit = 50;
@@ -70,22 +67,6 @@ export default class App extends Vue {
     to: "",
     order_id: ""
   };
-
-  get COLUMN() {
-    return [
-      { title: "Trade ID", key: "id", algin: "left" },
-      { title: "Marker order email", key: "maker_order_email", algin: "left" },
-      { title: "Taker order email", key: "taker_order_email", algin: "left" },
-      { title: "Market UID", key: "maker_uid", algin: "left" },
-      { title: "Taker UID", key: "taker_uid", algin: "left" },
-      { title: "Market", key: "market", algin: "left" },
-      { title: "Price", key: "price", algin: "left" },
-      { title: "Amount", key: "amount", algin: "left" },
-      { title: "Total", key: "total", algin: "left" },
-      { title: "Side", key: "taker_type", algin: "left" },
-      { title: "Trade time", key: "created_at", algin: "left" }
-    ];
-  }
 
   get filter_list() {
     return [
@@ -120,23 +101,8 @@ export default class App extends Vue {
     ];
   }
 
-  get trades_data() {
-    return this.data.map(trade => {
-      trade.market = trade.market.toUpperCase();
-      (trade as any).created_at = helpers.getDate(
-        trade.created_at as Date,
-        true
-      );
-
-      return trade;
-    });
-  }
-
   mounted() {
-    this.get_trades({
-      page: this.page,
-      limit: this.limit
-    });
+    this.get_trades();
     this.set_action_header();
   }
 
@@ -155,12 +121,12 @@ export default class App extends Vue {
         key: "export",
         icon: "file-zip",
         callback: async () => {
-          const csvString = await helpers.jsonToCSV(
+          const csvString = await jsonToCSV(
             this.data.map(order => {
               return order;
             })
           );
-          helpers.saveFile(csvString, "trades.csv", {
+          saveFile(csvString, "trades.csv", {
             type: "text/csv;charset=utf-8;"
           });
         }
@@ -172,10 +138,18 @@ export default class App extends Vue {
     });
   }
 
-  async get_trades(payload) {
+  async get_trades(
+    payload = {
+      page: this.page,
+      limit: this.limit
+    }
+  ) {
     this.loading = true;
     try {
-      const { data, headers } = await store.dispatch(GET_TRADES, payload);
+      const { data, headers } = await store.dispatch(
+        GET_TRADES,
+        Object.assign(payload, this.payload_filter)
+      );
       this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
@@ -187,8 +161,15 @@ export default class App extends Vue {
     }
   }
 
+  onDrawerReset() {
+    for (const index in this.payload_filter) {
+      this.payload_filter[index] = "";
+    }
+    (this.$refs.filter as any).remove();
+  }
+
   onFilterSubmit() {
-    this.get_trades(this.payload_filter);
+    this.get_trades();
   }
 }
 </script>

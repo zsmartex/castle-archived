@@ -84,20 +84,48 @@ const routes = [
             component: () => import("@/views/accountings/deposits/base.vue"),
           },
           {
+            path: "deposits/:tid/details",
+            component: () => import("@/views/accountings/deposits/details.vue"),
+          },
+          {
             path: "withdrawals",
+            meta: { page_type: "normal" },
             component: () => import("@/views/accountings/withdrawals/base.vue"),
           },
           {
+            path: "withdrawals/:id/details",
+            component: () => import("@/views/accountings/withdrawals/details.vue"),
+          },
+          {
             path: "withdrawals-pending",
-            component: () => import("@/views/accountings/withdrawals-pending/base.vue"),
+            meta: { page_type: "pending" },
+            component: () => import("@/views/accountings/withdrawals/base.vue"),
+          },
+          {
+            path: "withdrawals-pending/:id/details",
+            component: () => import("@/views/accountings/withdrawals/details.vue"),
           },
           {
             path: "adjustments",
             component: () => import("@/views/accountings/adjustments/base.vue"),
           },
           {
+            path: "adjustments/add",
+            meta: { page_type: "add"},
+            component: () => import("@/views/accountings/adjustments/add-update.vue"),
+          },
+          {
+            path: "adjustments/:id",
+            meta: { page_type: "update"},
+            component: () => import("@/views/accountings/adjustments/add-update.vue"),
+          },
+          {
             path: "operations",
-            component: () => import("@/views/accountings/operations/base.vue"),
+            component: () => import("@/views/accountings/operations/base.vue")
+          },
+          {
+            path: "operations/:name",
+            component: () => import("@/views/accountings/operations/base.vue")
           }
         ]
       },
@@ -110,12 +138,28 @@ const routes = [
             component: () => import("@/views/settings/blockchains/base.vue"),
           },
           {
+            path: "blockchains/add",
+            meta: { type: "create" },
+            component: () => import("@/views/settings/blockchains/edit-create.vue"),
+          },
+          {
             path: "blockchains/:id/edit",
-            component: () => import("@/views/settings/blockchains/edit.vue"),
+            meta: { type: "edit" },
+            component: () => import("@/views/settings/blockchains/edit-create.vue"),
           },
           {
             path: "wallets",
             component: () => import("@/views/settings/wallets/base.vue"),
+          },
+          {
+            path: "wallets/:id/edit",
+            meta: { type: "edit" },
+            component: () => import("@/views/settings/wallets/edit-create.vue"),
+          },
+          {
+            path: "wallets/:id/new",
+            meta: { type: "create" },
+            component: () => import("@/views/settings/wallets/edit-create.vue"),
           },
           {
             path: "fees-schedules",

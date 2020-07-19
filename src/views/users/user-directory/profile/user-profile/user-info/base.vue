@@ -9,7 +9,6 @@
 </template>
 
 <script lang="ts">
-import { StoreTypes } from "types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
@@ -20,7 +19,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
-  @Prop() readonly member_info!: StoreTypes.MemberInfo;
+  @Prop() readonly user_info!: User;
+  @Prop() readonly member_info!: Member;
 }
 </script>

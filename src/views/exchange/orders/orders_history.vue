@@ -1,18 +1,20 @@
 <template>
   <div>
-    <z-table
+    <orders
+      type="history"
       :loading="loading"
-      :columns="COLUMN"
-      :data="orders_data"
-      :hover="true"
-      :scroll="false"
-      :pagination="true"
+      :data="data"
       :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_orders"
     />
-    <z-filter-drawer ref="filter" @submit="onFilterSubmit">
+
+    <z-filter-drawer
+      ref="filter"
+      @reset="onDrawerReset"
+      @submit="onFilterSubmit"
+    >
       <z-info-row
         v-for="item in filter_list"
         v-model="payload_filter[item.key]"
@@ -20,24 +22,21 @@
         :item="item"
         :key="item.key"
       >
-        <template slot="from">
+        <template
+          v-for="date_picker in [
+            { key: 'from', placeholder: 'From date' },
+            { key: 'to', placeholder: 'To date' }
+          ]"
+          :slot="date_picker.key"
+        >
           <a-date-picker
-            placeholder="From date"
+            :key="date_picker.key"
+            :placeholder="date_picker.placeholder"
             @change="
-              moment => (payload_filter.from = moment.toDate().toISOString())
+              moment => {
+                payload_filter[date_picker.key] = moment.toDate().toISOString();
+              }
             "
-            @focus="$refs['z-info-row-from'][0].focus()"
-            @blur="$refs['z-info-row-from'][0].blur()"
-          />
-        </template>
-        <template slot="to">
-          <a-date-picker
-            placeholder="To date"
-            @change="
-              moment => (payload_filter.to = moment.toDate().toISOString())
-            "
-            @focus="$refs['z-info-row-to'][0].focus()"
-            @blur="$refs['z-info-row-to'][0].blur()"
           />
         </template>
       </z-info-row>
@@ -47,16 +46,21 @@
 
 <script lang="ts">
 import ZSmartModel from "@zsmartex/z-eventbus";
-import helpers from "@zsmartex/z-helpers";
+import { jsonToCSV, saveFile } from "@zsmartex/z-helpers";
 import store from "@/store";
-import { StoreTypes } from "types";
 import { GET_ORDERS } from "@/store/types";
-import { Vue, Component } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component
+@Component({
+  components: {
+    orders: () => import("@/layouts/orders")
+  }
+})
 export default class App extends Vue {
+  @Prop() readonly markets!: { [key: string]: string };
+
   loading = false;
-  data: StoreTypes.UserOrder[] = [];
+  data: UserOrder[] = [];
   page = 1;
   total = 0;
   limit = 50;
@@ -71,38 +75,6 @@ export default class App extends Vue {
     from: "",
     to: ""
   };
-
-  get COLUMN() {
-    return [
-      { title: "Order ID", key: "id", algin: "left" },
-      { title: "Email", key: "email", algin: "left" },
-      { title: "Market", key: "market", algin: "left" },
-      { title: "Type", key: "ord_type", algin: "left" },
-      { title: "Amount", key: "origin_volume", algin: "left" },
-      { title: "Executed", key: "executed_volume", algin: "left" },
-      { title: "Price", key: "price", algin: "left" },
-      { title: "Side", key: "side", algin: "left" },
-      { title: "Created", key: "created_at", algin: "left" },
-      { title: "Updated", key: "updated_at", algin: "left" },
-      { title: "State", key: "state", algin: "center" }
-    ];
-  }
-
-  get orders_data() {
-    return this.data.map(order => {
-      order.market = order.market.toUpperCase();
-      (order as any).created_at = helpers.getDate(
-        order.created_at as Date,
-        true
-      );
-      (order as any).updated_at = helpers.getDate(
-        order.updated_at as Date,
-        true
-      );
-
-      return order;
-    });
-  }
 
   get filter_list() {
     return [
@@ -124,8 +96,8 @@ export default class App extends Vue {
         title: "Market",
         key: "market",
         value: this.payload_filter.market,
-        type: "input",
-        edit: true
+        type: "select",
+        list: this.markets
       },
       {
         title: "Order type",
@@ -173,11 +145,7 @@ export default class App extends Vue {
   }
 
   mounted() {
-    this.get_orders({
-      page: this.page,
-      limit: this.limit
-    });
-    this.set_action_header();
+    this.get_orders();
   }
 
   set_action_header() {
@@ -195,7 +163,7 @@ export default class App extends Vue {
         key: "export",
         icon: "file-zip",
         callback: async () => {
-          const csvString = await helpers.jsonToCSV(
+          const csvString = await jsonToCSV(
             this.data.map(order => {
               delete order.uid;
               delete order.email;
@@ -203,7 +171,7 @@ export default class App extends Vue {
               return order;
             })
           );
-          helpers.saveFile(csvString, "orders.csv", {
+          saveFile(csvString, "orders.csv", {
             type: "text/csv;charset=utf-8;"
           });
         }
@@ -215,16 +183,24 @@ export default class App extends Vue {
     });
   }
 
-  async get_orders(payload) {
+  async get_orders(
+    payload = {
+      page: this.page,
+      limit: this.limit
+    }
+  ) {
     this.loading = true;
     try {
       const { data, headers } = await store.dispatch(
         GET_ORDERS,
         Object.assign(
-          {
-            order_by: "desc"
-          },
-          payload
+          Object.assign(
+            {
+              order_by: "desc"
+            },
+            payload
+          ),
+          this.payload_filter
         )
       );
       this.total = Number(headers.total);
@@ -238,12 +214,14 @@ export default class App extends Vue {
     }
   }
 
-  onFilterSubmit() {
-    this.get_orders(this.payload_filter);
+  onDrawerReset() {
+    for (const index in this.payload_filter) {
+      this.payload_filter[index] = "";
+    }
   }
 
-  cancel_order(id: string) {
-    console.log(id);
+  onFilterSubmit() {
+    this.get_orders();
   }
 }
 </script>

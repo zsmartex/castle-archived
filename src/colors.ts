@@ -5,7 +5,7 @@ const colors = {
   "header-text-color": "#97b0d6"
 };
 
-module.exports = {
+export default {
   "white-color": colors.white,
   "blue-color": colors.blue,
   "blue-dark-color": "#295e9f",

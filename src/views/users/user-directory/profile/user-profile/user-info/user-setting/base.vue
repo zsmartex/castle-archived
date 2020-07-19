@@ -26,14 +26,13 @@ import {
   UPDATE_MEMBER_INFO,
   UPDATE_USER_ROLE
 } from "@/store/types";
-import { StoreTypes } from "types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   protected loading: string | null = null;
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
-  @Prop() readonly member_info!: StoreTypes.MemberInfo;
+  @Prop() readonly user_info!: User;
+  @Prop() readonly member_info!: Member;
 
   get SETTING_LIST() {
     return [

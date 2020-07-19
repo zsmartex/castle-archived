@@ -15,6 +15,7 @@
   }
 
   .@{edit-panel-cls} {
+    position: relative;
     flex: 1;
     padding: 10px 20px;
 
@@ -28,6 +29,16 @@
       flex-wrap: wrap;
       line-height: 30px;
       margin-bottom: 20px;
+
+      .@{edit-panel-cls}-action {
+        position: absolute;
+        right: 18px;
+        top: 12px;
+
+        > * {
+          margin: 0 12px;
+        }
+      }
     }
 
     &-content {
@@ -36,6 +47,16 @@
       flex-wrap: wrap;
       > * {
         margin-top: 12px;
+      }
+
+      .@{edit-panel-cls}-action {
+        position: absolute;
+        right: 18px;
+        bottom: 12px;
+
+        > * {
+          margin: 0 12px;
+        }
       }
     }
 
@@ -48,11 +69,6 @@
         line-height: 1;
         color: @text-color-secondary;
       }
-    }
-
-    &-action {
-      width: 100%;
-      text-align: right;
     }
   }
 

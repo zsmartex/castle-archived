@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :visible="modal.enabled"
+    :visible="modal_enabled"
     :footer="null"
     :width="width"
     :title="title"
@@ -16,26 +16,9 @@
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
-export default class App extends Vue {
+export default class ZModal extends Vue {
   @Prop() readonly title!: string;
   @Prop({ default: 400 }) readonly width!: number;
   @Prop() readonly wrapClassName!: string;
-
-  protected modal: { enabled: boolean };
-  constructor() {
-    super();
-
-    this.modal = {
-      enabled: false
-    };
-  }
-
-  public create() {
-    this.modal.enabled = true;
-  }
-
-  public delete() {
-    this.modal.enabled = false;
-  }
 }
 </script>

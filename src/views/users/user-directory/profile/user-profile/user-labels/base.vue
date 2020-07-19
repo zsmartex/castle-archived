@@ -43,7 +43,7 @@
 <script lang="ts">
 import store from "@/store";
 import ModalLabel from "./modal.vue";
-import { StoreTypes } from "types";
+import { runNotice } from "@zsmartex/z-helpers";
 import {
   CREATE_USER_LABEL,
   DELETE_USER_LABEL,
@@ -60,7 +60,7 @@ export default class App extends Vue {
   $refs!: {
     "modal-label": ModalLabel;
   };
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
+  @Prop() readonly user_info!: User;
 
   get labels() {
     return this.user_info.labels;
@@ -82,7 +82,10 @@ export default class App extends Vue {
         value: payload.value,
         scope: payload.scope
       });
+
       this.$refs["modal-label"].delete();
+
+      runNotice("success", "Label updated successfully");
     } catch (error) {
       return error;
     }
@@ -111,7 +114,9 @@ export default class App extends Vue {
         value: payload.value,
         scope: payload.scope
       });
+
       this.$refs["modal-label"].delete();
+      runNotice("success", "Label created successfully");
     } catch (error) {
       return error;
     }

@@ -31,7 +31,7 @@ interface Action {
 }
 
 @Component({})
-export default class App extends Vue {
+export default class Header extends Vue {
   @Prop() protected readonly collapsed!: string;
 
   mounted() {

@@ -1,10 +1,10 @@
 <template>
-  <z-modal
-    v-if="showing"
-    ref="modal"
+  <a-modal
+    v-model="modal_enabled"
     wrap-class-name="modal-label"
     :title="title"
-    @cancel="onCancel"
+    :width="width"
+    :footer="false"
   >
     <a-input
       v-model="cache_edit.key"
@@ -25,20 +25,16 @@
     >
       {{ title }}
     </a-button>
-  </z-modal>
+  </a-modal>
 </template>
 
 <script lang="ts">
+import ZModalMixin from "@/mixins/z-modal";
 import ZModal from "@/layouts/z-modal.vue";
-import { Vue, Component } from "vue-property-decorator";
+import { Component, Mixins } from "vue-property-decorator";
 
-@Component({
-  components: {
-    "z-modal": ZModal
-  }
-})
-export default class App extends Vue {
-  showing = false;
+@Component
+export default class ModalLabel extends Mixins(ZModalMixin) {
   $refs!: {
     modal: ZModal;
   };
@@ -87,31 +83,17 @@ export default class App extends Vue {
     return this.payload.type === "edit" ? "Edit label" : "Create label";
   }
 
-  public create(payload) {
-    this.showing = true;
+  onCreate(payload) {
     this.payload = payload;
-    this.afterCreate();
-    this.$nextTick(() => {
-      this.$refs.modal.create();
-    });
-  }
-
-  afterCreate() {
     if (!this.payload.payload) return;
     this.cache_edit.key = this.payload.payload.key;
     this.cache_edit.value = this.payload.payload.value;
     this.cache_edit.scope = this.payload.payload.scope;
   }
 
-  public delete() {
-    this.$refs.modal.delete();
-    this.showing = false;
-    this.reload_payload();
-  }
-
-  onCancel() {
-    this.delete();
+  onDelete() {
     this.$emit("cancel");
+    this.reload_payload();
   }
 }
 </script>

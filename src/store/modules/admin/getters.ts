@@ -1,6 +1,5 @@
 import { GetterTree } from "vuex";
-import { StoreTypes } from "types";
 
-const getters: GetterTree<StoreTypes.AdminState, any> = {};
+const getters: GetterTree<AdminState, any> = {};
 
 export default getters;

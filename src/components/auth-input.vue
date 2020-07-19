@@ -8,7 +8,7 @@
         :placeholder="placeholder"
         :max-length="Number(maxlength)"
         ref="input"
-        @input="$emit('input', $event.target.value)"
+        @input="onInputChange"
       >
         <slot slot="prefix" name="prefix" />
       </a-input-password>
@@ -19,7 +19,7 @@
         :placeholder="placeholder"
         :max-length="Number(maxlength)"
         ref="input"
-        @input="$emit('input', $event.target.value)"
+        @input="onInputChange"
       >
         <slot slot="prefix" name="prefix" />
       </a-input>
@@ -36,27 +36,42 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 type InputVM = Vue & { value: string };
 
-@Component({})
-export default class App extends Vue {
-  @Prop() protected readonly type!: string;
-  @Prop() protected readonly placeholder!: string;
-  @Prop() protected readonly value!: string | number;
-  @Prop() protected readonly maxlength!: string | number;
-  @Prop() protected readonly isError!: boolean;
+@Component
+export default class AuthInput extends Vue {
+  @Prop() readonly type!: string;
+  @Prop() readonly placeholder!: string;
+  @Prop() readonly value!: string | number;
+  @Prop() readonly maxlength!: string | number;
+  @Prop() readonly isError!: boolean;
 
   get input_type() {
     return this.type === "number" ? "text" : this.type;
   }
 
-  onlyNumberInput($event) {
-    if (this.type !== "number") return;
-    const charCode = $event.which ? $event.which : $event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57))
-      return $event.preventDefault();
-  }
+  onInputChange(event) {
+    let value: string = event.target.value;
 
-  clear() {
-    this.$emit("input", "");
+    if (this.type === "number") {
+      value = value.replace(/[^\d]/, "");
+    }
+    if (this.maxlength) {
+      value = value.substring(0, Number(this.maxlength));
+    }
+
+    this.$emit("input", value);
   }
 }
 </script>
+
+<style lang="less">
+.auth-input {
+  input {
+    height: 50px;
+    width: 100%;
+    border: 1px solid;
+    padding: 0 20px;
+    font-size: 14px;
+    z-index: 1;
+  }
+}
+</style>

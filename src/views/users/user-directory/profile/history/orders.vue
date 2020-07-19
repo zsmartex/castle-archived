@@ -1,75 +1,34 @@
 <template>
-  <z-table
+  <orders
+    type="history"
     :loading="loading"
-    :columns="COLUMN"
-    :data="orders_data"
-    :scroll="false"
-    :pagination="true"
+    :data="data"
     :total="total"
     :page="page"
     :page-size="limit"
+    :disabled_columns="['email']"
     @change-pagination="get_orders"
-  >
-    <template slot="side" slot-scope="{ item, column }">
-      <span
-        :class="[
-          'side',
-          `text-${column.algin}`,
-          `text-${item.side === 'buy' ? 'up' : 'down'}`
-        ]"
-      >
-        {{ item.side }}
-      </span>
-    </template>
-  </z-table>
+  />
 </template>
 
 <script lang="ts">
-import helpers from "@zsmartex/z-helpers";
 import store from "@/store";
 import { GET_ORDERS } from "@/store/types";
-import { StoreTypes } from "types";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-@Component
+@Component({
+  components: {
+    orders: () => import("@/layouts/orders")
+  }
+})
 export default class App extends Vue {
   loading = false;
   total = 0;
   page = 1;
   limit = 50;
-  data: StoreTypes.UserOrder[] = [];
+  data: UserOrder[] = [];
 
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
-
-  private readonly COLUMN = [
-    { title: "Order ID", key: "id", algin: "left" },
-    { title: "Market", key: "market", algin: "left" },
-    { title: "Type", key: "ord_type", algin: "left" },
-    { title: "Amount", key: "origin_volume", algin: "left" },
-    { title: "Executed", key: "executed_volume", algin: "left" },
-    { title: "Price", key: "price", algin: "left" },
-    { title: "Average", key: "avg_price", algin: "left" },
-    { title: "Side", key: "side", algin: "left", scopedSlots: true },
-    { title: "Created", key: "created_at", algin: "left" },
-    { title: "Updated", key: "updated_at", algin: "left" },
-    { title: "Status", key: "state", algin: "center" }
-  ];
-
-  get orders_data() {
-    return this.data.map(order => {
-      order.market = order.market.toUpperCase();
-      (order as any).created_at = helpers.getDate(
-        order.created_at as Date,
-        true
-      );
-      (order as any).updated_at = helpers.getDate(
-        order.updated_at as Date,
-        true
-      );
-
-      return order;
-    });
-  }
+  @Prop() readonly user_info!: User;
 
   mounted() {
     this.get_orders({

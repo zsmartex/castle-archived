@@ -1,9 +1,13 @@
+import store from "@/store";
+import { INIT } from "@/store/types";
+import { isAuth } from "@zsmartex/z-helpers";
 import Vue from "vue";
 import VueRouter from "vue-router";
-import * as helpers from "@zsmartex/z-helpers";
 import routes from "./routes";
 
 Vue.use(VueRouter);
+
+let first_route = true;
 
 const router = new VueRouter({
   mode: "history",
@@ -11,31 +15,23 @@ const router = new VueRouter({
   routes
 });
 
-const waitCheckedLogged = callback => {
-  if (helpers.authStatus() !== "loading") {
-    callback();
-  } else {
-    setTimeout(() => {
-      waitCheckedLogged(callback);
-    }, 10);
+router.beforeEach(async (to, from, next) => {
+  if (first_route) {
+    first_route = false;
+
+    await store.dispatch(INIT);
   }
-};
+  const is_auth = isAuth();
 
-router.beforeEach((to, from, next) => {
-  waitCheckedLogged(() => {
-    const isAuth = helpers.isAuth();
-    const authStatus = helpers.authStatus();
-
-    if (to.path === "/") {
-      next(isAuth ? "/dashboard/analysis" : "/login");
-    } else if (to.matched.some(record => record.meta.user) && !isAuth) {
-      next("/login");
-    } else if (to.matched.some(record => record.meta.guest) && isAuth) {
-      next("/dashboard/analysis");
-    } else {
-      next();
-    }
-  });
+  if (to.path === "/") {
+    next(is_auth ? "/dashboard/analysis" : "/login");
+  } else if (to.matched.some(record => record.meta.user) && !is_auth) {
+    next("/login");
+  } else if (to.matched.some(record => record.meta.guest) && is_auth) {
+    next("/dashboard/analysis");
+  } else {
+    next();
+  }
 });
 
 export default router;

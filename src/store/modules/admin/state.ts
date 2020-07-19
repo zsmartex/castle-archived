@@ -1,6 +1,4 @@
-import { StoreTypes } from "types";
-
-const state: StoreTypes.AdminState = {
+const state: AdminState = {
   role: [
     "superadmin",
     "admin",
@@ -20,9 +18,13 @@ const state: StoreTypes.AdminState = {
     failed_logins: {},
     pending_applications: 0
   },
-  member_info: null,
-  user_info: null,
-  clients: []
+  user_info: undefined,
+  clients: [],
+  kinds: [],
+  gateways: [],
+  markets: [],
+  currencies: [],
+  blockchains: []
 };
 
 export default state;

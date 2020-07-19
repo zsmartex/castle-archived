@@ -8,7 +8,7 @@
   >
     <slot />
     <div class="action">
-      <a-button style="marginRight: 8px" @click="remove">Reset All</a-button>
+      <a-button style="marginRight: 8px" @click="reset">Reset All</a-button>
       <a-button type="primary" @click="submit">Apply Filters</a-button>
     </div>
   </a-drawer>
@@ -27,6 +27,11 @@ export default class App extends Vue {
 
   submit() {
     this.$emit("submit");
+    this.remove();
+  }
+
+  reset() {
+    this.$emit("reset");
   }
 
   create() {

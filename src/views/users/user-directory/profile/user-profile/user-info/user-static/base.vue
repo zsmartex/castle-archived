@@ -24,14 +24,13 @@
 </template>
 
 <script lang="ts">
-import helpers from "@zsmartex/z-helpers";
-import { StoreTypes } from "types";
+import { getDate } from "@zsmartex/z-helpers";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
   protected edit = false;
-  @Prop() readonly user_info!: StoreTypes.UserInfo;
+  @Prop() readonly user_info!: User;
 
   get INFO_LIST() {
     return [
@@ -59,7 +58,7 @@ export default class App extends Vue {
   }
 
   getDate(date: Date) {
-    return helpers.getDate(date, true);
+    return getDate(date, true);
   }
 }
 </script>

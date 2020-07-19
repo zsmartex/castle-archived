@@ -29,14 +29,13 @@
 
 <script lang="ts">
 import store from "@/store";
-import { StoreTypes } from "types";
 import { GET_USERS } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class Template extends Vue {
   loading = false;
-  users: StoreTypes.User[] = [];
+  users: User[] = [];
   page = 1;
   total = 0;
   limit = 50;

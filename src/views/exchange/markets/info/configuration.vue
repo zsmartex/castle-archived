@@ -36,17 +36,16 @@
 </template>
 
 <script lang="ts">
-import helpers from "@zsmartex/z-helpers";
-import { StoreTypes } from "types";
+import { getDate } from "@zsmartex/z-helpers";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
-  @Prop() readonly market!: StoreTypes.Market;
+  @Prop() readonly market!: Market;
   @Prop() readonly setting_list!: any;
 
   getDate(date: Date, allow_year = true) {
-    return helpers.getDate(date, allow_year);
+    return getDate(date, allow_year);
   }
 
   get setting_head_list() {
