@@ -11,10 +11,13 @@
           >
             <template slot="status">
               <span>
-                {{ blockchain.status ? "Enabled" : "Disabled" }}
+                {{ blockchain.status === "active" ? "Enabled" : "Disabled" }}
               </span>
               <span>
-                <a-switch v-model="blockchain.status" />
+                <a-switch
+                  :checked="blockchain.status === 'active'"
+                  @change="onStatusChanged"
+                />
               </span>
             </template>
           </z-info-row>
@@ -95,7 +98,7 @@ export default class App extends Vue {
       {
         title: "Status",
         key: "status",
-        value: this.blockchain?.status === "active", //active || disabled
+        value: this.blockchain?.status === "active", // active || disabled
         style: "width: 47.5%",
         style_content:
           "justify-content: space-between;display: flex;flex-wrap: wrap",
@@ -199,6 +202,10 @@ export default class App extends Vue {
     } catch (error) {
       return error;
     }
+  }
+
+  onStatusChanged(checked: boolean) {
+    this.blockchain.status = checked ? "active" : "disabled";
   }
 }
 </script>

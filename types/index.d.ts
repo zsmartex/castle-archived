@@ -215,7 +215,7 @@ declare global {
   }
 
   interface Wallet {
-    id:                     number;
+    id?:                    number;
     name:                   string;
     kind:                   string;
     currency:               string;
@@ -223,6 +223,7 @@ declare global {
     gateway:                string;
     max_balance:            string;
     blockchain_key:         string;
+    balance?:               string;
     status:                 "active" | "disabled";
     settings?:              WalletSettings;
     created_at?:            Date;

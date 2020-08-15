@@ -150,7 +150,8 @@ export default class App extends Vue {
         amount_precision: this.market.amount_precision,
         total_precision: this.market.total_precision,
         position: this.market.position,
-        state: this.market.state
+        state: this.market.state,
+        engine_id: 1
       });
 
       runNotice(

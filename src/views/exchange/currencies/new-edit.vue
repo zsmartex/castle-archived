@@ -381,6 +381,10 @@ export default class App extends Vue {
 
     delete currency.created_at;
     delete currency.updated_at;
+    delete currency.base_factor;
+
+    currency.subunits = Number(currency.subunits);
+
     try {
       await store.dispatch(
         type === "edit" ? UPDATE_CURRENCY : CREATE_CURRENCY,

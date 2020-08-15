@@ -12,10 +12,13 @@
         <z-info-row :item="setting_head_list">
           <template slot="state">
             <span style="margin-right: 8px">
-              {{ market_status ? "Enabled" : "Disabled" }}
+              {{ this.market.state === "enabled" ? "Enabled" : "Disabled" }}
             </span>
             <span>
-              <a-switch v-model="market_status" />
+              <a-switch
+                :checked="this.market.state === 'enabled'"
+                @change="onStatusChanged"
+              />
             </span>
           </template>
         </z-info-row>
@@ -52,7 +55,7 @@ export default class App extends Vue {
     return {
       title: "Status",
       key: "state",
-      value: this.market_status,
+      value: this.market.state,
       style: "width: auto",
       style_title: "text-align: right",
       style_content:
@@ -61,12 +64,18 @@ export default class App extends Vue {
     };
   }
 
-  get market_status() {
-    return this.market.state === "enabled";
+  mounted() {
+    this.$nextTick(() => {
+      this.$forceUpdate();
+    });
   }
 
-  set market_status(enabled: boolean) {
-    this.market.state = enabled ? "enabled" : "disabled";
+  onStatusChanged(checked: boolean) {
+    this.market.state = checked ? "enabled" : "disabled";
+
+    this.$nextTick(() => {
+      this.$forceUpdate();
+    });
   }
 }
 </script>

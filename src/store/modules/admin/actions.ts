@@ -2,13 +2,15 @@ import ApiClient from "@zsmartex/z-apiclient";
 import * as helpers from "@zsmartex/z-helpers";
 import { ActionTree } from "vuex";
 import {
-  CANCEL_ORDER, CANCEL_ORDERS,
+  CANCEL_ORDER,
+  CANCEL_ORDERS,
   CREATE_BLOCKCHAIN,
   CREATE_CURRENCY,
   CREATE_MARKET,
   CREATE_PERMISSION,
   CREATE_TRADING_FEE,
   CREATE_USER_LABEL,
+  CREATE_WALLET,
   DELETE_PERMISSION,
   DELETE_TRADING_FEE,
   DELETE_USER_LABEL,
@@ -52,7 +54,8 @@ import {
   UPDATE_TRADING_FEE,
   UPDATE_USER_INFO,
   UPDATE_USER_LABEL,
-  UPDATE_USER_ROLE
+  UPDATE_USER_ROLE,
+  UPDATE_WALLET
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -284,7 +287,13 @@ const actions: ActionTree<AdminState, any> = {
   },
   [GET_ADJUSTMENT](store, id) {
     return new ApiClient("trade").get(`admin/adjustments/${id}`);
-  }
+  },
+  [CREATE_WALLET](store, payload) {
+    return new ApiClient("trade").post("admin/wallets/new", payload);
+  },
+  [UPDATE_WALLET](store, payload) {
+    return new ApiClient("trade").post("admin/wallets/update", payload);
+  },
 };
 
 export default actions;

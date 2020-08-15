@@ -79,8 +79,7 @@ export default class App extends Vue {
   input($event) {
     const { value } = $event.target;
 
-    this.$emit("input", value);
-    this.$emit("change", { key: this.item.key, value: value });
+    this.onChange(value);
   }
 
   focus() {

@@ -157,7 +157,7 @@ const routes = [
             component: () => import("@/views/settings/wallets/edit-create.vue"),
           },
           {
-            path: "wallets/:id/new",
+            path: "wallets/add",
             meta: { type: "create" },
             component: () => import("@/views/settings/wallets/edit-create.vue"),
           },

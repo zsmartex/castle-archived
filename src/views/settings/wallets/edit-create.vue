@@ -11,11 +11,11 @@
           >
             <template slot="status">
               <span>
-                {{ wallet[setting.key] ? "Enabled" : "Disabled" }}
+                {{ wallet[setting.key] == "active" ? "Enabled" : "Disabled" }}
               </span>
               <span>
                 <a-switch
-                  :checked="wallet[setting.key] === 'active'"
+                  :checked="wallet[setting.key] == 'active'"
                   @change="
                     checked =>
                       (wallet[setting.key] = checked ? 'active' : 'disabled')
@@ -51,22 +51,33 @@
 
 <script lang="ts">
 import store from "@/store";
-//import { runNotice } from "@zsmartex/z-helpers";
+import { runNotice } from "@zsmartex/z-helpers";
 import {
   GET_WALLET,
   GET_CURRENCIES,
   GET_WALLET_KINDS,
   GET_WALLET_GATEWAYS,
-  GET_BLOCKCHAINS
+  GET_BLOCKCHAINS,
+  CREATE_WALLET,
+  UPDATE_WALLET
 } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
-export default class App extends Vue {
+export default class WalletSettingUpdateAndCreate extends Vue {
   page_state = "loading";
-  wallet?: Wallet;
-  blockchains!: { [key: string]: string };
-  currencies!: { [key: string]: string };
+  wallet?: Wallet = {
+    name: "",
+    kind: "",
+    currency: "",
+    address: "",
+    gateway: "",
+    max_balance: "",
+    blockchain_key: "",
+    status: "disabled" // active | disabled
+  };
+  blockchains: { [key: string]: string } = {};
+  currencies: { [key: string]: string } = {};
   wallet_settings: WalletSettings = {
     uri: "",
     secret: ""
@@ -81,7 +92,7 @@ export default class App extends Vue {
   }
 
   get page_ready() {
-    return this.page_state == "ready";
+    return this.page_state === "ready";
   }
 
   get SETTING_PANEL_LEFT() {
@@ -138,7 +149,7 @@ export default class App extends Vue {
     return [
       {
         title: "Kind",
-        key: "currency",
+        key: "kind",
         value: this.wallet?.kind,
         type: "select",
         list: this.kinds
@@ -184,6 +195,7 @@ export default class App extends Vue {
   }
 
   mounted() {
+    if (this.page_type === "create") this.page_state = "ready";
     if (this.page_type === "edit") this.get_wallet();
     if (!store.state.admin.kinds.length) this.get_kinds();
     if (!store.state.admin.gateways.length) this.get_gateways();
@@ -230,15 +242,25 @@ export default class App extends Vue {
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
     let { wallet } = this;
     if (this.wallet_settings.uri || this.wallet_settings.secret) {
       wallet = Object.assign(this.wallet, {
         settings: this.wallet_settings
       });
     }
+    const action = this.page_type === "create" ? CREATE_WALLET : UPDATE_WALLET;
+    delete wallet.created_at;
+    delete wallet.updated_at;
+    delete wallet.balance;
 
-    console.log(wallet);
+    try {
+      await store.dispatch(action, wallet);
+      runNotice("success", "Create wallet successfully");
+      this.$router.push("/settings/wallets");
+    } catch (error) {
+      return error;
+    }
   }
 }
 </script>

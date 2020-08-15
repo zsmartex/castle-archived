@@ -83,11 +83,25 @@ export default class App extends Vue {
   }
 
   async mounted() {
+    this.set_action_header();
     await this.get_blockchains();
     this.get_wallets({
       page: this.page,
       limit: this.limit
     });
+  }
+
+  set_action_header() {
+    this.$route.meta["action-header"] = [
+      {
+        title: "Add Wallet",
+        key: "add_wallet",
+        icon: "plus-circle",
+        callback: () => {
+          this.$router.push("/settings/wallets/add");
+        }
+      }
+    ];
   }
 
   get_explorer_address_by_blockchain_key(
