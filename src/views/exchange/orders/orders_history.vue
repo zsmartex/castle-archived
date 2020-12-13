@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import ZSmartModel from "@zsmartex/z-eventbus";
-import { jsonToCSV, saveFile } from "@zsmartex/z-helpers";
+import { jsonToCSV, saveFile } from "@/mixins";
 import store from "@/store";
 import { GET_ORDERS } from "@/store/types";
 import { Vue, Component, Prop } from "vue-property-decorator";

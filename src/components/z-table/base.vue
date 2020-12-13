@@ -20,7 +20,7 @@
       <a-spin v-if="loading" class="z-table-loading-wrapper">
         <a-icon slot="indicator" type="loading" spin />
       </a-spin>
-      <a-empty v-else-if="!data.length" />
+      <a-empty v-else-if="!data.length && allowEmpty" />
       <p
         v-for="item of data"
         class="z-table-row"
@@ -42,18 +42,23 @@
           />
         </template>
       </p>
+      <p v-if="$slots['row-extend']" class="z-table-row">
+        <slot
+          name="row-extend"
+        />
+      </p>
     </div>
-    <a-pagination
-      v-if="pagination && !loading"
-      showSizeChanger
-      class="z-table-pagination"
-      :current="page"
-      :total="total"
-      :page-size="pageSize"
-      :pageSizeOptions="['10', '25', '50', '100']"
-      @change="onChange"
-      @showSizeChange="onChange"
-    />
+      <a-pagination
+        v-if="pagination && !loading"
+        showSizeChanger
+        class="z-table-pagination"
+        :current="page"
+        :total="total"
+        :page-size="pageSize"
+        :pageSizeOptions="['10', '25', '50', '100']"
+        @change="onChange"
+        @showSizeChange="onChange"
+      />
   </div>
 </template>
 
@@ -79,6 +84,7 @@ export default class ZTable extends Vue {
   @Prop() readonly total!: number;
   @Prop() readonly page!: number;
   @Prop() readonly pageSize!: number;
+  @Prop({ default: true }) readonly allowEmpty!: boolean;
 
   onChange(page: number, pageSize: number) {
     this.$emit("change-pagination", { page, limit: pageSize });

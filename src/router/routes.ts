@@ -172,6 +172,14 @@ const routes = [
           {
             path: "restrictions",
             component: () => import("@/views/settings/restrictions/base.vue"),
+          },
+          {
+            path: "banners",
+            component: () => import("@/views/settings/banners/base.vue"),
+          },
+          {
+            path: "broadcasts",
+            component: () => import("@/views/settings/broadcasts/base.vue")
           }
         ]
       }

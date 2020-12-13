@@ -107,7 +107,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { runNotice } from "@zsmartex/z-helpers";
+import { runNotice } from "@/mixins";
 import { GET_CURRENCY, CREATE_CURRENCY, UPDATE_CURRENCY } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 

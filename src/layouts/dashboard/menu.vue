@@ -57,6 +57,7 @@
 </template>
 
 <script lang="ts">
+import { UserController } from "@/controllers";
 import store from "@/store";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
@@ -275,6 +276,24 @@ export default class MenuComponent extends Vue {
             "exact-active-class": "",
             "active-class": ""
           }
+        },
+        {
+          name: "Banners",
+          icon: "picture",
+          path: "banners",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Broadcasts",
+          icon: "sound",
+          path: "broadcasts",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
         }
       ]
     }
@@ -307,7 +326,7 @@ export default class MenuComponent extends Vue {
   }
 
   logout() {
-    store.dispatch("user/LOGOUT");
+    UserController.logout();
   }
 }
 </script>

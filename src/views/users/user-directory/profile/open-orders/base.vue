@@ -14,7 +14,7 @@
 <script lang="ts">
 import store from "@/store";
 import { CANCEL_ORDER } from "@/store/types";
-import { getDate, runNotice } from "@zsmartex/z-helpers";
+import { getDate, runNotice } from "@/mixins";
 import { Vue, Component, Prop } from "vue-property-decorator";
 import { GET_ORDERS } from "@/store/types";
 

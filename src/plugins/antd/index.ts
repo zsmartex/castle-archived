@@ -20,7 +20,8 @@ import {
   Spin,
   Popover,
   Drawer,
-  DatePicker
+  DatePicker,
+  Upload
 } from "ant-design-vue";
 import Vue from "vue";
 
@@ -46,3 +47,4 @@ Vue.use(Spin);
 Vue.use(Popover);
 Vue.use(Drawer);
 Vue.use(DatePicker);
+Vue.use(Upload);

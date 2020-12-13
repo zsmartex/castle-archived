@@ -21,9 +21,6 @@
     "types": [
       "./types",
       "@zsmartex/z-types",
-      "@zsmartex/z-eventbus",
-      "@zsmartex/z-helpers",
-      "@zsmartex/z-store",
       "@types/node",
       "webpack-env"
     ],

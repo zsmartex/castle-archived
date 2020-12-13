@@ -24,7 +24,7 @@
 </template>
 
 <script lang="ts">
-import { getDate } from "@zsmartex/z-helpers";
+import { getDate } from "@/mixins";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component

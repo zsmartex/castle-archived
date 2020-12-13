@@ -1,5 +1,4 @@
 import ApiClient from "@zsmartex/z-apiclient";
-import * as helpers from "@zsmartex/z-helpers";
 import { ActionTree } from "vuex";
 import {
   CANCEL_ORDER,
@@ -44,7 +43,6 @@ import {
   GET_WALLET_KINDS,
   GET_WITHDRAW,
   GET_WITHDRAWS,
-  INIT,
   SEND_WITHDRAW_ACTION,
   UPDATE_BLOCKCHAIN,
   UPDATE_CURRENCY,
@@ -55,15 +53,16 @@ import {
   UPDATE_USER_INFO,
   UPDATE_USER_LABEL,
   UPDATE_USER_ROLE,
-  UPDATE_WALLET
+  UPDATE_WALLET,
+  GET_BANNERS,
+  CREATE_BANNER,
+  UPDATE_BANNER,
+  GET_BROADCASTS,
+  CREATE_BROADCAST,
+  UPDATE_BROADCAST
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
-  async [INIT]({ dispatch }) {
-    (global as any).helpers = helpers;
-
-    return Promise.all([dispatch("user/getLogged")]);
-  },
   async [GET_METRICS]({ commit }) {
     try {
       const { data } = await new ApiClient("auth").get("admin/metrics");
@@ -143,7 +142,7 @@ const actions: ActionTree<AdminState, any> = {
   [GET_ORDERS](store, payload) {
     return new ApiClient("trade").get("admin/orders", payload);
   },
-  [CANCEL_ORDERS](store, payload: { market: string; side: ZTypes.Side }) {
+  [CANCEL_ORDERS](store, payload: { market: string; side: ZTypes.OrderSide }) {
     return new ApiClient("trade").post("admin/orders/cancel", payload);
   },
   [CANCEL_ORDER](store, id) {
@@ -294,6 +293,24 @@ const actions: ActionTree<AdminState, any> = {
   [UPDATE_WALLET](store, payload) {
     return new ApiClient("trade").post("admin/wallets/update", payload);
   },
+  [GET_BANNERS](store, payload) {
+    return new ApiClient("applogic").get("admin/banners", payload);
+  },
+  [CREATE_BANNER](store, payload) {
+    return new ApiClient("applogic").post("admin/banners", payload);
+  },
+  [UPDATE_BANNER](store, payload) {
+    return new ApiClient("applogic").put("admin/banners", payload);
+  },
+  [GET_BROADCASTS](store, payload) {
+    return new ApiClient("applogic").get("admin/broadcasts", payload);
+  },
+  [CREATE_BROADCAST](store, payload) {
+    return new ApiClient("applogic").post("admin/broadcasts", payload);
+  },
+  [UPDATE_BROADCAST](store, payload) {
+    return new ApiClient("applogic").put("admin/broadcasts", payload);
+  }
 };
 
 export default actions;

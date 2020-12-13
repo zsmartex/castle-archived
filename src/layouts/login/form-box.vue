@@ -22,7 +22,6 @@
 
 <script lang="ts">
 import { Vue, Component, Prop } from "vue-property-decorator";
-import { validEmail, validPassword } from "@zsmartex/z-helpers";
 
 @Component({
   components: {
@@ -38,16 +37,14 @@ export default class App extends Vue {
 
   get email_error() {
     const { email } = this;
-    const valid_email = validEmail(email);
 
-    return !email ? false : !valid_email;
+    return !this.email;
   }
 
   get password_error() {
     const { password } = this;
-    const valid_password = validPassword(password);
 
-    return !password ? false : !valid_password;
+    return !this.password;
   }
 
   login() {

@@ -54,7 +54,7 @@
 import store from "@/store";
 import ZSmartModel from "@zsmartex/z-eventbus";
 import { GET_ORDERS, CANCEL_ORDERS } from "@/store/types";
-import { runNotice, jsonToCSV, saveFile } from "@zsmartex/z-helpers";
+import { runNotice, jsonToCSV, saveFile } from "@/mixins";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({

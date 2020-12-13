@@ -76,8 +76,8 @@
 </template>
 
 <script lang="ts">
-import { UAParser } from "ua-parser-js";
-import { getDate } from "@zsmartex/z-helpers";
+import UAParser from "ua-parser-js";
+import { getDate } from "@/mixins";
 import store from "@/store";
 import { GET_OPERATORS } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";

@@ -10,7 +10,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { getDate } from "@zsmartex/z-helpers";
+import { getDate } from "@/mixins";
 import { Vue, Component } from "vue-property-decorator";
 
 interface Pane {

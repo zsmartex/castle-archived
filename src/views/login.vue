@@ -11,6 +11,7 @@ import store from "@/store";
 import ModalOTP from "@/layouts/modal/modal-otp.vue";
 import { FormBox, LogoBox } from "@/layouts/login";
 import { Vue, Component, Watch } from "vue-property-decorator";
+import { UserController } from "@/controllers";
 
 @Component({
   components: {
@@ -20,12 +21,14 @@ import { Vue, Component, Watch } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  loading = false;
-
   $refs!: {
     "form-box": FormBox;
     "modal-otp": ModalOTP;
   };
+
+  get loading() {
+    return UserController.state == "loading";
+  }
 
   get email() {
     return this.$refs["form-box"].email;
@@ -40,27 +43,22 @@ export default class App extends Vue {
   }
 
   get need2fa() {
-    return store.state.user.need2fa;
+    return UserController.need2fa;
   }
 
   set need2fa(value) {
-    store.state.user.need2fa = value;
+    UserController.need2fa = value;
   }
 
   async login(otp_code = "") {
-    const payload = {
-      email: this.email,
-      password: this.password,
-      otp_code: otp_code,
-      captcha_response: this.captcha_response
-    };
-
-    this.loading = true;
-    await store.dispatch("user/LOGIN", {
-      payload,
-      url_callback: "/dashboard/analysis"
-    });
-    this.loading = false;
+    await UserController.login({
+        email: this.email,
+        password: this.password,
+        otp_code: otp_code,
+        captcha_response: this.captcha_response
+      },
+      "/dashboard/analysis"
+    );
   }
 
   @Watch("need2fa")

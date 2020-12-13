@@ -372,6 +372,20 @@ declare global {
     updated_at?:            Date;
   }
 
+  interface Banner extends ZTypes.Banner {
+    id:                     number;
+    state:                  "active" | "deleted";
+    created_at:             Date;
+    updated_at:             Date;
+  }
+
+  interface BroadCast extends ZTypes.BroadCast {
+    id:                     number;
+    state:                  "active" | "deleted";
+    created_at:             Date;
+    updated_at:             Date;
+  }
+
   interface AdminState {
     role:                   string[];
     metrics:                Metrics;
@@ -386,10 +400,6 @@ declare global {
 
   interface RootState {
     admin:                  AdminState;
-    exchange:               ExchangeState;
-    public:                 PublicState;
-    user:                   UserState;
-    websocket:              WebSocketState;
   }
 }
 

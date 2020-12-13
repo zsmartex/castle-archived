@@ -46,7 +46,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { runNotice } from "@zsmartex/z-helpers";
+import { runNotice } from "@/mixins";
 import {
   GET_BLOCKCHAIN,
   GET_BLOCKCHAIN_CLIENTS,

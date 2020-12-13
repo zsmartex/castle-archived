@@ -36,7 +36,7 @@
 <script lang="ts">
 import ZSmartModel from "@zsmartex/z-eventbus";
 import ModalPermission from "./modal.vue";
-import { runNotice } from "@zsmartex/z-helpers";
+import { runNotice } from "@/mixins";
 import store from "@/store";
 import {
   GET_PERMISSIONS,

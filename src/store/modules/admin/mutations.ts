@@ -1,4 +1,4 @@
-import { runNotice } from '@zsmartex/z-helpers';
+import { runNotice } from "@/mixins";
 import { MutationTree } from "vuex";
 
 const mutations: MutationTree<AdminState> = {

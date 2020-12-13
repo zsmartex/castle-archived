@@ -10,17 +10,18 @@
 <script lang="ts">
 import { Vue, Component, Watch } from "vue-property-decorator";
 import store from "@/store";
+import { PublicController } from "./controllers";
 
 @Component
 export default class App extends Vue {
   ready: boolean;
+
   constructor() {
     super();
-    this.ready = false;
   }
 
   get isReady() {
-    return store.state.public.ready;
+    return PublicController.page_ready;
   }
 }
 </script>

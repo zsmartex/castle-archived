@@ -25,7 +25,7 @@
 <script lang="ts">
 import ZSmartModel from "@zsmartex/z-eventbus";
 import store from "@/store";
-import { getDate } from "@zsmartex/z-helpers";
+import { getDate } from "@/mixins";
 import { GET_MARKETS } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 

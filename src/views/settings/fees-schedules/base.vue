@@ -64,7 +64,7 @@
 import ZSmartModel from "@zsmartex/z-eventbus";
 import ModalFeeSchedule from "./modal.vue";
 import store from "@/store";
-import { runNotice } from "@zsmartex/z-helpers";
+import { runNotice } from "@/mixins";
 import {
   GET_TRADING_FEES,
   CREATE_TRADING_FEE,

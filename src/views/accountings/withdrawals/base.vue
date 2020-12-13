@@ -46,7 +46,7 @@
 <script lang="ts">
 import store from "@/store";
 import ZSmartModel from "@zsmartex/z-eventbus";
-import { getDate } from "@zsmartex/z-helpers";
+import { getDate } from "@/mixins";
 import { GET_WITHDRAWS } from "@/store/types";
 import { Vue, Component, Watch } from "vue-property-decorator";
 

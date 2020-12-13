@@ -1,9 +1,7 @@
-import store from "@/store";
-import { INIT } from "@/store/types";
-import { isAuth } from "@zsmartex/z-helpers";
 import Vue from "vue";
 import VueRouter from "vue-router";
 import routes from "./routes";
+import { PublicController, UserController } from "@/controllers";
 
 Vue.use(VueRouter);
 
@@ -19,9 +17,10 @@ router.beforeEach(async (to, from, next) => {
   if (first_route) {
     first_route = false;
 
-    await store.dispatch(INIT);
+    await UserController.get_logged();
+    PublicController.page_ready = true;
   }
-  const is_auth = isAuth();
+  const is_auth = UserController.state == "active";
 
   if (to.path === "/") {
     next(is_auth ? "/dashboard/analysis" : "/login");

@@ -43,7 +43,7 @@
 <script lang="ts">
 import store from "@/store";
 import ModalLabel from "./modal.vue";
-import { runNotice } from "@zsmartex/z-helpers";
+import { runNotice } from "@/mixins";
 import {
   CREATE_USER_LABEL,
   DELETE_USER_LABEL,
