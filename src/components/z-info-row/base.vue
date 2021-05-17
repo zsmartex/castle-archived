@@ -2,6 +2,7 @@
   <div
     :class="[
       this['row-prefix-cls'],
+      this['row-prefix-cls'] + '-' + item.key,
       { [`${this['row-prefix-cls']}-desc`]: item.desc }
     ]"
     :style="item.style"
@@ -27,7 +28,10 @@
         @blur="blur"
       />
       <span
-        class="z-info-row-no-edit"
+        :class="[
+          'z-info-row-no-edit',
+          { 'z-info-row-no-edit-border': item.border }
+        ]"
         v-else-if="item.type === 'input' && !item.edit"
       >
         {{ item.value }}
@@ -71,6 +75,7 @@ export default class App extends Vue {
     style?: string;
     style_title?: string;
     style_content?: string;
+    border?: boolean;
     list?: {
       [key: string]: string;
     };

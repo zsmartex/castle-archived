@@ -9,6 +9,7 @@
       :total="total"
       :page="page"
       :page-size="limit"
+      @change-pagination="get_users"
     >
       <template slot="otp" slot-scope="{ item, column }">
         <span :class="`text-${column.algin}`">

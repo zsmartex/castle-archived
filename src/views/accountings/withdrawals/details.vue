@@ -1,8 +1,5 @@
 <template>
-  <a-layout-content
-    v-if="!loading"
-    class="page-accountings-withdrawals details"
-  >
+  <a-layout-content class="page-accountings-withdrawals details">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -16,8 +13,11 @@
           />
         </div>
         <div class="z-edit-panel-head" style="margin: 20px 0">
-          <div class="z-edit-panel-title">
+          <div class="z-edit-panel-title" v-if="currency">
             Account info: {{ currency.code.toUpperCase() }}
+          </div>
+          <div class="z-edit-panel-title" v-else>
+            Account info:
           </div>
         </div>
         <div class="z-edit-panel-content">
@@ -31,13 +31,26 @@
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
           <div class="z-edit-panel-title">Withdraw info</div>
-          <div class="z-edit-panel-action">
-            <a-button type="danger" @click="send_action('reject')">
-              Reject
-            </a-button>
-            <a-button type="primary" @click="send_action('process')">
-              Process
-            </a-button>
+          <div v-if="withdraw" class="z-edit-panel-action">
+            <template v-if="withdraw.state == 'accepted'">
+              <a-button type="danger" @click="send_action('cancel')">
+                Cancel
+              </a-button>
+              <a-button type="danger" @click="send_action('reject')">
+                Reject
+              </a-button>
+              <a-button type="primary" @click="send_action('process')">
+                Process
+              </a-button>
+            </template>
+            <template v-if="withdraw.state == 'prepared'">
+              <a-button type="danger" @click="send_action('cancel')">
+                Cancel
+              </a-button>
+              <a-button type="primary" @click="send_action('accept')">
+                Accept
+              </a-button>
+            </template>
           </div>
         </div>
         <div class="z-edit-panel-content">
@@ -60,6 +73,7 @@
           </div>
         </div>
       </div>
+      <z-loading v-if="loading" />
     </z-configuration>
 
     <withdrawals-table
@@ -69,7 +83,7 @@
       :page="page"
       :limit="limit"
       :load-data="get_withdrawals"
-      @on_table_click="on_table_click"
+      @click="on_table_click"
     />
   </a-layout-content>
 </template>
@@ -94,9 +108,9 @@ import { Vue, Component } from "vue-property-decorator";
 export default class WithdrawDetails extends Vue {
   loading = false;
   data: Withdraw[] = [];
-  withdraw!: Withdraw;
-  member!: Member;
-  currency!: Currency;
+  withdraw?: Withdraw = null;
+  member?: Member = null;
+  currency?: Currency = null;
   page = 1;
   total = 0;
   limit = 50;
@@ -116,8 +130,8 @@ export default class WithdrawDetails extends Vue {
   }
 
   get account() {
-    return this.member.accounts.find(
-      account => account.currency === this.currency.code
+    return this.member?.accounts.find(
+      account => account.currency === this.currency?.code
     );
   }
 
@@ -126,21 +140,21 @@ export default class WithdrawDetails extends Vue {
       {
         title: "Email",
         key: "email",
-        value: this.member.email,
+        value: this.member?.email,
         type: "input",
         edit: false
       },
       {
         title: "UID",
         key: "uid",
-        value: this.member.uid,
+        value: this.member?.uid,
         type: "input",
         edit: false
       },
       {
         title: "Created at",
         key: "created_at",
-        value: getDate(this.member.created_at, true),
+        value: getDate(this.member?.created_at, true),
         type: "input",
         edit: false
       }
@@ -180,49 +194,49 @@ export default class WithdrawDetails extends Vue {
       {
         title: "ID",
         key: "id",
-        value: this.withdraw.id,
+        value: this.withdraw?.id,
         type: "input",
         edit: false
       },
       {
         title: "TxID",
         key: "txid",
-        value: this.withdraw.blockchain_txid,
+        value: this.withdraw?.blockchain_txid,
         type: "input",
         edit: false
       },
       {
         title: "Created At",
         key: "created_at",
-        value: getDate(this.withdraw.created_at, true),
+        value: getDate(this.withdraw?.created_at, true),
         type: "input",
         edit: false
       },
       {
         title: "State",
         key: "state",
-        value: this.withdraw.state,
+        value: this.withdraw?.state,
         type: "input",
         edit: false
       },
       {
         title: "Email",
         key: "email",
-        value: this.withdraw.email,
+        value: this.withdraw?.email,
         type: "input",
         edit: false
       },
       {
         title: "Recipient Address",
         key: "rid",
-        value: this.withdraw.rid,
+        value: this.withdraw?.rid,
         type: "input",
         edit: false
       },
       {
         title: "Amount",
         key: "amount",
-        value: this.withdraw.amount,
+        value: this.withdraw?.amount,
         type: "input",
         edit: false
       }
@@ -321,8 +335,13 @@ export default class WithdrawDetails extends Vue {
     }
   }
 
-  on_table_click(item: Withdraw) {
+  async on_table_click(item: Withdraw) {
     this.$router.push(`/accountings/withdrawals/${item.id}/details`);
+
+    this.loading = true;
+    await this.get_withdraw();
+    await this.get_withdrawals();
+    this.loading = false;
   }
 }
 </script>

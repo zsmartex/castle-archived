@@ -175,6 +175,13 @@ export default class Withdrawals extends Vue {
       payload = Object.assign(payload, { state: "errored" });
     }
     payload = Object.assign(payload, this.payload_filter);
+    if (this.page_type == "pending") {
+      payload = Object.assign(payload, {
+        url_extend:
+          "state[]=accepted&state[]=errored&state[]=skipped&state[]=confirming"
+      });
+    }
+
     this.loading = true;
     try {
       const { data, headers } = await store.dispatch(GET_WITHDRAWS, payload);

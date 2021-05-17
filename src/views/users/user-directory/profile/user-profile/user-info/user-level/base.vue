@@ -60,6 +60,17 @@ export default class App extends Vue {
         type: "slot"
       },
       {
+        key: "profile",
+        title: "Residence verification",
+        desc: "Confirm the profile",
+        value: !!this.labels.find(
+          record => record.key === "profile" && record.value === "verified"
+        ),
+        style: "justify-content: space-between;display: flex;flex-wrap: wrap",
+        style_content: "margin: auto 0",
+        type: "slot"
+      },
+      {
         key: "document",
         title: "Residence verification",
         desc: "Confirm the document",
@@ -75,10 +86,6 @@ export default class App extends Vue {
 
   get labels() {
     return this.user_info.labels;
-  }
-
-  removeLoading() {
-    this.loading = -1;
   }
 
   async delete_label() {
@@ -100,7 +107,7 @@ export default class App extends Vue {
         value: payload.value ? "verified" : null
       }
     );
-    this.removeLoading();
+    this.loading = -1;
   }
 }
 </script>

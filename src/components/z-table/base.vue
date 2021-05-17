@@ -17,9 +17,7 @@
       />
     </div>
     <div class="z-table-content">
-      <a-spin v-if="loading" class="z-table-loading-wrapper">
-        <a-icon slot="indicator" type="loading" spin />
-      </a-spin>
+      <z-loading v-if="loading" />
       <a-empty v-else-if="!data.length && allowEmpty" />
       <p
         v-for="item of data"
@@ -43,22 +41,20 @@
         </template>
       </p>
       <p v-if="$slots['row-extend']" class="z-table-row">
-        <slot
-          name="row-extend"
-        />
+        <slot name="row-extend" />
       </p>
     </div>
-      <a-pagination
-        v-if="pagination && !loading"
-        showSizeChanger
-        class="z-table-pagination"
-        :current="page"
-        :total="total"
-        :page-size="pageSize"
-        :pageSizeOptions="['10', '25', '50', '100']"
-        @change="onChange"
-        @showSizeChange="onChange"
-      />
+    <a-pagination
+      v-if="pagination && !loading"
+      showSizeChanger
+      class="z-table-pagination"
+      :current="page"
+      :total="total"
+      :page-size="pageSize"
+      :pageSizeOptions="['10', '25', '50', '100']"
+      @change="onChange"
+      @showSizeChange="onChange"
+    />
   </div>
 </template>
 

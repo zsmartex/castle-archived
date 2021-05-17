@@ -30,6 +30,14 @@ const routes = [
           {
             path: "operators",
             component: () => import("@/views/users/operators/base.vue")
+          },
+          {
+            path: "pending",
+            component: () => import("@/views/users/pending/base.vue")
+          },
+          {
+            path: "pending/:name",
+            component: () => import("@/views/users/pending/base.vue")
           }
         ]
       },

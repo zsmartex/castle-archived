@@ -39,7 +39,7 @@ export default class ModalLabel extends Mixins(ZModalMixin) {
     modal: ZModal;
   };
 
-  payload!: {
+  payload?: {
     type: "edit" | "create";
     key?: string;
     payload?: {
@@ -47,7 +47,7 @@ export default class ModalLabel extends Mixins(ZModalMixin) {
       value: string;
       scope: "private" | "public";
     };
-  };
+  } = null;
 
   cache_edit = {
     key: "",
@@ -86,6 +86,7 @@ export default class ModalLabel extends Mixins(ZModalMixin) {
   onCreate(payload) {
     this.payload = payload;
     if (!this.payload.payload) return;
+
     this.cache_edit.key = this.payload.payload.key;
     this.cache_edit.value = this.payload.payload.value;
     this.cache_edit.scope = this.payload.payload.scope;

@@ -1,10 +1,19 @@
 <template>
-  <a-layout-content v-if="!loading" class="page-accountings-deposits details">
+  <a-layout-content class="page-accountings-deposits details">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
           <div class="z-edit-panel-title">
             Deposit Details
+          </div>
+
+          <div class="z-edit-panel-action" v-if="deposit">
+            <a-button type="reject" v-if="deposit.state == 'submitted'">
+              Reject
+            </a-button>
+            <a-button type="primary" v-if="deposit.state == 'accepted'">
+              Process
+            </a-button>
           </div>
         </div>
         <div class="z-edit-panel-content">
@@ -15,6 +24,7 @@
           />
         </div>
       </div>
+      <z-loading v-if="loading" />
     </z-configuration>
   </a-layout-content>
 </template>
@@ -22,12 +32,13 @@
 <script lang="ts">
 import store from "@/store";
 import { GET_DEPOSITS } from "@/store/types";
+import { getDate } from "@/mixins";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class DepositDetails extends Vue {
   loading = false;
-  deposit!: Deposit;
+  deposit?: Deposit = null;
 
   get tid(): string {
     return this.$route.params.tid;
@@ -38,7 +49,7 @@ export default class DepositDetails extends Vue {
       {
         title: "Name",
         key: "uid",
-        value: this.deposit.uid,
+        value: this.deposit?.uid,
         type: "input",
         style: "width: 45%",
         edit: false
@@ -46,7 +57,7 @@ export default class DepositDetails extends Vue {
       {
         title: "Date",
         key: "date",
-        value: this.deposit.created_at,
+        value: getDate(this.deposit?.created_at, true),
         type: "input",
         style: "width: 45%",
         edit: false
@@ -54,7 +65,7 @@ export default class DepositDetails extends Vue {
       {
         title: "Member",
         key: "member",
-        value: this.deposit.email,
+        value: this.deposit?.email,
         type: "input",
         style: "width: 45%",
         edit: false
@@ -62,7 +73,7 @@ export default class DepositDetails extends Vue {
       {
         title: "State",
         key: "state",
-        value: this.deposit.state,
+        value: this.deposit?.state,
         type: "input",
         style: "width: 45%",
         edit: false
@@ -70,7 +81,7 @@ export default class DepositDetails extends Vue {
       {
         title: "Amount",
         key: "amount",
-        value: this.deposit.amount,
+        value: this.deposit?.amount,
         type: "input",
         edit: false
       }

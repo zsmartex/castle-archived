@@ -46,23 +46,6 @@ interface Operations {
 export default class PageOperation extends Vue {
   operations: Operations = {};
 
-  constructor() {
-    super();
-
-    this.panes.forEach(pane => {
-      this.operations[pane.key] = {
-        type: pane.key,
-        loading: false,
-        columns: this.columns(pane.key),
-        data: [],
-        page: 1,
-        total: 0,
-        limit: 50,
-        load_data: this.get_operations
-      };
-    });
-  }
-
   panes: Pane[] = [
     { title: "Assets", key: "assets" },
     { title: "Liabilities", key: "liabilities" },
@@ -113,6 +96,19 @@ export default class PageOperation extends Vue {
   }
 
   mounted() {
+    this.panes.forEach(pane => {
+      this.operations[pane.key] = {
+        type: pane.key,
+        loading: false,
+        columns: this.columns(pane.key),
+        data: [],
+        page: 1,
+        total: 0,
+        limit: 50,
+        load_data: this.get_operations
+      };
+    });
+
     if (this.is_root_path) this.$router.push("/accountings/operations/assets");
     this.panes.forEach(pane => {
       this.get_operations(pane.key);
@@ -141,10 +137,10 @@ export default class PageOperation extends Vue {
 
         return record;
       });
-      this.operations[type].loading = false;
     } catch (error) {
-      this.operations[type].loading = false;
       return error;
+    } finally {
+      this.operations[type].loading = false;
     }
   }
 }

@@ -126,6 +126,15 @@ export default class MenuComponent extends Vue {
             "exact-active-class": "",
             "active-class": ""
           }
+        },
+        {
+          name: "Pending applications",
+          icon: "user",
+          path: "pending",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
         }
       ]
     },

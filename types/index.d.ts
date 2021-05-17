@@ -15,6 +15,31 @@ declare global {
     updated_at?:            Date;
   }
 
+  interface UserLabel {
+    email:                  string;
+    uid:                    string;
+    role:                   string;
+    level:                  number;
+    otp:                    boolean;
+    state:                  string;
+    referral_uid?:          string;
+    data?:                  string;
+  }
+
+  interface UserProfile {
+    first_name:             string;
+    last_name:              string;
+    dob:                    Date;
+    address:                string;
+    postcode:               string | number;
+    city:                   string;
+    country:                string;
+    state:                  string;
+    metadata?:              string;
+    created_at:             Date;
+    updated_at:             Date;
+  }
+
   export interface Member {
     id:                     number;
     uid:                    string;
@@ -44,6 +69,7 @@ declare global {
     state:                  string;
     labels:                 Label[];
     phones:                 any[];
+    profiles:               UserProfile[];
     documents:              any[];
     data_storages:          any[];
     referral_uid:           string | null;
@@ -211,23 +237,22 @@ declare global {
 
   interface WalletSettings {
     uri:                  string;
-    secret:              string;
+    secret:               string;
   }
 
   interface Wallet {
-    id?:                    number;
-    name:                   string;
-    kind:                   string;
-    currency:               string;
-    address:                string;
-    gateway:                string;
-    max_balance:            string;
-    blockchain_key:         string;
-    balance?:               string;
-    status:                 "active" | "disabled";
-    settings?:              WalletSettings;
-    created_at?:            Date;
-    updated_at?:            Date;
+    id?:                  number;
+    name:                 string;
+    kind:                 string;
+    currencies:           string[];
+    address:              string;
+    gateway:              string;
+    max_balance?:         string | number;
+    balance?:             { [key: string]: string };
+    blockchain_key:       string;
+    status:               "active" | "disabled";
+    created_at?:          Date;
+    updated_at?:          Date;
   }
 
   interface TradingFee {
@@ -360,13 +385,13 @@ declare global {
     category:               string;
     amount:                 string;
     creator_uid:            string;
-    currency:               string;
+    currency_id:            string;
     asset?:                 Operation.Asset;
     liability?:             Operation.Asset;
     state?:                 "pending" | "accepted" | "rejected";
     asset_account_code:     number;
-    receiving_account_code: string;
-    receiving_member_uid:   string;
+    receiving_account_code?:number;
+    receiving_member_uid?:  string;
     validator_uid?:         string;
     created_at?:            Date;
     updated_at?:            Date;

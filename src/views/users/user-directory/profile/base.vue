@@ -1,33 +1,28 @@
 <template>
-  <a-layout-content v-if="!loading" class="page-user-directory profile">
+  <a-layout-content class="page-user-directory profile">
     <profile-header class="profile-head" :UID="UID" />
-    <a-tabs class="profile-content" v-model="active_tab_key">
+    <a-tabs
+      class="profile-content"
+      :activeKey="active_tab_key"
+      @change="onTabsChange"
+    >
       <a-tab-pane tab="User profile" key="1">
-        <div
-          v-if="active_tab_key === '1' && user_info && member"
-          class="profile-container"
-        >
+        <div class="profile-container">
           <user-info :user_info="user_info" :member_info="member" />
           <user-labels :user_info="user_info" />
         </div>
       </a-tab-pane>
-      <a-tab-pane tab="Balance" key="2">
-        <user-balance
-          v-if="active_tab_key === '2' && member"
-          :member_info="member"
-        />
+      <a-tab-pane tab="KYC" key="2">
+        <user-kyc :user_info="user_info" />
       </a-tab-pane>
-      <a-tab-pane tab="Open orders" key="3">
-        <open-orders
-          v-if="active_tab_key === '3' && user_info"
-          :user_info="user_info"
-        />
+      <a-tab-pane tab="Balance" key="3">
+        <user-balance :member_info="member" />
       </a-tab-pane>
-      <a-tab-pane tab="History" key="4">
-        <user-history
-          v-if="active_tab_key === '4' && user_info"
-          :user_info="user_info"
-        />
+      <a-tab-pane tab="Open orders" key="4">
+        <open-orders :user_info="user_info" />
+      </a-tab-pane>
+      <a-tab-pane tab="History" key="5">
+        <user-history :user_info="user_info" />
       </a-tab-pane>
     </a-tabs>
   </a-layout-content>
@@ -41,6 +36,7 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
   components: {
     "profile-header": () => import("./header.vue"),
+    "user-kyc": () => import("./kyc/base.vue"),
     "user-balance": () => import("./user-balance/base.vue"),
     "user-info": () => import("./user-profile/user-info/base.vue"),
     "user-labels": () => import("./user-profile/user-labels/base.vue"),
@@ -51,7 +47,7 @@ import { Vue, Component } from "vue-property-decorator";
 export default class App extends Vue {
   loading = false;
   active_tab_key = "1";
-  member!: Member;
+  member?: Member = null;
 
   beforeMount() {
     this.get_user_info();
@@ -82,6 +78,12 @@ export default class App extends Vue {
     } catch (error) {
       return error;
     }
+  }
+
+  onTabsChange(activeKey: string) {
+    if (this.loading) return;
+
+    this.active_tab_key = activeKey;
   }
 }
 </script>

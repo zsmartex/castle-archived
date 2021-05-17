@@ -31,15 +31,15 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 @Component
 export default class App extends Vue {
   protected loading: string | null = null;
-  @Prop() readonly user_info!: User;
-  @Prop() readonly member_info!: Member;
+  @Prop() readonly user_info?: User;
+  @Prop({ default: null }) readonly member_info?: Member;
 
   get SETTING_LIST() {
     return [
       {
         title: "Status",
         key: "state",
-        value: this.user_info.state,
+        value: this.user_info?.state,
         type: "select",
         style: "width: 45%",
         list: {
@@ -52,7 +52,7 @@ export default class App extends Vue {
       {
         title: "Referral UID",
         key: "referral_uid",
-        value: this.user_info.referral_uid,
+        value: this.user_info?.referral_uid,
         type: "input",
         style: "width: 45%",
         edit: true
@@ -60,7 +60,7 @@ export default class App extends Vue {
       {
         title: "Role",
         key: "role",
-        value: this.user_info.role,
+        value: this.user_info?.role,
         type: "select",
         style: "width: 45%",
         list: this.role_list
@@ -68,7 +68,7 @@ export default class App extends Vue {
       {
         title: "Fee group",
         key: "group",
-        value: this.member_info.group,
+        value: this.member_info?.group,
         type: "select",
         style: "width: 45%",
         list: {
@@ -81,7 +81,7 @@ export default class App extends Vue {
       {
         title: "Authorization 2FA",
         key: "otp",
-        value: this.user_info.otp,
+        value: this.user_info?.otp,
         type: "slot",
         style: "width: 45%",
         style_content:

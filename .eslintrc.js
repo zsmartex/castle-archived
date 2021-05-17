@@ -20,6 +20,7 @@ module.exports = {
     "@typescript-eslint/camelcase": "off",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/class-name-casing": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
     "no-console": "off",
   },
   globals: {}

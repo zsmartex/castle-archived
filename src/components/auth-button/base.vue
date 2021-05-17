@@ -5,6 +5,7 @@
     :type="type"
     :disabled="disabled"
   >
+    <a-icon v-if="loading" type="loading" />
     <slot />
   </button>
 </template>
@@ -15,9 +16,12 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 @Component
 export default class AuthButton extends Vue {
   @Prop({ default: "text" }) readonly type!: string;
+  @Prop({ default: false }) readonly loading!: boolean;
   @Prop({ default: false }) readonly disabled!: boolean;
 
   onButtonClicked($event) {
+    if (this.loading || this.disabled) return;
+
     this.$emit("click", $event);
   }
 }
@@ -30,9 +34,11 @@ export default class AuthButton extends Vue {
   line-height: 50px;
   text-align: center;
   font-size: 18px;
-  margin: 20px 0;
   border: 0;
   border-radius: 0;
   cursor: pointer;
+  border-radius: 4px;
+  color: #fff;
+  background-color: #1890ff;
 }
 </style>

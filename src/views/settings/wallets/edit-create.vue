@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content v-if="page_ready" class="page-settings-wallets">
+  <a-layout-content class="page-settings-wallets">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-content">
@@ -33,16 +33,139 @@
             :key="setting.key"
             :item="setting"
             v-model="wallet[setting.key]"
-          ></z-info-row>
-          <z-info-row
-            v-for="setting in SETTING_PANEL_RIGHT_EXTRA"
-            :key="setting.key"
-            :item="setting"
-            v-model="wallet_settings[setting.key]"
-          ></z-info-row>
+          />
           <div class="z-edit-panel-action">
             <a-button type="primary" @click="onSubmit">Submit</a-button>
           </div>
+        </div>
+      </div>
+    </z-configuration>
+    <z-configuration>
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-head">
+          <div class="z-edit-panel-title">
+            Properties
+          </div>
+          <div class="add-property">
+            <a-popover placement="bottomRight" trigger="click">
+              <template slot="content">
+                <z-info-row
+                  class="add-property"
+                  v-model="new_property_value"
+                  :item="{
+                    title: 'New property',
+                    value: new_property_value,
+                    type: 'input',
+                    edit: true
+                  }"
+                >
+                  <template slot="suffix">
+                    <a-icon
+                      type="plus-circle"
+                      @click="add_property(new_property_value)"
+                    />
+                  </template>
+                </z-info-row>
+              </template>
+              <div>
+                <a-icon type="plus-circle" />
+                Add property
+              </div>
+            </a-popover>
+          </div>
+        </div>
+        <div class="z-edit-panel-content">
+          <z-info-row
+            v-for="setting in PROPERTIES()"
+            :key="setting.key"
+            :item="setting"
+            @input="value => set_wallet_settings_value(setting.key, value)"
+          >
+            <template slot="suffix">
+              <a-icon
+                type="minus-circle"
+                @click="remove_property(setting.key)"
+              />
+            </template>
+          </z-info-row>
+        </div>
+      </div>
+      <div class="z-edit-panel">
+        <div class="note-borderable">
+          <p class="note-borderable-head">JSON</p>
+          <pre>{{ wallet_settings_as_string() }}</pre>
+        </div>
+      </div>
+    </z-configuration>
+    <z-configuration>
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-head">
+          <div class="z-edit-panel-title">
+            Linked Currencies
+          </div>
+        </div>
+        <div class="z-edit-panel-content">
+          <a-input placeholder="Search" v-model="linked_currencies_search" />
+          <z-table
+            :columns="currency_columns('linked')"
+            :data="linked_currencies"
+            :hover="false"
+            :scroll="false"
+            :pagination="false"
+          >
+            <template slot="action" slot-scope="{ item, column }">
+              <span :class="`action text-${column.algin}`">
+                <a-icon
+                  type="delete"
+                  theme="filled"
+                  @click="delete_wallet_currency(item.code)"
+                />
+              </span>
+            </template>
+          </z-table>
+        </div>
+      </div>
+      <div class="z-edit-panel">
+        <div class="z-edit-panel-head">
+          <div class="z-edit-panel-title">
+            Existing Currencies
+          </div>
+        </div>
+        <div class="z-edit-panel-content">
+          <div style="display: flex;width: 100%">
+            <a-input
+              placeholder="Search"
+              v-model="existing_currencies_search"
+            />
+            <a-button
+              v-if="page_type != 'create'"
+              type="primary"
+              style="margin-left: 12px"
+              :disabled="wallet_currencies_cache.length == 0"
+              @click="add_wallet_currencies"
+            >
+              Add selected
+            </a-button>
+          </div>
+          <z-table
+            :columns="currency_columns('existing')"
+            :data="existing_currencies"
+            :hover="false"
+            :scroll="false"
+            :pagination="false"
+          >
+            <template slot="checkbox" slot-scope="{ item, column }">
+              <span :class="`checkbox text-${column.algin}`">
+                <a-checkbox
+                  :value="item.code.toLowerCase()"
+                  :checked="
+                    wallet_currencies_cache.includes(item.code.toLowerCase())
+                  "
+                  @change="onCheckboxCurrenciesChanged"
+                />
+              </span>
+            </template>
+          </z-table>
         </div>
       </div>
     </z-configuration>
@@ -59,29 +182,35 @@ import {
   GET_WALLET_GATEWAYS,
   GET_BLOCKCHAINS,
   CREATE_WALLET,
-  UPDATE_WALLET
+  UPDATE_WALLET,
+  UPDATE_WALLET_CURRENCIES,
+  DELETE_WALLET_CURRENCIES
 } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
 export default class WalletSettingUpdateAndCreate extends Vue {
+  new_property_value = "";
   page_state = "loading";
-  wallet?: Wallet = {
+  wallet: Wallet = {
     name: "",
     kind: "",
-    currency: "",
+    currencies: [],
     address: "",
     gateway: "",
     max_balance: "",
     blockchain_key: "",
-    status: "disabled" // active | disabled
+    status: "disabled"
   };
   blockchains: { [key: string]: string } = {};
-  currencies: { [key: string]: string } = {};
+  currencies: Currency[] = [];
   wallet_settings: WalletSettings = {
     uri: "",
     secret: ""
   };
+  wallet_currencies_cache: string[] = [];
+  linked_currencies_search = "";
+  existing_currencies_search = "";
 
   get id() {
     return this.$route.params.id;
@@ -89,10 +218,6 @@ export default class WalletSettingUpdateAndCreate extends Vue {
 
   get page_type() {
     return this.$route.meta.type;
-  }
-
-  get page_ready() {
-    return this.page_state === "ready";
   }
 
   get SETTING_PANEL_LEFT() {
@@ -134,13 +259,6 @@ export default class WalletSettingUpdateAndCreate extends Vue {
         value: this.wallet?.address,
         type: "input",
         edit: true
-      },
-      {
-        title: "Currency",
-        key: "currency",
-        value: this.wallet?.currency,
-        type: "select",
-        list: this.currencies
       }
     ];
   }
@@ -164,7 +282,7 @@ export default class WalletSettingUpdateAndCreate extends Vue {
     ];
   }
 
-  get SETTING_PANEL_RIGHT_EXTRA() {
+  get SETTING_PANEL_EXTRA() {
     return [
       {
         title: "Uri",
@@ -183,6 +301,26 @@ export default class WalletSettingUpdateAndCreate extends Vue {
     ];
   }
 
+  currency_columns(type: "linked" | "existing") {
+    return [
+      { title: "", key: "checkbox", algin: "left", scopedSlots: true },
+      { title: "Code", key: "code", algin: "left" },
+      { title: "Name", key: "name", algin: "left" },
+      { title: "Action", key: "action", algin: "right", scopedSlots: true }
+    ]
+      .filter(col => {
+        if (type == "linked" && col.key == "checkbox") return false;
+        if (type == "existing" && col.key == "action") return false;
+
+        return true;
+      })
+      .map(col => {
+        if (type == "existing" && col.key == "name") col.algin = "right";
+
+        return col;
+      });
+  }
+
   get kinds() {
     return store.state.admin.kinds.reduce((a, b) => ((a[b] = b), a), {});
   }
@@ -194,13 +332,95 @@ export default class WalletSettingUpdateAndCreate extends Vue {
     );
   }
 
-  mounted() {
-    if (this.page_type === "create") this.page_state = "ready";
-    if (this.page_type === "edit") this.get_wallet();
-    if (!store.state.admin.kinds.length) this.get_kinds();
-    if (!store.state.admin.gateways.length) this.get_gateways();
-    this.get_blockchains();
-    this.get_currencies();
+  get linked_currencies(): Currency[] {
+    const search = this.linked_currencies_search;
+
+    if (this.page_state == "loading" || this.page_type == "create") return [];
+
+    return (this.wallet.currencies as string[])
+      .map(currency_id => {
+        return this.currencies.find(currency => currency.code == currency_id);
+      })
+      .filter(currency => {
+        return (
+          currency.code.toLowerCase().includes(search.toLowerCase()) ||
+          currency.name.toLowerCase().includes(search.toLowerCase())
+        );
+      });
+  }
+
+  get existing_currencies() {
+    const search = this.existing_currencies_search;
+
+    if (this.page_state == "loading") return [];
+
+    return this.currencies.filter(currency => {
+      if (!currency.code.toLowerCase().includes(search.toLowerCase()))
+        return false;
+      if (!currency.name.toLowerCase().includes(search.toLowerCase()))
+        return false;
+
+      if (
+        this.wallet.currencies.includes(currency.code) &&
+        this.page_type != "create"
+      )
+        return false;
+
+      return true;
+    });
+  }
+
+  PROPERTIES() {
+    const { wallet_settings } = this;
+    if (typeof wallet_settings == "object") {
+      return Object.keys(wallet_settings).map(key => {
+        return {
+          title: key,
+          key: key,
+          value: wallet_settings[key],
+          type: "input",
+          edit: true
+        };
+      });
+    } else {
+      return [];
+    }
+  }
+
+  set_wallet_settings_value(key: string, value) {
+    this.wallet_settings[key] = value;
+    this.$nextTick(() => {
+      this.$forceUpdate();
+    });
+  }
+
+  wallet_settings_as_string() {
+    return JSON.stringify(this.wallet_settings, undefined, 2);
+  }
+
+  async mounted() {
+    this.page_state = "loading";
+    await Promise.all([
+      this.page_type === "edit" ? this.get_wallet() : null,
+      store.state.admin.kinds.length ? null : await this.get_kinds(),
+      store.state.admin.gateways.length ? null : await this.get_gateways(),
+      this.get_blockchains(),
+      this.get_currencies()
+    ]);
+    this.page_state = "ready";
+  }
+
+  add_property(property: string) {
+    const { wallet_settings } = this;
+
+    if (!property) return;
+    this.new_property_value = "";
+    wallet_settings[property] = "";
+    this.wallet_settings = wallet_settings;
+
+    this.$nextTick(() => {
+      this.$forceUpdate();
+    });
   }
 
   async get_blockchains() {
@@ -215,7 +435,7 @@ export default class WalletSettingUpdateAndCreate extends Vue {
   async get_currencies() {
     try {
       const { data } = await store.dispatch(GET_CURRENCIES);
-      this.currencies = data.reduce((a, b) => ((a[b.code] = b.name), a), {});
+      this.currencies = data;
     } catch (error) {
       return error;
     }
@@ -230,37 +450,121 @@ export default class WalletSettingUpdateAndCreate extends Vue {
   }
 
   async get_wallet() {
-    this.page_state = "loading";
     try {
       const { data } = await store.dispatch(GET_WALLET, this.id);
 
       this.wallet = data;
-      this.page_state = "ready";
     } catch (error) {
-      this.page_state = "error";
       return error;
     }
   }
 
   async onSubmit() {
-    let { wallet } = this;
-    if (this.wallet_settings.uri || this.wallet_settings.secret) {
-      wallet = Object.assign(this.wallet, {
-        settings: this.wallet_settings
-      });
-    }
     const action = this.page_type === "create" ? CREATE_WALLET : UPDATE_WALLET;
-    delete wallet.created_at;
-    delete wallet.updated_at;
-    delete wallet.balance;
+    const {
+      id,
+      address,
+      blockchain_key,
+      gateway,
+      kind,
+      max_balance,
+      name,
+      status
+    } = this.wallet;
+
+    let payload: { [key: string]: any } = {
+      id,
+      address,
+      blockchain_key,
+      gateway,
+      kind,
+      max_balance: max_balance || 0,
+      name,
+      status
+    };
+
+    if (Object.values(this.wallet_settings).join("").length > 0) {
+      payload = Object.assign({ settings: this.wallet_settings }, payload);
+    }
+
+    if (this.page_type == "create") {
+      delete payload.id;
+
+      payload.currencies = this.wallet_currencies_cache;
+    }
 
     try {
-      await store.dispatch(action, wallet);
-      runNotice("success", "Create wallet successfully");
+      await store.dispatch(action, payload);
+
+      runNotice(
+        "success",
+        this.page_type === "create"
+          ? "Create wallet successfully"
+          : "Update wallet successfully"
+      );
       this.$router.push("/settings/wallets");
+    } catch (error) {
+      return error;
+    }
+  }
+
+  onCheckboxCurrenciesChanged(event) {
+    const vaule: string = event.target.value;
+    const checked: boolean = event.target.checked;
+
+    if (checked) {
+      this.wallet_currencies_cache.push(vaule);
+    } else {
+      const index = this.wallet_currencies_cache.indexOf(vaule);
+
+      if (index < 0) return;
+
+      this.wallet_currencies_cache.splice(index, 1);
+    }
+  }
+
+  async add_wallet_currencies() {
+    try {
+      await store.dispatch(UPDATE_WALLET_CURRENCIES, {
+        id: this.wallet.id,
+        currencies: this.wallet_currencies_cache
+      });
+      await this.get_wallet();
+
+      this.wallet_currencies_cache = [];
+    } catch (error) {
+      return error;
+    }
+  }
+
+  async delete_wallet_currency(currency_id) {
+    try {
+      await store.dispatch(DELETE_WALLET_CURRENCIES, {
+        id: this.wallet.id,
+        currencies: currency_id
+      });
+      await this.get_wallet();
     } catch (error) {
       return error;
     }
   }
 }
 </script>
+
+<style lang="less">
+.page-settings-wallets {
+  .z-table {
+    width: 100%;
+
+    &-row {
+      .code {
+        text-transform: uppercase;
+      }
+
+      i {
+        cursor: pointer;
+      }
+    }
+  }
+}
+</style>

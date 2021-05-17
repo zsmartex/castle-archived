@@ -10,8 +10,8 @@
               type: 'create'
             })
           "
-          >Add new</a-button
-        >
+          >Add new
+        </a-button>
       </div>
     </div>
     <div class="user-labels-content">
@@ -60,10 +60,10 @@ export default class App extends Vue {
   $refs!: {
     "modal-label": ModalLabel;
   };
-  @Prop() readonly user_info!: User;
+  @Prop() readonly user_info?: User;
 
   get labels() {
-    return this.user_info.labels;
+    return this.user_info?.labels;
   }
 
   async remove_label(key: string, scope: "private" | "public") {
@@ -97,8 +97,10 @@ export default class App extends Vue {
         return "green";
       case "phone":
         return "cyan";
-      case "document":
+      case "profile":
         return "blue";
+      case "document":
+        return "darkblue";
     }
   }
 

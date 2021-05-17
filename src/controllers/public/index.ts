@@ -1,5 +1,5 @@
 import GettersSetters from "./getters_setters";
-import Store from "./store";
+import Store, { IStore } from "./store";
 import { applyMixins } from "../mixins";
 
 class PublicController {
@@ -7,6 +7,7 @@ class PublicController {
 }
 
 interface PublicController extends GettersSetters {
+  store: IStore;
 };
 
 applyMixins(PublicController, [GettersSetters]);

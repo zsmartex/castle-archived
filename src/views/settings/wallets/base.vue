@@ -13,7 +13,7 @@
       @change-pagination="get_wallets"
       @click="on_table_click"
     >
-      <template slot="action" slot-scope="{ item, column }">
+      <template slot="action" slot-scope="{ column }">
         <span :class="`action text-${column.algin}`">
           <a-icon type="right" />
         </span>
@@ -61,9 +61,8 @@ export default class App extends Vue {
 
   readonly COLUMN = [
     { title: "Id", key: "id", algin: "left" },
-    { title: "Code", key: "currency", algin: "left" },
-    { title: "Kind", key: "kind", algin: "left" },
     { title: "Name", key: "name", algin: "left" },
+    { title: "Kind", key: "kind", algin: "left" },
     { title: "Address", key: "address", algin: "left", scopedSlots: true },
     { title: "Max Balance", key: "max_balance", algin: "left" },
     { title: "Status", key: "status", algin: "left" },
@@ -75,11 +74,7 @@ export default class App extends Vue {
   }
 
   get wallets() {
-    return this.data.map(wallet => {
-      wallet.currency = wallet.currency.toUpperCase();
-
-      return wallet;
-    });
+    return this.data;
   }
 
   async mounted() {

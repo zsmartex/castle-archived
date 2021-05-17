@@ -1,8 +1,5 @@
 <template>
-  <a-layout-content
-    v-if="!loading"
-    class="page-accountings-adjustments details"
-  >
+  <a-layout-content class="page-accountings-adjustments details">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-content">
@@ -13,28 +10,34 @@
               :key="setting.key"
               :item="setting"
             >
-              <template>
-                <template slot="counter_part_code">
-                  <a-select
-                    v-model="adjustment['receiving_account_code']"
-                    size="large"
-                    style="width: 20%; margin-right: 20px"
+              <template slot="counter_part_code">
+                <a-input
+                  :value="adjustment['currency_id']"
+                  size="large"
+                  placeholder="Currency"
+                  style="width: 20%"
+                />
+                <span class="splash"></span>
+                <a-select
+                  v-model="adjustment['receiving_account_code']"
+                  size="large"
+                  style="width: 20%;"
+                >
+                  <a-select-option
+                    v-for="code in [202, 302, 402]"
+                    :value="code"
+                    :key="code"
                   >
-                    <a-select-option
-                      v-for="code in ['202,', '302', '402']"
-                      :value="code"
-                      :key="code"
-                    >
-                      {{ code }}
-                    </a-select-option>
-                  </a-select>
-                  <a-input
-                    v-model="adjustment['receiving_member_uid']"
-                    size="large"
-                    placeholder="UID"
-                    style="width: 35%"
-                  />
-                </template>
+                    {{ code }}
+                  </a-select-option>
+                </a-select>
+                <span class="splash"></span>
+                <a-input
+                  v-model="adjustment['receiving_member_uid']"
+                  size="large"
+                  placeholder="UID"
+                  style="width: 35%"
+                />
               </template>
             </z-info-row>
           </template>
@@ -43,30 +46,29 @@
               v-for="setting in SETTING_PANEL_LEFT"
               :value="adjustment[setting.key]"
               :key="setting.key"
+              :class="setting.class"
               :item="setting"
             >
-              <template>
-                <template slot="counter_part_code">
-                  <a-select
-                    :value="adjustment['receiving_account_code']"
-                    size="large"
-                    style="width: 20%; margin-right: 20px"
+              <template slot="counter_part_code">
+                <a-select
+                  :value="adjustment['receiving_account_code']"
+                  size="large"
+                  style="width: 20%; margin-right: 20px"
+                >
+                  <a-select-option
+                    v-for="code in [202, 302, 402]"
+                    :value="code"
+                    :key="code"
                   >
-                    <a-select-option
-                      v-for="code in ['202,', '302', '402']"
-                      :value="code"
-                      :key="code"
-                    >
-                      {{ code }}
-                    </a-select-option>
-                  </a-select>
-                  <a-input
-                    :value="adjustment['receiving_member_uid']"
-                    size="large"
-                    placeholder="UID"
-                    style="width: 35%"
-                  />
-                </template>
+                    {{ code }}
+                  </a-select-option>
+                </a-select>
+                <span
+                  class="z-info-row-no-edit z-info-row-no-edit-border"
+                  style="width: 35%; height: 40px; line-height: 40px;"
+                >
+                  {{ adjustment["receiving_member_uid"] }}
+                </span>
               </template>
             </z-info-row>
           </template>
@@ -82,21 +84,32 @@
             style="margin-bottom: 12px"
           />
           <a-textarea
-            v-if="page_type === 'add'"
-            size="large"
-            v-model="adjustment['description']"
-            placeholder="Adjustment description"
-            allow-clear
-            :autosize="true"
-          />
-          <a-textarea
-            v-else
             size="large"
             :value="adjustment['description']"
             placeholder="Adjustment description"
             allow-clear
-            :autosize="true"
+            :auto-size="{ minRows: 5 }"
+            disabled
           />
+        </div>
+
+        <div class="button-group">
+          <a-button
+            @click="create_adjustment"
+            type="primary"
+            :loading="loading"
+            v-if="page_type == 'add'"
+          >
+            Submit
+          </a-button>
+          <template v-if="adjustment.state == 'pending'">
+            <a-button type="danger" @click="adjustment_action('reject')">
+              Reject
+            </a-button>
+            <a-button type="primary" @click="adjustment_action('accept')">
+              Accept
+            </a-button>
+          </template>
         </div>
       </div>
     </z-configuration>
@@ -104,9 +117,15 @@
 </template>
 
 <script lang="ts">
+import { runNotice } from "@/mixins";
 import store from "@/store";
-import { GET_ADJUSTMENT, GET_CURRENCIES } from "@/store/types";
-import { Vue, Component } from "vue-property-decorator";
+import {
+  ACTION_ADJUSTMENT,
+  CREATE_ADJUSTMENT,
+  GET_ADJUSTMENT,
+  GET_CURRENCIES
+} from "@/store/types";
+import { Vue, Component, Watch } from "vue-property-decorator";
 
 @Component
 export default class AdjustmentInfo extends Vue {
@@ -116,13 +135,13 @@ export default class AdjustmentInfo extends Vue {
     asset_account_code: 0,
     category: "",
     creator_uid: "",
-    currency: "",
+    currency_id: "",
     description: "",
     reason: "",
-    receiving_account_code: "",
+    receiving_account_code: null,
     receiving_member_uid: ""
   };
-  currencies: string[] = [];
+  currencies: Currency[] = [];
 
   get page_type(): "add" | "update" {
     return this.$route.meta.page_type;
@@ -133,7 +152,10 @@ export default class AdjustmentInfo extends Vue {
   }
 
   get currencies_list(): { [key: string]: string } {
-    return this.currencies.reduce((a, b) => ((a[b] = b.toUpperCase()), a), {});
+    return this.currencies.reduce(
+      (a, b) => ((a[b.code] = b.code.toUpperCase()), a),
+      {}
+    );
   }
 
   get SETTING_PANEL_LEFT() {
@@ -143,21 +165,27 @@ export default class AdjustmentInfo extends Vue {
         key: "reason",
         value: this.adjustment.reason,
         type: "input",
+        border: true,
         style: this.page_type === "update" ? "width: 45%" : "width: 100%",
-        edit: true
+        edit: this.page_type === "add"
       },
       {
         title: "State",
         key: "state",
-        value: this.adjustment.state,
+        value: this.adjustment.state?.toUpperCase(),
         type: "input",
         style: "width: 45%",
+        class: (() => {
+          if (this.adjustment.state == "pending") return "text-warn";
+          if (this.adjustment.state == "accepted") return "text-up";
+          if (this.adjustment.state == "rejected") return "text-down";
+        })(),
         edit: false
       },
       {
         title: "Currency",
-        key: "currency",
-        value: this.adjustment.currency,
+        key: "currency_id",
+        value: this.adjustment.currency_id || (this.adjustment as any).currency,
         type: "select",
         list: this.currencies_list
       },
@@ -165,34 +193,59 @@ export default class AdjustmentInfo extends Vue {
         title: "Category",
         key: "category",
         value: this.adjustment.category,
+        type: "select",
+        list: [
+          "asset_registration",
+          "investment",
+          "minting_token",
+          "balance_anomaly",
+          "misc",
+          "refund",
+          "compensation",
+          "incentive",
+          "bank_fees",
+          "bank_interest",
+          "minor"
+        ].reduce((acc, curr) => ((acc[curr] = curr), acc), {})
+      },
+      {
+        title: "Amount",
+        key: "amount",
+        value: this.adjustment.amount,
+        border: true,
         type: "input",
-        edit: true
+        edit: this.page_type === "add"
       },
       {
         title: "Asset code",
         key: "asset_account_code",
         value: this.adjustment.asset_account_code,
+        border: true,
         type: "input",
-        edit: true
+        edit: false
       },
       { title: "Counterpart code", key: "counter_part_code", type: "slot" },
       {
-        title: "Creator UID",
+        title: "Creator ID",
         key: "creator_uid",
         value: this.adjustment.creator_uid,
+        border: true,
+        algin: "left",
         type: "input",
-        edit: true
+        edit: false
       },
       {
-        title: "Vaildaor UID",
+        title: "Validator ID",
         key: "validator_uid",
-        value: this.adjustment.validator_uid || "",
+        value: this.adjustment.validator_uid,
+        border: true,
+        algin: "left",
         type: "input",
-        edit: true
+        edit: false
       }
     ].filter(setting => {
       if (this.page_type === "add") {
-        return !["state", "validator_uid"].includes(setting.key);
+        return !["state", "creator_uid"].includes(setting.key);
       }
 
       return true;
@@ -218,19 +271,18 @@ export default class AdjustmentInfo extends Vue {
     ].filter(() => this.page_type !== "add");
   }
 
-  beforeMount() {
-    if (this.page_type === "update") this.get_adjustment();
-    this.get_currencies();
+  async mounted() {
+    this.loading = true;
+    await this.get_currencies();
+    if (this.page_type === "update") await this.get_adjustment();
+    this.loading = false;
   }
 
   async get_adjustment() {
-    this.loading = true;
     try {
       const { data } = await store.dispatch(GET_ADJUSTMENT, this.id);
       this.adjustment = data;
-      this.loading = false;
     } catch (error) {
-      this.loading = false;
       return error;
     }
   }
@@ -238,10 +290,78 @@ export default class AdjustmentInfo extends Vue {
   async get_currencies() {
     try {
       const { data } = await store.dispatch(GET_CURRENCIES, { limit: 100 });
-      this.currencies = data.map(currency => currency.code);
+      this.currencies = data;
     } catch (error) {
       return error;
     }
   }
+
+  async create_adjustment() {
+    this.loading = true;
+    try {
+      await store.dispatch(CREATE_ADJUSTMENT, this.adjustment);
+
+      runNotice("success", "Create adjustment successfully");
+      this.$router.push("/accountings/adjustments");
+    } catch (error) {
+      return error;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  async adjustment_action(action: "accept" | "reject") {
+    this.loading = true;
+    try {
+      await store.dispatch(ACTION_ADJUSTMENT, {
+        id: this.adjustment.id,
+        action: action
+      });
+
+      await this.get_adjustment();
+    } catch (error) {
+      return error;
+    } finally {
+      this.loading = false;
+    }
+  }
+
+  @Watch("adjustment.currency_id")
+  onCurrencyIdChanged(currency_id: string) {
+    const currency = this.currencies.find(c => c.code == currency_id);
+
+    if (!currency) return;
+
+    this.adjustment.asset_account_code = currency.type == "fiat" ? 101 : 102;
+  }
 }
 </script>
+
+<style lang="less">
+.z-info-row {
+  &-counter_part_code {
+    .z-info-row-content {
+      position: relative;
+      align-items: center;
+    }
+  }
+
+  .splash {
+    background-color: #ccc;
+    height: 2px;
+    width: 16px;
+  }
+}
+
+.z-edit-panel {
+  .button-group {
+    position: absolute !important;
+    right: 20px;
+    bottom: 10px;
+
+    > * {
+      margin: 0 4px;
+    }
+  }
+}
+</style>

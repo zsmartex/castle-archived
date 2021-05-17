@@ -20,7 +20,7 @@
         {{ item.email }}
       </router-link>
     </template>
-    <template slot="action" slot-scope="{ item, column }">
+    <template slot="action" slot-scope="{ column }">
       <span :class="`action text-${column.algin}`">
         <a-icon type="right" />
       </span>

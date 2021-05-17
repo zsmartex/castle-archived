@@ -28,11 +28,10 @@
 <script lang="ts">
 import ZModalMixin from "@/mixins/z-modal";
 import { Component, Mixins, Watch } from "vue-property-decorator";
-import InputAuth from "@/components/auth-input.vue";
 
 @Component({
   components: {
-    "auth-input": InputAuth
+    "auth-input": () => import("@/components/auth-input.vue")
   }
 })
 export default class ModalOTP extends Mixins(ZModalMixin) {
@@ -85,8 +84,9 @@ export default class ModalOTP extends Mixins(ZModalMixin) {
     margin-top: 24px;
     margin-bottom: 32px;
   }
-}
 
-.modal-otp {
+  button {
+    margin-top: 12px;
+  }
 }
 </style>

@@ -18,7 +18,7 @@ const state: AdminState = {
     failed_logins: {},
     pending_applications: 0
   },
-  user_info: undefined,
+  user_info: null,
   clients: [],
   kinds: [],
   gateways: [],

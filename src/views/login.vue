@@ -7,7 +7,6 @@
 </template>
 
 <script lang="ts">
-import store from "@/store";
 import ModalOTP from "@/layouts/modal/modal-otp.vue";
 import { FormBox, LogoBox } from "@/layouts/login";
 import { Vue, Component, Watch } from "vue-property-decorator";

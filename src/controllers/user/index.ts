@@ -1,4 +1,4 @@
-import Store from "./store";
+import Store, { IStore } from "./store";
 import GettersSetters from "./getters_setters";
 import { applyMixins } from '../mixins';
 import ZSmartModel from "@zsmartex/z-eventbus";
@@ -110,6 +110,7 @@ class UserController {
 }
 
 interface UserController extends GettersSetters {
+  store: IStore;
 };
 
 applyMixins(UserController, [GettersSetters]);

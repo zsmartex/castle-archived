@@ -37,10 +37,10 @@ export const saveFile = (string: string, filename: string, options?: BlobPropert
   return saveAs(blob, filename);
 };
 
-export const runNotice = (type: ZTypes.NoticeType, message: string) => {
+export const runNotice = (type: ZTypes.NoticeType | "t-success" | "t-info" | "t-warning" | "t-error", message: string) => {
   if (!message) return;
 
-  notification[type]({ message, placement: "topRight" });
+  notification[type.replace("t-", "")]({ message, placement: "topRight" });
 };
 
 export const getFileBase64 = (file: File): Promise<string | ArrayBuffer> => {

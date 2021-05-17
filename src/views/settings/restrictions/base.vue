@@ -108,7 +108,6 @@ export default class Restriction extends Vue {
 
   delete_restriction(id: number) {
     runNotice("success", "Restriction deleted successfully");
-    console.log(id);
   }
 
   onModalSubmit(payload) {

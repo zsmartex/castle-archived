@@ -19,7 +19,7 @@ import { Vue, Component, Prop } from "vue-property-decorator";
   }
 })
 export default class App extends Vue {
-  @Prop() readonly user_info!: User;
-  @Prop() readonly member_info!: Member;
+  @Prop() readonly user_info?: User;
+  @Prop({ default: null }) readonly member_info?: Member;
 }
 </script>

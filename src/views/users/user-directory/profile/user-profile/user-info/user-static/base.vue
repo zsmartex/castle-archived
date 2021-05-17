@@ -29,15 +29,16 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
-  protected edit = false;
   @Prop() readonly user_info!: User;
+
+  edit = false;
 
   get INFO_LIST() {
     return [
       {
         title: "UID",
         key: "uid",
-        value: this.user_info.uid,
+        value: this.user_info?.uid,
         style: "width: 45%",
         type: "input",
         edit: false
@@ -45,7 +46,7 @@ export default class App extends Vue {
       {
         title: "Created at",
         key: "created_at",
-        value: this.getDate(this.user_info.created_at as Date),
+        value: this.getDate(this.user_info?.created_at as Date),
         style: "width: 45%",
         type: "input",
         edit: false

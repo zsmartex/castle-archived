@@ -59,7 +59,14 @@ import {
   UPDATE_BANNER,
   GET_BROADCASTS,
   CREATE_BROADCAST,
-  UPDATE_BROADCAST
+  UPDATE_BROADCAST,
+  CREATE_ADJUSTMENT,
+  ACTION_ADJUSTMENT,
+  GET_LABELS,
+  VERIFY_USER_PROFILE,
+  GET_DOCUMENTS,
+  UPDATE_WALLET_CURRENCIES,
+  DELETE_WALLET_CURRENCIES
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -273,13 +280,18 @@ const actions: ActionTree<AdminState, any> = {
     return new ApiClient("trade").get("admin/deposits", payload);
   },
   [GET_WITHDRAWS](store, payload) {
-    return new ApiClient("trade").get("admin/withdraws", payload);
+    let url = "admin/withdraws";
+    if (payload.url_extend) url = url + "?" + payload.url_extend;
+
+    delete payload.url_extend;
+
+    return new ApiClient("trade").get(url, payload);
   },
   [GET_WITHDRAW](store, id: number) {
     return new ApiClient("trade").get(`admin/withdraws/${id}`);
   },
   [SEND_WITHDRAW_ACTION](store, payload) {
-    return new ApiClient("trade").get("admin/withdraws/actions", payload);
+    return new ApiClient("trade").post("admin/withdraws/actions", payload);
   },
   [GET_ADJUSTMENTS](store, payload) {
     return new ApiClient("trade").get("admin/adjustments", payload);
@@ -310,6 +322,27 @@ const actions: ActionTree<AdminState, any> = {
   },
   [UPDATE_BROADCAST](store, payload) {
     return new ApiClient("applogic").put("admin/broadcasts", payload);
+  },
+  [CREATE_ADJUSTMENT](store, payload) {
+    return new ApiClient("trade").post("admin/adjustments/new", payload);
+  },
+  [ACTION_ADJUSTMENT](store, payload) {
+    return new ApiClient("trade").post("admin/adjustments/action", payload);
+  },
+  [GET_LABELS](store, payload) {
+    return new ApiClient("auth").get("admin/users/labels", payload);
+  },
+  [VERIFY_USER_PROFILE](store, payload) {
+    return new ApiClient("auth").put("admin/profiles", payload)
+  },
+  [GET_DOCUMENTS](store, payload) {
+    return new ApiClient("auth").get("admin/users/documents/pending", payload);
+  },
+  [UPDATE_WALLET_CURRENCIES](store, payload) {
+    return new ApiClient("trade").post("admin/wallets/currencies", payload);
+  },
+  [DELETE_WALLET_CURRENCIES](store, payload) {
+    return new ApiClient("trade").delete("admin/wallets/currencies", payload);
   }
 };
 

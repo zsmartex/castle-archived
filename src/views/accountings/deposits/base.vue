@@ -21,7 +21,29 @@
           {{ item.uid }}
         </router-link>
       </template>
-      <template slot="action" slot-scope="{ item, column }">
+      <template slot="state" slot-scope="{ item, column }">
+        <span
+          :class="[
+            'state',
+            `text-${column.algin}`,
+            {
+              'text-up': ['collected'].includes(item.state),
+              'text-down': ['skipped', 'rejected', 'canceled'].includes(
+                item.state
+              ),
+              'text-warn': [
+                'accepted',
+                'processing',
+                'fee_processing',
+                'submitted'
+              ].includes(item.state)
+            }
+          ]"
+        >
+          {{ item.state }}
+        </span>
+      </template>
+      <template slot="action" slot-scope="{ column }">
         <span :class="`action text-${column.algin}`">
           <a-icon type="right" />
         </span>
@@ -90,6 +112,7 @@ export default class Deposits extends Vue {
     { title: "Amount", key: "amount", algin: "left" },
     { title: "Currency", key: "currency", algin: "left" },
     { title: "Confirmations", key: "confirmations", algin: "left" },
+    { title: "State", key: "state", algin: "right", scopedSlots: true },
     { title: "", key: "action", algin: "center", scopedSlots: true }
   ];
 

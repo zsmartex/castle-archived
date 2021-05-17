@@ -16,7 +16,9 @@
       </template>
     </auth-input>
 
-    <a-button type="primary" htmlType="submit">Login</a-button>
+    <auth-button type="submit" :loading="loading" :disabled="button_disabled">
+      Login
+    </auth-button>
   </form>
 </template>
 
@@ -36,15 +38,18 @@ export default class App extends Vue {
   captcha_response = "";
 
   get email_error() {
-    const { email } = this;
-
     return !this.email;
   }
 
   get password_error() {
-    const { password } = this;
-
     return !this.password;
+  }
+
+  get button_disabled() {
+    if (this.email_error) return true;
+    if (this.password_error) return true;
+
+    return false;
   }
 
   login() {
