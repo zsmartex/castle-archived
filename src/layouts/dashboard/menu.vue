@@ -287,6 +287,15 @@ export default class MenuComponent extends Vue {
           }
         },
         {
+          name: "Whitelisted Smart Contracts",
+          icon: "down-square",
+          path: "whitelisted-smart-contract",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
           name: "Banners",
           icon: "picture",
           path: "banners",

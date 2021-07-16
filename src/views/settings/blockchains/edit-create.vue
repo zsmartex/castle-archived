@@ -8,19 +8,7 @@
             v-model="blockchain[setting.key]"
             :key="setting.key"
             :item="setting"
-          >
-            <template slot="status">
-              <span>
-                {{ blockchain.status === "active" ? "Enabled" : "Disabled" }}
-              </span>
-              <span>
-                <a-switch
-                  :checked="blockchain.status === 'active'"
-                  @change="onStatusChanged"
-                />
-              </span>
-            </template>
-          </z-info-row>
+          />
         </div>
       </div>
       <div class="z-edit-panel" :style="{ paddingBottom: '60px' }">
@@ -66,8 +54,14 @@ export default class App extends Vue {
     height: 0,
     explorer_address: "",
     explorer_transaction: "",
-    min_confirmations: 0,
-    status: "disabled"
+    min_confirmations: null,
+    min_deposit_amount: null,
+    withdraw_fee: null,
+    min_withdraw_amount: null,
+    collection_gas_speed: "standard",
+    withdrawal_gas_speed: "standard",
+    status: "disabled",
+    protocol: ""
   };
 
   get id() {
@@ -82,7 +76,7 @@ export default class App extends Vue {
     return store.state.admin.clients.reduce(
       (a, b) => ((a[b] = b.toUpperCase()), a),
       {}
-    );
+    ) as { [key: string]: string };
   }
 
   get SETTING_PANEL_LEFT() {
@@ -98,11 +92,15 @@ export default class App extends Vue {
       {
         title: "Status",
         key: "status",
-        value: this.blockchain?.status === "active", // active || disabled
+        value: this.blockchain?.status, // active || disabled
         style: "width: 47.5%",
         style_content:
           "justify-content: space-between;display: flex;flex-wrap: wrap",
-        type: "slot"
+        type: "switch",
+        switch: {
+          0: "disabled",
+          1: "active"
+        }
       },
       {
         title: "Client",
@@ -122,6 +120,27 @@ export default class App extends Vue {
         title: "Min confirmations",
         key: "min_confirmations",
         value: this.blockchain?.min_confirmations,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "Min deposit amount",
+        key: "min_deposit_amount",
+        value: this.blockchain?.min_deposit_amount,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "Min withdrawal amount",
+        key: "min_withdraw_amount",
+        value: this.blockchain?.min_withdraw_amount,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "Withdrawal fee",
+        key: "withdraw_fee",
+        value: this.blockchain?.withdraw_fee,
         type: "input",
         edit: true
       }
@@ -158,6 +177,35 @@ export default class App extends Vue {
         value: this.blockchain?.explorer_transaction,
         type: "input",
         edit: true
+      },
+      {
+        title: "Deposit collection gas speed",
+        key: "collection_gas_speed",
+        value: this.blockchain?.collection_gas_speed,
+        type: "select",
+        list: {
+          standard: "standard",
+          safelow: "safelow",
+          fast: "fast"
+        }
+      },
+      {
+        title: "Withdrawal collection gas speed",
+        key: "withdrawal_gas_speed",
+        value: this.blockchain?.withdrawal_gas_speed,
+        type: "select",
+        list: {
+          standard: "standard",
+          safelow: "safelow",
+          fast: "fast"
+        }
+      },
+      {
+        title: "Protocol",
+        key: "protocol",
+        value: this.blockchain?.protocol,
+        type: "input",
+        edit: true
       }
     ];
   }
@@ -185,10 +233,32 @@ export default class App extends Vue {
   }
 
   async onSubmit() {
+    let payload = {
+      key: this.blockchain.key,
+      name: this.blockchain.name,
+      client: this.blockchain.client,
+      height: this.blockchain.height,
+      protocol: this.blockchain.protocol,
+      server: this.blockchain.server,
+      min_confirmations: this.blockchain.min_confirmations,
+      min_deposit_amount: this.blockchain.min_deposit_amount,
+      min_withdraw_amount: this.blockchain.min_withdraw_amount,
+      withdraw_fee: this.blockchain.withdraw_fee,
+      explorer_address: this.blockchain.explorer_address,
+      explorer_transaction: this.blockchain.explorer_transaction,
+      collection_gas_speed: this.blockchain.collection_gas_speed,
+      withdrawal_gas_speed: this.blockchain.withdrawal_gas_speed,
+      status: this.blockchain.status
+    };
+
+    if (this.page_type == "edit") {
+      payload = Object.assign(payload, { id: this.blockchain.id });
+    }
+
     try {
       await store.dispatch(
         this.page_type === "edit" ? UPDATE_BLOCKCHAIN : CREATE_BLOCKCHAIN,
-        this.blockchain
+        payload
       );
 
       runNotice(
@@ -202,10 +272,6 @@ export default class App extends Vue {
     } catch (error) {
       return error;
     }
-  }
-
-  onStatusChanged(checked: boolean) {
-    this.blockchain.status = checked ? "active" : "disabled";
   }
 }
 </script>

@@ -55,9 +55,21 @@ const routes = [
             component: () => import("@/views/exchange/currencies/new-edit.vue")
           },
           {
-            path: "currencies/:code/edit",
+            path: "currencies/:code",
             meta: { type: "edit" },
             component: () => import("@/views/exchange/currencies/new-edit.vue")
+          },
+          {
+            path: "currencies/:code/networks/new",
+            meta: { type: "new" },
+            component: () =>
+              import("@/views/exchange/currencies/blockchain-currency.vue")
+          },
+          {
+            path: "currencies/:code/networks/:id",
+            meta: { type: "edit" },
+            component: () =>
+              import("@/views/exchange/currencies/blockchain-currency.vue")
           },
           {
             path: "markets",
@@ -148,12 +160,14 @@ const routes = [
           {
             path: "blockchains/add",
             meta: { type: "create" },
-            component: () => import("@/views/settings/blockchains/edit-create.vue"),
+            component: () =>
+              import("@/views/settings/blockchains/edit-create.vue")
           },
           {
             path: "blockchains/:id/edit",
             meta: { type: "edit" },
-            component: () => import("@/views/settings/blockchains/edit-create.vue"),
+            component: () =>
+              import("@/views/settings/blockchains/edit-create.vue")
           },
           {
             path: "wallets",
@@ -180,6 +194,11 @@ const routes = [
           {
             path: "restrictions",
             component: () => import("@/views/settings/restrictions/base.vue"),
+          },
+          {
+            path: "whitelisted-smart-contract",
+            component: () =>
+              import("@/views/settings/whitelisted-smart-contract/base.vue")
           },
           {
             path: "banners",

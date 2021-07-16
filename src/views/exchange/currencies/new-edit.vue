@@ -8,16 +8,7 @@
             v-model="currency[setting.key]"
             :key="setting.key"
             :item="setting"
-          >
-            <template v-if="setting.type === 'slot'" :slot="setting.key">
-              <span>
-                {{ currency[setting.key] ? "Enabled" : "Disabled" }}
-              </span>
-              <span>
-                <a-switch v-model="currency[setting.key]" />
-              </span>
-            </template>
-          </z-info-row>
+          />
         </div>
       </div>
       <div class="z-edit-panel">
@@ -37,78 +28,70 @@
               </span>
             </template>
           </z-info-row>
-        </div>
-      </div>
-    </z-configuration>
-    <z-configuration>
-      <div class="z-edit-panel">
-        <div class="z-edit-panel-head">
-          <div class="z-edit-panel-title">
-            Properties
-          </div>
-          <div class="add-property">
-            <a-popover placement="bottomRight" trigger="click">
-              <template slot="content">
-                <z-info-row
-                  class="add-property"
-                  v-model="new_property_value"
-                  :item="{
-                    title: 'New property',
-                    value: new_property_value,
-                    type: 'input',
-                    edit: true
-                  }"
-                >
-                  <template slot="suffix">
-                    <a-icon
-                      type="plus-circle"
-                      @click="add_property(new_property_value)"
-                    />
-                  </template>
-                </z-info-row>
-              </template>
-              <div>
-                <a-icon type="plus-circle" />
-                Add property
-              </div>
-            </a-popover>
-          </div>
-        </div>
-        <div class="z-edit-panel-content">
-          <z-info-row
-            v-for="setting in PROPERTIES()"
-            :key="setting.key"
-            :item="setting"
-            @input="value => set_options_value(setting.key, value)"
-          >
-            <template slot="suffix">
-              <a-icon
-                type="minus-circle"
-                @click="remove_property(setting.key)"
-              />
-            </template>
-          </z-info-row>
-        </div>
-      </div>
-      <div class="z-edit-panel">
-        <div class="z-edit-panel-content">
-          <div class="note-borderable">
-            <p class="note-borderable-head">JSON</p>
-            <pre>{{ properties_as_string() }}</pre>
-          </div>
           <div class="z-edit-panel-action">
             <a-button @click="onSubmit" type="primary">Submit</a-button>
           </div>
         </div>
       </div>
     </z-configuration>
+    <z-table
+      v-if="type == 'edit'"
+      :columns="NETWORK_COLUMN"
+      :data="currency.networks"
+      :hover="true"
+      :scroll="false"
+      :pagination="false"
+      @click="on_table_network_clicked"
+    >
+      <template slot="deposit_enabled" slot-scope="{ item, column }">
+        <span :class="`deposit_enabled text-${column.algin}`">
+          <span @click.stop.prevent>
+            <a-switch
+              :checked="item.deposit_enabled"
+              @click="
+                update_network(item, { deposit_enabled: !item.deposit_enabled })
+              "
+            >
+              <a-icon slot="checkedChildren" type="check" />
+              <a-icon slot="unCheckedChildren" type="close" />
+            </a-switch>
+          </span>
+        </span>
+      </template>
+      <template slot="withdrawal_enabled" slot-scope="{ item, column }">
+        <span :class="`withdrawal_enabled text-${column.algin}`">
+          <span @click.stop.prevent>
+            <a-switch
+              :checked="item.withdrawal_enabled"
+              @click="
+                update_network(item, {
+                  withdrawal_enabled: !item.withdrawal_enabled
+                })
+              "
+            >
+              <a-icon slot="checkedChildren" type="check" />
+              <a-icon slot="unCheckedChildren" type="close" />
+            </a-switch>
+          </span>
+        </span>
+      </template>
+    </z-table>
+
+    <div v-if="type == 'edit'" class="add-network">
+      <a-button type="primary" @click="add_network">ADD NETWORK</a-button>
+    </div>
   </a-layout-content>
 </template>
 
 <script lang="ts">
 import store from "@/store";
 import { runNotice } from "@/mixins";
-import { GET_CURRENCY, CREATE_CURRENCY, UPDATE_CURRENCY } from "@/store/types";
+import {
+  GET_CURRENCY,
+  CREATE_CURRENCY,
+  UPDATE_CURRENCY,
+  UPDATE_BLOCKCHAIN_CURRENCY
+} from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
@@ -116,31 +99,41 @@ export default class App extends Vue {
   new_property_value = "";
   loading = false;
   currency: Currency = {
+    id: null,
     name: "",
-    symbol: "",
-    explorer_transaction: "",
-    explorer_address: "",
-    type: "",
-    deposit_enabled: false,
-    withdrawal_enabled: false,
-    deposit_fee: "0",
-    min_deposit_amount: "0",
-    withdraw_fee: "0",
-    min_withdraw_amount: "0",
-    withdraw_limit_24h: "0",
-    withdraw_limit_72h: "0",
-    base_factor: 0,
-    precision: 0,
-    position: 0,
-    min_confirmations: 0,
+    status: "disabled",
     code: "",
-    blockchain_key: "",
-    min_collection_amount: "0",
-    visible: true,
-    subunits: 0,
-    icon_url: "",
-    options: {}
+    type: "coin",
+    precision: null,
+    position: null,
+    icon_url: null,
+    price: 0,
+    networks: []
   };
+
+  get NETWORK_COLUMN() {
+    return [
+      { title: "ID", key: "id", algin: "left" },
+      { title: "Key", key: "blockchain_key", algin: "left" },
+      { title: "Min deposit", key: "min_deposit_amount", algin: "left" },
+      { title: "Min withdrawal", key: "min_withdraw_amount", algin: "left" },
+      { title: "Withdrawal fee", key: "withdraw_fee", algin: "left" },
+      { title: "Subunits", key: "subunits", algin: "left" },
+      {
+        title: "Deposit enabled",
+        key: "deposit_enabled",
+        algin: "right",
+        scopedSlots: true
+      },
+      {
+        title: "Withdrawal enabled",
+        key: "withdrawal_enabled",
+        algin: "right",
+        scopedSlots: true
+      },
+      { title: "", key: "action", algin: "right" }
+    ];
+  }
 
   get type() {
     return this.$route.meta.type;
@@ -157,25 +150,20 @@ export default class App extends Vue {
         edit: true
       },
       {
-        title: "Visible",
-        key: "visible",
-        value: this.currency.visible,
-        style: "float: right;width: 47.5%",
-        style_content:
-          "justify-content: space-between;display: flex;flex-wrap: wrap",
-        type: "slot"
+        title: "Status",
+        key: "status",
+        value: this.currency.status,
+        style: "position: absolute; width: auto; right: 0px;",
+        type: "switch",
+        switch: {
+          0: "disabled",
+          1: "enabled"
+        }
       },
       {
         title: "Code",
         key: "code",
         value: this.currency.code,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Symbol",
-        key: "symbol",
-        value: this.currency.symbol,
         type: "input",
         edit: true
       },
@@ -190,23 +178,9 @@ export default class App extends Vue {
         }
       },
       {
-        title: "Subunits",
-        key: "subunits",
-        value: this.currency.subunits,
-        type: "input",
-        edit: true
-      },
-      {
         title: "Precision",
         key: "precision",
         value: this.currency.precision,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Blockchain key",
-        key: "blockchain_key",
-        value: this.currency.blockchain_key,
         type: "input",
         edit: true
       }
@@ -215,77 +189,6 @@ export default class App extends Vue {
 
   get SETTING_PANEL_RIGHT() {
     return [
-      {
-        title: "Deposit",
-        key: "deposit_enabled",
-        value: this.currency.deposit_enabled,
-        style: "float: left;width: 47.5%",
-        style_content:
-          "justify-content: space-between;display: flex;flex-wrap: wrap",
-        type: "slot"
-      },
-      {
-        title: "Withdrawal",
-        key: "withdrawal_enabled",
-        value: this.currency.withdrawal_enabled,
-        style: "float: right;width: 47.5%",
-        style_content:
-          "justify-content: space-between;display: flex;flex-wrap: wrap",
-        type: "slot"
-      },
-      {
-        title: "Deposit Fee",
-        key: "deposit_fee",
-        value: this.currency.deposit_fee,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Min Deposit Amount",
-        key: "min_deposit_amount",
-        value: this.currency.min_deposit_amount,
-        style: "float: left;width: 47.5%",
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Min Collection Amount",
-        key: "min_collection_amount",
-        value: this.currency.min_collection_amount,
-        style: "float: right;width: 47.5%",
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Withdraw Fee",
-        key: "withdraw_fee",
-        value: this.currency.withdraw_fee,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Min Withdraw Amount",
-        key: "min_withdraw_amount",
-        value: this.currency.min_withdraw_amount,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Withdraw Limit 24h",
-        key: "withdraw_limit_24h",
-        value: this.currency.withdraw_limit_24h,
-        style: "float: left;width: 47.5%",
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Withdraw Limit 72h",
-        key: "withdraw_limit_72h",
-        value: this.currency.withdraw_limit_72h,
-        style: "float: right;width: 47.5%",
-        type: "input",
-        edit: true
-      },
       {
         title: "Position",
         key: "position",
@@ -299,29 +202,15 @@ export default class App extends Vue {
         value: this.currency.icon_url,
         type: "input",
         edit: true
+      },
+      {
+        title: "Price",
+        key: "price",
+        value: this.currency.price,
+        type: "input",
+        edit: true
       }
     ];
-  }
-
-  PROPERTIES() {
-    const options = this.currency.options;
-    if (typeof options == "object") {
-      return Object.keys(options).map(key => {
-        return {
-          title: key,
-          key: key,
-          value: options[key],
-          type: "input",
-          edit: true
-        };
-      });
-    } else {
-      return [];
-    }
-  }
-
-  properties_as_string() {
-    return JSON.stringify(this.currency.options, undefined, 2);
   }
 
   get code() {
@@ -329,18 +218,16 @@ export default class App extends Vue {
   }
 
   async beforeMount() {
+    this.loading = true;
     if (this.type === "edit") await this.get_currency();
-    if (!this.currency) return;
+    this.loading = false;
   }
 
   async get_currency() {
-    this.loading = true;
     try {
       const { data } = await store.dispatch(GET_CURRENCY, this.code);
       this.currency = data;
-      this.loading = false;
     } catch (error) {
-      this.loading = false;
       return error;
     }
   }
@@ -377,27 +264,60 @@ export default class App extends Vue {
   }
 
   async onSubmit() {
-    const { type, currency } = this;
+    let payload = {
+      code: this.currency.code,
+      name: this.currency.name,
+      type: this.currency.type,
+      status: this.currency.status,
+      position: this.currency.position,
+      precision: this.currency.precision,
+      price: this.currency.price,
+      icon_url: this.currency.icon_url
+    };
 
-    delete currency.created_at;
-    delete currency.updated_at;
-    delete currency.base_factor;
-
-    currency.subunits = Number(currency.subunits);
+    if (this.type == "edit") {
+      payload = Object.assign(payload, { id: this.currency.id });
+    }
 
     try {
       await store.dispatch(
-        type === "edit" ? UPDATE_CURRENCY : CREATE_CURRENCY,
-        currency
+        this.type === "edit" ? UPDATE_CURRENCY : CREATE_CURRENCY,
+        payload
       );
 
       runNotice(
         "success",
-        type === "edit"
+        this.type === "edit"
           ? "Currency updated successfully"
           : "Currency created successfully"
       );
       this.$router.push("/exchange/currencies");
+    } catch (error) {
+      return error;
+    }
+  }
+
+  on_table_network_clicked(item) {
+    this.$router.push({
+      path: `/exchange/currencies/${this.currency.code}/networks/${item.id}`
+    });
+  }
+
+  add_network() {
+    this.$router.push({
+      path: `/exchange/currencies/${this.currency.code}/networks/new`
+    });
+  }
+
+  async update_network(network: BlockchainCurrency, payload) {
+    try {
+      await store.dispatch(
+        UPDATE_BLOCKCHAIN_CURRENCY,
+        Object.assign(payload, { id: network.id })
+      );
+      const index = this.currency.networks.findIndex(n => n.id == network.id);
+
+      this.currency.networks[index] = Object.assign(network, payload);
     } catch (error) {
       return error;
     }

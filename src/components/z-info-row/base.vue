@@ -3,6 +3,7 @@
     :class="[
       this['row-prefix-cls'],
       this['row-prefix-cls'] + '-' + item.key,
+      this['row-prefix-cls'] + '-type-' + item.type,
       { [`${this['row-prefix-cls']}-desc`]: item.desc }
     ]"
     :style="item.style"
@@ -52,6 +53,12 @@
           {{ select }}
         </a-select-option>
       </a-select>
+      <template v-else-if="item.type === 'switch'">
+        <a-switch :checked="!!switch_active_key" @change="onChange">
+          <a-icon slot="checkedChildren" type="check" />
+          <a-icon slot="unCheckedChildren" type="close" />
+        </a-switch>
+      </template>
       <div v-if="$slots.suffix" :class="`${this['row-prefix-cls']}-suffix`">
         <slot name="suffix" />
       </div>
@@ -69,8 +76,8 @@ export default class App extends Vue {
     title: string;
     desc?: string;
     key: string;
-    value: string | boolean;
-    type: "input" | "slot" | "select";
+    value: string | number | boolean;
+    type: "input" | "slot" | "select" | "switch";
     edit?: boolean;
     style?: string;
     style_title?: string;
@@ -79,7 +86,22 @@ export default class App extends Vue {
     list?: {
       [key: string]: string;
     };
+    switch: {
+      0: string | number | number | boolean;
+      1: string | number | number | boolean;
+    };
   };
+
+  get switch_active_key() {
+    let val = 0;
+    for (const key in this.item.switch) {
+      if (this.item.value == this.item.switch[key]) {
+        val = Number(key);
+      }
+    }
+
+    return val;
+  }
 
   input($event) {
     const { value } = $event.target;
@@ -95,9 +117,16 @@ export default class App extends Vue {
     this.$el.classList.remove(`${this["row-prefix-cls"]}-focus`);
   }
 
-  onChange(value: string) {
-    this.$emit("change", { key: this.item.key, value: value });
-    this.$emit("input", value);
+  onChange(value: string | number | boolean) {
+    if (this.item.type == "switch") {
+      const val = this.item.switch[Number(value)];
+
+      this.$emit("change", { key: this.item.key, value: val });
+      this.$emit("input", val);
+    } else {
+      this.$emit("change", { key: this.item.key, value: value });
+      this.$emit("input", value);
+    }
   }
 }
 </script>

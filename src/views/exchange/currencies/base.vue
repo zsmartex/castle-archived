@@ -13,7 +13,15 @@
       @change-pagination="get_currencies"
       @click="on_table_click"
     >
-      <template slot="action" slot-scope="{ item, column }">
+      <template slot="status" slot-scope="{ item, column }">
+        <span :class="`status text-${column.algin}`">
+          <a-switch :checked="item.status == 'enabled'">
+            <a-icon slot="checkedChildren" type="check" />
+            <a-icon slot="unCheckedChildren" type="close" />
+          </a-switch>
+        </span>
+      </template>
+      <template slot="action" slot-scope="{ column }">
         <span :class="`action text-${column.algin}`">
           <a-icon type="right" />
         </span>
@@ -54,12 +62,9 @@ export default class App extends Vue {
   private readonly COLUMN = [
     { title: "Code", key: "code", algin: "left" },
     { title: "Name", key: "name", algin: "left" },
-    { title: "Symbol", key: "symbol", algin: "left" },
     { title: "Type", key: "type", algin: "left" },
-    { title: "Created", key: "created_at", algin: "left" },
-    { title: "Visible", key: "visible", algin: "left" },
-    { title: "Deposit", key: "deposit_enabled", algin: "left" },
-    { title: "Withdrawal", key: "withdrawal_enabled", algin: "left" },
+    { title: "Price", key: "price", algin: "left" },
+    { title: "Status", key: "status", algin: "left", scopedSlots: true },
     { title: "", key: "action", algin: "center", scopedSlots: true }
   ];
 
@@ -148,7 +153,7 @@ export default class App extends Vue {
   }
 
   on_table_click(item) {
-    this.$router.push(`/exchange/currencies/${item.code.toLowerCase()}/edit`);
+    this.$router.push(`/exchange/currencies/${item.code.toLowerCase()}`);
   }
 
   onDrawerSubmit() {

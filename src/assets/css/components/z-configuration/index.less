@@ -25,6 +25,7 @@
     }
 
     &-head {
+      position: relative;
       justify-content: space-between;
       display: flex;
       flex-wrap: wrap;
@@ -43,21 +44,18 @@
     }
 
     &-content {
+      position: relative;
       justify-content: space-between;
       display: flex;
       flex-wrap: wrap;
+
       > * {
         margin-top: 12px;
       }
 
       .@{edit-panel-cls}-action {
-        position: absolute;
-        right: 18px;
-        bottom: 12px;
-
-        > * {
-          margin: 0 12px;
-        }
+        width: 100%;
+        text-align: right;
       }
     }
 

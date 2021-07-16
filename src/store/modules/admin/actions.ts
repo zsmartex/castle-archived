@@ -66,7 +66,13 @@ import {
   VERIFY_USER_PROFILE,
   GET_DOCUMENTS,
   UPDATE_WALLET_CURRENCIES,
-  DELETE_WALLET_CURRENCIES
+  DELETE_WALLET_CURRENCIES,
+  CREATE_BLOCKCHAIN_CURRENCY,
+  UPDATE_BLOCKCHAIN_CURRENCY,
+  GET_WHITELISTED_SMART_CONTRACTS,
+  GET_WHITELISTED_SMART_CONTRACT,
+  CREATE_WHITELISTED_SMART_CONTRACT,
+  UPDATE_WHITELISTED_SMART_CONTRACT
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -333,7 +339,7 @@ const actions: ActionTree<AdminState, any> = {
     return new ApiClient("auth").get("admin/users/labels", payload);
   },
   [VERIFY_USER_PROFILE](store, payload) {
-    return new ApiClient("auth").put("admin/profiles", payload)
+    return new ApiClient("auth").put("admin/profiles", payload);
   },
   [GET_DOCUMENTS](store, payload) {
     return new ApiClient("auth").get("admin/users/documents/pending", payload);
@@ -343,6 +349,41 @@ const actions: ActionTree<AdminState, any> = {
   },
   [DELETE_WALLET_CURRENCIES](store, payload) {
     return new ApiClient("trade").delete("admin/wallets/currencies", payload);
+  },
+  [CREATE_BLOCKCHAIN_CURRENCY](store, payload) {
+    return new ApiClient("trade").post(
+      "admin/blockchain_currencies/new",
+      payload
+    );
+  },
+  [UPDATE_BLOCKCHAIN_CURRENCY](store, payload) {
+    return new ApiClient("trade").post(
+      "admin/blockchain_currencies/update",
+      payload
+    );
+  },
+  [GET_WHITELISTED_SMART_CONTRACTS](store, payload) {
+    return new ApiClient("trade").get(
+      "admin/whitelisted_smart_contracts",
+      payload
+    );
+  },
+  [GET_WHITELISTED_SMART_CONTRACT](store, id) {
+    return new ApiClient("trade").get(
+      "admin/whitelisted_smart_contracts/#{id}".replace("#{id}", id)
+    );
+  },
+  [CREATE_WHITELISTED_SMART_CONTRACT](store, payload) {
+    return new ApiClient("trade").post(
+      "admin/whitelisted_smart_contracts",
+      payload
+    );
+  },
+  [UPDATE_WHITELISTED_SMART_CONTRACT](store, payload) {
+    return new ApiClient("trade").put(
+      "admin/whitelisted_smart_contracts",
+      payload
+    );
   }
 };
 

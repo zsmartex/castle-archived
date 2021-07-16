@@ -54,6 +54,7 @@ import { Vue, Component } from "vue-property-decorator";
 @Component
 export default class App extends Vue {
   data: Wallet[] = [];
+  loading = false;
   page = 1;
   total = 0;
   limit = 50;
@@ -69,18 +70,15 @@ export default class App extends Vue {
     { title: "", key: "action", algin: "center", scopedSlots: true }
   ];
 
-  get loading() {
-    return !this.data.length || !this.blockchains.length;
-  }
-
   get wallets() {
     return this.data;
   }
 
   async mounted() {
     this.set_action_header();
+    this.loading = true;
     await this.get_blockchains();
-    this.get_wallets({
+    await this.get_wallets({
       page: this.page,
       limit: this.limit
     });
@@ -117,6 +115,7 @@ export default class App extends Vue {
   }
 
   async get_wallets(payload) {
+    this.loading = true;
     try {
       const { data, headers } = await store.dispatch(GET_WALLETS, payload);
 
@@ -126,6 +125,8 @@ export default class App extends Vue {
       this.limit = Number(headers["per-page"]);
     } catch (error) {
       return error;
+    } finally {
+      this.loading = false;
     }
   }
 
