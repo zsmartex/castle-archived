@@ -2,12 +2,8 @@ const webpack = require("webpack");
 const path = require("path");
 const TransformModulesPlugin = require("webpack-transform-modules-plugin");
 const CompressionPlugin = require("compression-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
 const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
-const BundleAnalyzerPlugin = require("webpack-bundle-analyzer")
-  .BundleAnalyzerPlugin;
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const PreloadWebpackPlugin = require("@vue/preload-webpack-plugin");
 const smp = new SpeedMeasurePlugin();
 
@@ -106,8 +102,7 @@ if (isProduction) {
         sizeThreshold: 1024 * 1024 * 1024
       }
     }),
-    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/),
-    new BundleAnalyzerPlugin()
+    new webpack.IgnorePlugin(/^\.\/locale$/, /moment$/)
   );
 }
 
