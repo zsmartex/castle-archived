@@ -1,4 +1,68 @@
 declare global {
+  namespace Quantex {
+    type StrategyTypeCopy = "copy";
+    type StrategyTypeTrade = "trade";
+    type StrategyType = StrategyTypeCopy | StrategyTypeTrade;
+    type StrategySideBuy = "buy";
+    type StrategySideSell = "sell";
+    type StrategySideBoth = "both";
+    type StrategySide = StrategySideBuy | StrategySideSell | StrategySideBoth;
+    type StrategyStateEnabled = "enabled";
+    type StrategyStateDisabled = "disabled";
+    type StrategyState = StrategyStateEnabled | StrategyStateDisabled;
+
+    interface Strategy {
+      id?: number;
+      type: StrategyType;
+      side: StrategySide;
+      enable_orderback: boolean;
+      target_market_id: number;
+      source_market_ids: number[];
+      state: StrategyState;
+      created_at?: Date;
+      updated_at?: Date;
+    }
+
+    interface StrategyFlow {
+      id?: number;
+      strategy_id: number;
+      period: number;
+      spread_bids: number;
+      spread_asks: number;
+      levels_size: number;
+      levels_count: number;
+      levels_start: number;
+      state: StrategyState;
+      created_at?: Date;
+      updated_at?: Date;
+    }
+
+    interface Market {
+      id?: number;
+      ask: string;
+      bid: string;
+      exchange_id: number;
+      limit_asks_base: number;
+      limit_bids_base: number;
+      base_precision: number;
+      quote_precision: number;
+      created_at?: Date;
+      updated_at?: Date;
+    }
+
+    interface Exchange {
+      id?: number;
+      name: string;
+      driver: string;
+      key: string;
+      secret: string;
+      host: string;
+      ws: string;
+      created_at?: Date;
+      updated_at?: Date;
+    }
+  }
+
   interface Metrics {
     signups: { [key: string]: number };
     sucessful_logins: { [key: string]: number };
