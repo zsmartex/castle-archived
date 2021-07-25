@@ -63,7 +63,14 @@ export default class App extends Vue {
         value: this.user_info?.role,
         type: "select",
         style: "width: 45%",
-        list: this.role_list
+        list: (() => {
+          return store.state.admin.role.reduce((obj, rl) => {
+            return {
+              ...obj,
+              [rl]: rl
+            };
+          }, {});
+        })()
       },
       {
         title: "Fee group",
@@ -88,10 +95,6 @@ export default class App extends Vue {
           "justify-content: space-between;display: flex;flex-wrap: wrap;"
       }
     ];
-  }
-
-  get role_list() {
-    return store.state.admin.role.map(record => (({} as any)[record] = record));
   }
 
   async on2FASwitch(checked: boolean) {

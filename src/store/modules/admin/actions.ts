@@ -137,7 +137,8 @@ const actions: ActionTree<AdminState, any> = {
   },
   async [UPDATE_USER_ROLE]({ commit }, payload) {
     try {
-      await new ApiClient("auth").put("admin/users/role/" + payload.uid, {
+      await new ApiClient("auth").put("admin/users/role", {
+        uid: payload.uid,
         role: payload.role,
       });
 
