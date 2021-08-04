@@ -390,7 +390,7 @@ export default class BlockchainCurrencyPage extends Vue {
     }
 
     try {
-      store.dispatch(
+      await store.dispatch(
         this.page_type == "edit"
           ? UPDATE_BLOCKCHAIN_CURRENCY
           : CREATE_BLOCKCHAIN_CURRENCY,

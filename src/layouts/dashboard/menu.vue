@@ -314,6 +314,41 @@ export default class MenuComponent extends Vue {
           }
         }
       ]
+    },
+    {
+      key: "bot",
+      name: "Bot",
+      icon: "stock",
+      path: "bot",
+      children: [
+        {
+          name: "Exchanges",
+          icon: "line-chart",
+          path: "exchanges",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Markets",
+          icon: "bar-chart",
+          path: "markets",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
+          name: "Strategies",
+          icon: "radar-chart",
+          path: "strategies",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        }
+      ]
     }
   ];
 

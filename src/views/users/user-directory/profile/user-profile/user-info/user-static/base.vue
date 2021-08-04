@@ -2,9 +2,9 @@
   <div class="user-info">
     <div class="user-info-head">
       <div class="title">
-        <div class="email">{{ user_info.email }}</div>
+        <div class="email">{{ email }}</div>
         <div class="last-activity">
-          Last activity: {{ getDate(user_info.updated_at) }}
+          Last activity: {{ getDate(updated_at) }}
         </div>
       </div>
       <div class="action">
@@ -52,6 +52,14 @@ export default class App extends Vue {
         edit: false
       }
     ];
+  }
+
+  get email() {
+    return this.user_info?.email;
+  }
+
+  get updated_at() {
+    return this.user_info?.updated_at;
   }
 
   start_edit() {

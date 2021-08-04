@@ -209,6 +209,34 @@ const routes = [
             component: () => import("@/views/settings/broadcasts/base.vue")
           }
         ]
+      },
+      {
+        path: "bot",
+        component: () => import("@/views/settings/base.vue"),
+        children: [
+          {
+            path: "exchanges",
+            component: () => import("@/views/bot/exchanges/base.vue"),
+          },
+          {
+            path: "markets",
+            component: () => import("@/views/bot/markets/base.vue"),
+          },
+          {
+            path: "strategies",
+            component: () => import("@/views/bot/strategies/base.vue"),
+          },
+          {
+            path: "strategies/new",
+            meta: { type: "create" },
+            component: () => import("@/views/bot/strategies/add-edit.vue"),
+          },
+          {
+            path: "strategies/:id",
+            meta: { type: "edit" },
+            component: () => import("@/views/bot/strategies/add-edit.vue"),
+          },
+        ]
       }
     ]
   },

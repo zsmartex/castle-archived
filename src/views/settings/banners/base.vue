@@ -14,7 +14,11 @@
           <a-button type="preview" @click="open_modal_image(item.uuid)">Image</a-button>
           <a-button type="delete" @click="delete_banner(item)">Delete</a-button>
         </span>
-        <modal-upload-image :ref="`modal-upload-image-${item.uuid}`" :value="item.uuid" :edit-image="false" />
+        <modal-upload-image
+          :ref="`modal-upload-image-${item.uuid}`"
+          :value="item.uuid"
+          :edit-image="false"
+        />
       </template>
       <template v-if="!loading" slot="row-extend">
         <row-create @created="get_banners" />
@@ -26,7 +30,6 @@
 <script lang="ts">
 import store from "@/store";
 import { GET_BANNERS, UPDATE_BANNER } from "@/store/types";
-import ApiClient from "@zsmartex/z-apiclient";
 import { Vue, Component } from "vue-property-decorator";
 import ModalUploadImage from "./modal-upload-image.vue";
 
@@ -70,7 +73,10 @@ export default class PageBanners extends Vue {
     this.loading = true;
 
     try {
-      await store.dispatch(UPDATE_BANNER, Object.assign(banner, { state: "deleted" }));
+      await store.dispatch(
+        UPDATE_BANNER,
+        Object.assign(banner, { state: "deleted" })
+      );
 
       setTimeout(() => {
         this.get_banners();

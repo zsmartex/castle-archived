@@ -18,21 +18,20 @@
             v-model="blockchain[setting.key]"
             :key="setting.key"
             :item="setting"
-          >
-            <template v-if="setting.key === 'height'" slot="suffix">
-              <a-button type="primary">Reset</a-button>
-            </template>
-          </z-info-row>
+          />
           <div class="z-edit-panel-action">
             <a-button @click="onSubmit" type="primary">Submit</a-button>
           </div>
         </div>
       </div>
     </z-configuration>
+
+    <modal-block-scanning :blockchain="blockchain" ref="modal-block-scanning" />
   </a-layout-content>
 </template>
 
 <script lang="ts">
+import ZSmartModel from "@zsmartex/z-eventbus";
 import store from "@/store";
 import { runNotice } from "@/mixins";
 import {
@@ -43,7 +42,11 @@ import {
 } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
-@Component
+@Component({
+  components: {
+    "modal-block-scanning": () => import("./modal-block-scanning.vue")
+  }
+})
 export default class App extends Vue {
   loading = false;
   blockchain: Blockchain = {
@@ -153,7 +156,6 @@ export default class App extends Vue {
         title: "Height",
         key: "height",
         value: this.blockchain?.height,
-        style: "width: 47.5%",
         type: "input",
         edit: true
       },
@@ -210,9 +212,29 @@ export default class App extends Vue {
     ];
   }
 
-  mounted() {
-    if (this.page_type === "edit") this.get_blockchain();
+  set_action_header() {
+    this.$route.meta["action-header"] = [
+      {
+        title: "Scan Blocks",
+        key: "scan_blocks",
+        icon: "search",
+        callback: () => {
+          (this.$refs["modal-block-scanning"] as any).create();
+        }
+      }
+    ];
+
+    this.$nextTick(() => {
+      ZSmartModel.emit("set-action-header");
+    });
+  }
+
+  async mounted() {
     if (!store.state.admin.clients.length) this.get_clients();
+    if (this.page_type === "edit") {
+      await this.get_blockchain();
+    }
+    this.set_action_header();
   }
 
   async get_blockchain() {

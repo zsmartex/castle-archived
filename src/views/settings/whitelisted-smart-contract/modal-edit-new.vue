@@ -28,7 +28,10 @@
 import { runNotice } from "@/mixins";
 import ZModalMixin from "@/mixins/z-modal";
 import store from "@/store";
-import { CREATE_WHITELISTED_SMART_CONTRACT, UPDATE_WHITELISTED_SMART_CONTRACT } from "@/store/types";
+import {
+  CREATE_WHITELISTED_SMART_CONTRACT,
+  UPDATE_WHITELISTED_SMART_CONTRACT
+} from "@/store/types";
 import { Component, Mixins } from "vue-property-decorator";
 
 type ModalType = "edit" | "new";
@@ -136,7 +139,12 @@ export default class ModalSmartContract extends Mixins(ZModalMixin) {
           : CREATE_WHITELISTED_SMART_CONTRACT,
         payload
       );
-      runNotice("success", "Smart Contract created successfully");
+      runNotice(
+        "success",
+        this.modal_type == "edit"
+          ? "Smart Contract updated successfully"
+          : "Smart Contract created successfully"
+      );
       this.$emit("updated");
       this.delete();
     } catch (error) {
@@ -150,9 +158,11 @@ export default class ModalSmartContract extends Mixins(ZModalMixin) {
 
 <style lang="less">
 .modal-smart-contract {
-  button {
-    margin-top: 12px;
-    width: 100%;
+  .ant-modal-body {
+    button {
+      margin-top: 12px;
+      width: 100%;
+    }
   }
 }
 </style>

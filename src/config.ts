@@ -19,5 +19,7 @@ export default {
   recaptcha: {
     sitekey: "6LcrA5wUAAAAABY8KW-beaUOjShGC_U2va3kJEJt"
   },
-  timeZone: "UTC"
+  timeZone: "UTC",
+  finex: true,
+  quantex: true,
 };

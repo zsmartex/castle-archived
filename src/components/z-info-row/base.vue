@@ -40,7 +40,7 @@
       <slot v-else-if="item.type === 'slot'" :name="item.key" :item="item" />
       <a-select
         v-else-if="item.type === 'select'"
-        :value="item.value"
+        :value="(item.value || '').toString()"
         @change="onChange"
         @focus="focus"
         @blur="blur"

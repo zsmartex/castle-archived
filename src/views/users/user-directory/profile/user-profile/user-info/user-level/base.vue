@@ -1,7 +1,7 @@
 <template>
   <div class="user-level">
     <div class="user-level-head">
-      <div class="title">Level: {{ user_info.level }}</div>
+      <div class="title">Level: {{ level }}</div>
     </div>
     <div class="user-level-content">
       <z-info-row
@@ -84,8 +84,12 @@ export default class App extends Vue {
     ];
   }
 
+  get level() {
+    return this.user_info?.level;
+  }
+
   get labels() {
-    return this.user_info.labels;
+    return this.user_info?.labels || [];
   }
 
   async delete_label() {
@@ -101,7 +105,7 @@ export default class App extends Vue {
     await store.dispatch(
       payload.value ? CREATE_USER_LABEL : DELETE_USER_LABEL,
       {
-        uid: this.user_info.uid,
+        uid: this.user_info?.uid,
         key: payload.key,
         scope: "private",
         value: payload.value ? "verified" : null

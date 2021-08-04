@@ -19,9 +19,10 @@
     position: relative;
     flex: 1;
     padding: 10px 20px;
+    border-left: @border-width-base @border-style-base @border-color-split;
 
-    &:nth-child(2) {
-      border-left: @border-width-base @border-style-base @border-color-split;
+    &:first-child {
+      border-left: none;
     }
 
     &-head {

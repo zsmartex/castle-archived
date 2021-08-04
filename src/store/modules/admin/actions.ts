@@ -72,7 +72,9 @@ import {
   GET_WHITELISTED_SMART_CONTRACTS,
   GET_WHITELISTED_SMART_CONTRACT,
   CREATE_WHITELISTED_SMART_CONTRACT,
-  UPDATE_WHITELISTED_SMART_CONTRACT
+  UPDATE_WHITELISTED_SMART_CONTRACT,
+  GET_BLOCKCHAIN_LATEST_BLOCK,
+  SCAN_BLOCK
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -143,7 +145,8 @@ const actions: ActionTree<AdminState, any> = {
   },
   async [UPDATE_USER_ROLE]({ commit }, payload) {
     try {
-      await new ApiClient("auth").put("admin/users/role/" + payload.uid, {
+      await new ApiClient("auth").post("admin/users/role", {
+        uid: payload.uid,
         role: payload.role,
       });
 
@@ -384,6 +387,12 @@ const actions: ActionTree<AdminState, any> = {
       "admin/whitelisted_smart_contracts",
       payload
     );
+  },
+  [GET_BLOCKCHAIN_LATEST_BLOCK](store, id: number) {
+    return new ApiClient("trade").get(`admin/blockchains/${id}/latest_block`);
+  },
+  [SCAN_BLOCK](store, payload) {
+    return new ApiClient("trade").get("admin/blockchains/process_block", payload);
   }
 };
 
