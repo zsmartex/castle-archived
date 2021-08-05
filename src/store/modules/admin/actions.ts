@@ -392,7 +392,7 @@ const actions: ActionTree<AdminState, any> = {
     return new ApiClient("trade").get(`admin/blockchains/${id}/latest_block`);
   },
   [SCAN_BLOCK](store, payload) {
-    return new ApiClient("trade").get("admin/blockchains/process_block", payload);
+    return new ApiClient("trade").post("admin/blockchains/process_block", payload);
   }
 };
 

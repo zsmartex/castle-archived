@@ -68,6 +68,7 @@ import { GET_BLOCKCHAIN_LATEST_BLOCK, SCAN_BLOCK } from "@/store/types";
 @Component({})
 export default class ModalBlockScanning extends Mixins(ZModalMixin) {
   @Prop() readonly blockchain!: Blockchain;
+
   latest_block = 0;
   block_scan?: number = null;
   loading_get_latest_block = false;

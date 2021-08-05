@@ -233,8 +233,8 @@ export default class App extends Vue {
     if (!store.state.admin.clients.length) this.get_clients();
     if (this.page_type === "edit") {
       await this.get_blockchain();
+      this.set_action_header();
     }
-    this.set_action_header();
   }
 
   async get_blockchain() {
