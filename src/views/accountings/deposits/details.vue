@@ -11,6 +11,7 @@
             <a-button
               v-if="['accepted', 'skipped', 'errored'].includes(deposit.state)"
               type="primary"
+              :loading="process_loading"
               @click="send_action('process')"
             >
               Process
@@ -40,6 +41,7 @@ import { Vue, Component } from "vue-property-decorator";
 export default class DepositDetails extends Vue {
   loading = false;
   deposit?: Deposit = null;
+  process_loading = false;
 
   get tid(): string {
     return this.$route.params.tid;
@@ -106,6 +108,7 @@ export default class DepositDetails extends Vue {
   }
 
   async send_action(action: string) {
+    this.process_loading = true;
     try {
       const { data } = await store.dispatch(SEND_DEPOSIT_ACTION, {
         id: this.deposit.id,
@@ -115,6 +118,8 @@ export default class DepositDetails extends Vue {
       this.deposit = data;
     } catch (error) {
       return error;
+    } finally {
+      this.process_loading = false;
     }
   }
 }
