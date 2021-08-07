@@ -74,7 +74,8 @@ import {
   CREATE_WHITELISTED_SMART_CONTRACT,
   UPDATE_WHITELISTED_SMART_CONTRACT,
   GET_BLOCKCHAIN_LATEST_BLOCK,
-  SCAN_BLOCK
+  SCAN_BLOCK,
+  SEND_DEPOSIT_ACTION
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -393,6 +394,9 @@ const actions: ActionTree<AdminState, any> = {
   },
   [SCAN_BLOCK](store, payload) {
     return new ApiClient("trade").post("admin/blockchains/process_block", payload);
+  },
+  [SEND_DEPOSIT_ACTION](store, payload) {
+    return new ApiClient("trade").post("admin/deposits/actions", payload);
   }
 };
 

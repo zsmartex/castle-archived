@@ -8,10 +8,11 @@
           </div>
 
           <div class="z-edit-panel-action" v-if="deposit">
-            <a-button type="reject" v-if="deposit.state == 'submitted'">
-              Reject
-            </a-button>
-            <a-button type="primary" v-if="deposit.state == 'accepted'">
+            <a-button
+              v-if="['accepted', 'skipped', 'errored'].includes(deposit.state)"
+              type="primary"
+              @click="send_action('process')"
+            >
               Process
             </a-button>
           </div>
@@ -31,8 +32,8 @@
 
 <script lang="ts">
 import store from "@/store";
-import { GET_DEPOSITS } from "@/store/types";
-import { getDate } from "@/mixins";
+import { GET_DEPOSITS, SEND_DEPOSIT_ACTION } from "@/store/types";
+import { getDate, runNotice } from "@/mixins";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
@@ -100,6 +101,19 @@ export default class DepositDetails extends Vue {
       this.loading = false;
     } catch (error) {
       this.loading = false;
+      return error;
+    }
+  }
+
+  async send_action(action: string) {
+    try {
+      const { data } = await store.dispatch(SEND_DEPOSIT_ACTION, {
+        id: this.deposit.id,
+        action: action
+      });
+      runNotice("success", "Action was send successfully");
+      this.deposit = data;
+    } catch (error) {
       return error;
     }
   }
