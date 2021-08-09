@@ -32,7 +32,69 @@
         <div class="z-edit-panel-head">
           <div class="z-edit-panel-title">Withdraw info</div>
           <div v-if="withdraw" class="z-edit-panel-action">
-            <template v-if="withdraw.state == 'accepted'">
+            <a-button
+              v-if="withdraw.state == 'prepared'"
+              type="primary"
+              @click="send_action('accept')"
+            >
+              Accept
+            </a-button>
+            <a-button
+              v-if="
+                withdraw.state == 'prepared' || withdraw.state == 'accepted'
+              "
+              type="danger"
+              @click="send_action('cancel')"
+            >
+              Cancel
+            </a-button>
+            <a-button
+              v-if="
+                withdraw.state == 'accepted' ||
+                  withdraw.state == 'skipped' ||
+                  withdraw.state == 'errored'
+              "
+              type="primary"
+              @click="send_action('process')"
+            >
+              Process
+            </a-button>
+            <a-button
+              v-if="withdraw.state == 'accepted'"
+              type="primary"
+              @click="send_action('load')"
+            >
+              Load
+            </a-button>
+            <a-button
+              v-if="
+                withdraw.state == 'processing' ||
+                  withdraw.state == 'under_review'
+              "
+              type="primary"
+              @click="send_action('dispatch')"
+            >
+              Dispatch
+            </a-button>
+            <a-button
+              v-if="
+                withdraw.state == 'confirming' ||
+                  withdraw.state == 'errored' ||
+                  withdraw.state == 'under_review'
+              "
+              type="primary"
+              @click="send_action('success')"
+            >
+              Success
+            </a-button>
+            <a-button
+              v-if="withdraw.state == 'processing'"
+              type="warning"
+              @click="send_action('review')"
+            >
+              Review
+            </a-button>
+            <!-- <template v-if="withdraw.state == 'accepted'">
               <a-button type="danger" @click="send_action('cancel')">
                 Cancel
               </a-button>
@@ -50,7 +112,7 @@
               <a-button type="primary" @click="send_action('accept')">
                 Accept
               </a-button>
-            </template>
+            </template> -->
           </div>
         </div>
         <div class="z-edit-panel-content">

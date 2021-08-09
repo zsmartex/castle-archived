@@ -25,13 +25,13 @@
       </template>
       <template slot="action" slot-scope="{ item, column }">
         <span :class="`action text-${column.algin}`">
-          <span @click.stop.prevent class="ic-action">
+          <!-- <span @click.stop.prevent class="ic-action">
             <a-icon
               type="redo"
               :class="{ 'redo-loading': redo_loading == item.id }"
               @click="reload_strategy(item.id)"
             />
-          </span>
+          </span> -->
           <span @click.stop.prevent>
             <a-switch
               :checked="item.state == 'enabled'"

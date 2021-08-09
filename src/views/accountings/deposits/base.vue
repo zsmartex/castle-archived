@@ -101,7 +101,11 @@ export default class Deposits extends Vue {
     to: "",
     email: "",
     currency: "",
-    state: ""
+    state: "",
+    id: "",
+    uid: "",
+    txid: "",
+    type: ""
   };
 
   COLUMN = [
@@ -150,6 +154,34 @@ export default class Deposits extends Vue {
         title: "State",
         key: "state",
         value: this.payload_filter.state,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "ID",
+        key: "id",
+        value: this.payload_filter.id,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "UID",
+        key: "uid",
+        value: this.payload_filter.uid,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "TxID",
+        key: "txid",
+        value: this.payload_filter.txid,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "Type",
+        key: "type",
+        value: this.payload_filter.type,
         type: "input",
         edit: true
       }
@@ -201,10 +233,11 @@ export default class Deposits extends Vue {
 
   async get_deposits(payload = { limit: this.limit, page: this.page }) {
     this.loading = true;
+    payload = Object.assign(payload, { ordering: "asc" });
     try {
       const { data, headers } = await store.dispatch(
         GET_DEPOSITS,
-        (payload = Object.assign(payload, this.payload_filter))
+        Object.assign(payload, this.payload_filter)
       );
 
       this.data = data;
