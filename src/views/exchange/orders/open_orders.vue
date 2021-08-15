@@ -181,9 +181,6 @@ export default class OpenOrders extends Vue {
         callback: async () => {
           const csvString = await jsonToCSV(
             this.data.map(order => {
-              delete order.uid;
-              delete order.email;
-
               return order;
             })
           );

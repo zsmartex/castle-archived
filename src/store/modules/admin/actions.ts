@@ -103,7 +103,7 @@ const actions: ActionTree<AdminState, any> = {
       await new ApiClient("auth").post("admin/users/update", payload);
       commit("UPDATE_USER_INFO", payload);
     } catch (error) {
-      return Promise.reject(error);
+      return error;
     }
   },
   async [CREATE_USER_LABEL]({ dispatch }, payload) {

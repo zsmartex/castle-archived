@@ -12,7 +12,15 @@
       >
         <template v-if="setting.key === 'otp'" slot="otp">
           <span>{{ setting.value ? "Enabled" : "Disabled" }}</span>
-          <span><a-switch :checked="setting.value"/></span>
+          <span>
+            <a-switch
+              :checked="setting.value"
+              @click="
+                checked => onSettingChange({ key: 'otp', value: checked })
+              "
+              :loading="loading == 'otp'"
+            />
+          </span>
         </template>
       </z-info-row>
     </div>
@@ -133,7 +141,20 @@ export default class App extends Vue {
     this.loading = null;
   }
 
-  onSettingChange(payload: { key: string; value: string }) {
+  async onOTPChange(otp: boolean) {
+    if (otp == true) {
+      return;
+    }
+
+    this.loading = "otp";
+    await store.dispatch(UPDATE_USER_INFO, {
+      uid: this.user_info.uid,
+      otp: otp
+    });
+    this.loading = null;
+  }
+
+  onSettingChange(payload: { key: string; value: any }) {
     switch (payload.key) {
       case "state":
         this.onStateChange(payload.value);
@@ -143,6 +164,9 @@ export default class App extends Vue {
         break;
       case "group":
         this.onGroupChange(payload.value);
+        break;
+      case "otp":
+        this.onOTPChange(payload.value);
         break;
     }
   }

@@ -94,25 +94,6 @@
             >
               Review
             </a-button>
-            <!-- <template v-if="withdraw.state == 'accepted'">
-              <a-button type="danger" @click="send_action('cancel')">
-                Cancel
-              </a-button>
-              <a-button type="danger" @click="send_action('reject')">
-                Reject
-              </a-button>
-              <a-button type="primary" @click="send_action('process')">
-                Process
-              </a-button>
-            </template>
-            <template v-if="withdraw.state == 'prepared'">
-              <a-button type="danger" @click="send_action('cancel')">
-                Cancel
-              </a-button>
-              <a-button type="primary" @click="send_action('accept')">
-                Accept
-              </a-button>
-            </template> -->
           </div>
         </div>
         <div class="z-edit-panel-content">
