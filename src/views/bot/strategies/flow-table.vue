@@ -109,13 +109,18 @@ export default class FlowTable extends Vue {
     flow: Quantex.StrategyFlow,
     state: Quantex.StrategyState
   ) {
-    this.loading = true;
     const payload: Quantex.StrategyFlow = {
       id: flow.id,
       strategy_id: this.strategy.id,
       period: Number(flow.period),
       state: state
     };
+
+    const flows = [...this.flows];
+    const index = this.flows.findIndex(s => s.id == flow.id);
+    this.flows[index].loading = true;
+    this.flows = flows;
+    this.$forceUpdate();
 
     if (this.strategy.type == "copy") {
       payload.spread_asks = flow.spread_asks;
@@ -126,13 +131,16 @@ export default class FlowTable extends Vue {
     }
 
     try {
-      await QuantexController.update_strategy_flow(payload);
-      await this.get_flows();
+      const flows = [...this.flows];
+      const { data } = await QuantexController.update_strategy_flow(payload);
       runNotice("success", "Strategy flow update successfully");
+      flows[index] = data;
+      this.flows = flows;
+      this.$forceUpdate();
     } catch (error) {
       return error;
     } finally {
-      this.loading = false;
+      this.flows[index].loading = null;
     }
   }
 }

@@ -34,6 +34,7 @@ declare global {
       levels_count?: number;
       levels_start?: number;
       state?: StrategyState;
+      loading?: boolean;
       created_at?: Date;
       updated_at?: Date;
     }

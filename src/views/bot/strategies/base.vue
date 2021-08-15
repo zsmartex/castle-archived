@@ -14,24 +14,19 @@
         <span :class="`target_market text-${column.algin}`">
           {{
             [
-              market(item.target_market_id).ask,
-              market(item.target_market_id).bid
+              get_market(item.target_market_id).ask,
+              get_market(item.target_market_id).bid
             ]
               .join("/")
               .toUpperCase()
           }}
-          - ({{ exchange(market(item.target_market_id).exchange_id).name }})
+          - ({{
+            get_exchange(get_market(item.target_market_id).exchange_id).name
+          }})
         </span>
       </template>
       <template slot="action" slot-scope="{ item, column }">
         <span :class="`action text-${column.algin}`">
-          <!-- <span @click.stop.prevent class="ic-action">
-            <a-icon
-              type="redo"
-              :class="{ 'redo-loading': redo_loading == item.id }"
-              @click="reload_strategy(item.id)"
-            />
-          </span> -->
           <span @click.stop.prevent>
             <a-switch
               :checked="item.state == 'enabled'"
@@ -81,12 +76,11 @@ export default class Base extends Vue {
   ];
   redo_loading?: number = null;
 
-  mounted() {
-    Promise.all([
-      this.get_exchanges(),
-      this.get_markets(),
-      this.get_strategies()
-    ]);
+  async mounted() {
+    this.loading = true;
+    await this.get_exchanges();
+    await this.get_markets();
+    await this.get_strategies();
     this.set_action_header();
   }
 
@@ -109,31 +103,25 @@ export default class Base extends Vue {
 
   async get_markets() {
     try {
-      this.loading = true;
       const { data } = await QuantexController.get_markets();
       this.markets = data;
     } catch (error) {
       return error;
-    } finally {
-      this.loading = false;
     }
   }
 
   async get_exchanges() {
     try {
-      this.loading = true;
       const { data } = await QuantexController.get_exchanges();
       this.exchanges = data;
     } catch (error) {
       return error;
-    } finally {
-      this.loading = false;
     }
   }
 
   async get_strategies() {
+    this.loading = true;
     try {
-      this.loading = true;
       const { data } = await QuantexController.get_strategies();
       this.strategies = data;
     } catch (error) {
@@ -157,36 +145,32 @@ export default class Base extends Vue {
       state: state
     };
 
-    this.loading = true;
+    const strategies = [...this.strategies];
+    const index = this.strategies.findIndex(s => s.id == strategy.id);
+    this.strategies[index].loading = true;
+    this.strategies = strategies;
+    this.$forceUpdate();
+
     try {
-      await QuantexController.update_strategy(payload);
-      await this.get_strategies();
+      const strategies = [...this.strategies];
+      const { data } = await QuantexController.update_strategy(payload);
       runNotice("success", "Strategy updated successfully");
+      strategies[index] = data;
+      this.strategies = strategies;
+      this.$forceUpdate();
     } catch (error) {
       return error;
     } finally {
-      this.loading = false;
+      this.strategies[index].loading = null;
     }
   }
 
-  market(id: number) {
+  get_market(id: number) {
     return this.markets.find(market => market.id == id);
   }
 
-  exchange(id: number) {
+  get_exchange(id: number) {
     return this.exchanges.find(exchange => exchange.id == id);
-  }
-
-  async reload_strategy(id: number) {
-    this.redo_loading = id;
-    try {
-      await QuantexController.reload_strategy(id);
-      runNotice("success", "Strategy reload successfully");
-    } catch (error) {
-      return error;
-    } finally {
-      this.redo_loading = null;
-    }
   }
 }
 </script>

@@ -17,10 +17,6 @@ class QuantexController {
     return new ApiClient("quantex").put("admin/strategies", payload);
   }
 
-  reload_strategy(id: number) {
-    return new ApiClient("quantex").post(`admin/strategies/${id}/reload`);
-  }
-
   get_strategy_flows(strategy_id: number) {
     return new ApiClient("quantex").get(`admin/strategies/${strategy_id}/flows`);
   }
