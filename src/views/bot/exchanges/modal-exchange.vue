@@ -56,38 +56,14 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         key: "driver",
         value: this.modal_payload?.driver,
         type: "select",
-        list: {
-          zsmartex: "ZSmartex",
-          binance: "Binance"
-        }
-      },
-      {
-        title: "Key",
-        key: "key",
-        value: this.modal_payload?.key,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Secret",
-        key: "secret",
-        value: this.modal_payload?.secret,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Host Url",
-        key: "host",
-        value: this.modal_payload?.host,
-        type: "input",
-        edit: true
-      },
-      {
-        title: "Websocket Url",
-        key: "ws",
-        value: this.modal_payload?.ws,
-        type: "input",
-        edit: true
+        list: (() => {
+          return QuantexController.drivers.data.reduce((obj, driver) => {
+            return {
+              ...obj,
+              [driver]: driver.toUpperCase()
+            };
+          }, {});
+        })()
       }
     ];
   }
@@ -107,11 +83,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
     } else {
       this.modal_payload = {
         name: "",
-        driver: "",
-        key: "",
-        secret: "",
-        host: "",
-        ws: ""
+        driver: ""
       };
     }
   }
@@ -120,11 +92,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
     this.loading = true;
     const payload = {
       name: this.modal_payload.name,
-      driver: this.modal_payload.driver,
-      key: this.modal_payload.key,
-      secret: this.modal_payload.secret,
-      host: this.modal_payload.host,
-      ws: this.modal_payload.ws
+      driver: this.modal_payload.driver
     };
 
     try {
@@ -137,7 +105,6 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         await QuantexController.create_exchange(payload);
         runNotice("success", "Exchange created successfully");
       }
-      this.$emit("updated");
       this.delete();
     } catch (error) {
       return error;

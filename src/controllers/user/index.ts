@@ -5,12 +5,14 @@ import ZSmartModel from "@zsmartex/z-eventbus";
 import ApiClient from "@zsmartex/z-apiclient";
 import router from "@/router";
 import { runNotice } from "@/mixins";
+import { QuantexController } from "..";
+import config from "@/config";
 
 class UserController {
   store = Store;
 
   constructor() {
-    ZSmartModel.on("user/LOGIN", () => {
+    ZSmartModel.on("user/LOGIN", async () => {
       this.keep_session();
     });
 
@@ -67,6 +69,15 @@ class UserController {
       const { data } = await this.get_session();
 
       this.auth_success(data);
+
+      if (config.finex) {
+        await Promise.all([
+          QuantexController.get_exchanges(),
+          QuantexController.get_drivers(),
+          QuantexController.get_markets(),
+          QuantexController.get_strategies()
+        ])
+      }
     } catch (error) {
       this.auth_error();
       return error;
@@ -82,7 +93,7 @@ class UserController {
     }
   }
 
-  private auth_success(payload, url_callback?: string) {
+  private async auth_success(payload, url_callback?: string) {
     if (payload.state != "active") {
       return runNotice("error", "User not ready to use");
     }

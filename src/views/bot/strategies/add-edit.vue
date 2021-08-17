@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-bot-strategies edit">
+  <a-layout-content v-if="!loading" class="page-bot-strategies edit">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -140,17 +140,20 @@ import { Vue, Component } from "vue-property-decorator";
   }
 })
 export default class Base extends Vue {
-  loading = false;
   linked_markets_search = "";
   existing_markets_search = "";
 
-  markets = Array<Quantex.Market>();
-  exchanges = Array<Quantex.Exchange>();
   strategy: Quantex.Strategy = {
     source_market_ids: []
   };
 
   source_market_cached = Array<number>();
+
+  get loading() {
+    return (
+      this.exchanges.loading || this.markets.loading || this.strategies.loading
+    );
+  }
 
   get title() {
     return this.page_type == "edit" ? "Edit Strategy" : "Create Strategy";
@@ -162,6 +165,18 @@ export default class Base extends Vue {
 
   get page_type() {
     return this.$route.meta["type"] as string;
+  }
+
+  get exchanges() {
+    return QuantexController.exchanges;
+  }
+
+  get markets() {
+    return QuantexController.markets;
+  }
+
+  get strategies() {
+    return QuantexController.strategies;
   }
 
   market_columns(type: string) {
@@ -192,7 +207,7 @@ export default class Base extends Vue {
     const search = this.linked_markets_search;
 
     return (this.strategy.source_market_ids || [])
-      .map(id => this.markets.find(market => market.id == id))
+      .map(id => this.markets.data.find(market => market.id == id))
       .filter(market => {
         return market?.symbol.includes(search.toLowerCase());
       });
@@ -201,7 +216,7 @@ export default class Base extends Vue {
   get existing_markets() {
     const search = this.existing_markets_search;
 
-    return this.markets.filter(market => {
+    return this.markets.data.filter(market => {
       for (const id of this.strategy.source_market_ids || []) {
         if (market.id == id) return false;
       }
@@ -244,13 +259,13 @@ export default class Base extends Vue {
         value: this.strategy.target_market_id,
         type: "select",
         list: (() => {
-          return this.markets.reduce((obj, market) => {
+          return this.markets.data.reduce((obj, market) => {
             return {
               ...obj,
               [market["id"]]:
                 (market.ask + "/" + market.bid).toUpperCase() +
                 " - (" +
-                this.exchanges.find(
+                this.exchanges.data.find(
                   exchange => exchange.id == market.exchange_id
                 )?.name +
                 ")"
@@ -262,50 +277,25 @@ export default class Base extends Vue {
   }
 
   mounted() {
-    this.get_markets();
-    this.get_exchanges();
-    if (this.page_type == "edit") this.get_strategy();
-  }
-
-  async get_markets() {
-    try {
-      const { data } = await QuantexController.get_markets();
-      this.markets = data;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async get_exchanges() {
-    try {
-      const { data } = await QuantexController.get_exchanges();
-      this.exchanges = data;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async get_strategy() {
-    this.loading = true;
-    try {
-      const { data } = await QuantexController.get_strategy(this.strategy_id);
-      this.strategy = data;
-      console.log(this.strategy)
-    } catch (error) {
-      return error;
-    } finally {
-      this.loading = false;
+    if (this.page_type == "edit") {
+      this.strategy =
+        QuantexController.strategies.data.find(
+          strategy => strategy.id == this.strategy_id
+        ) || {};
     }
   }
 
   async add_source_markets() {
     try {
-      const payload = this.strategy;
-      payload.source_market_ids = this.source_market_cached;
-      delete payload.created_at;
-      delete payload.updated_at;
+      const payload = { ...this.strategy };
+      payload.source_market_ids = [
+        ...this.source_market_cached,
+        ...payload.source_market_ids
+      ];
       await QuantexController.update_strategy(payload);
-      await this.get_strategy();
+      this.strategy = QuantexController.strategies.data.find(
+        strategy => strategy.id == this.strategy_id
+      );
 
       this.source_market_cached = [];
     } catch (error) {
@@ -315,14 +305,14 @@ export default class Base extends Vue {
 
   async delete_linked_market(id: number) {
     try {
-      const payload = this.strategy;
+      const payload = { ...this.strategy };
       payload.source_market_ids = payload.source_market_ids.filter(
         _id => _id != id
       );
-      delete payload.created_at;
-      delete payload.updated_at;
       await QuantexController.update_strategy(payload);
-      await this.get_strategy();
+      this.strategy = QuantexController.strategies.data.find(
+        strategy => strategy.id == this.strategy_id
+      );
 
       this.source_market_cached = [];
     } catch (error) {
@@ -358,8 +348,6 @@ export default class Base extends Vue {
     const value: number = event.target.value;
     const checked: boolean = event.target.checked;
 
-    console.log(value);
-
     if (checked) {
       this.source_market_cached.push(value);
     } else {
@@ -372,7 +360,7 @@ export default class Base extends Vue {
   }
 
   get_exchange_name(exchange_id: number) {
-    return this.exchanges.find(exchange => exchange.id == exchange_id)?.name;
+    return this.exchanges.data.find(exchange => exchange.id == exchange_id)?.name;
   }
 }
 </script>

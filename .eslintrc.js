@@ -22,6 +22,7 @@ module.exports = {
     "@typescript-eslint/class-name-casing": "off",
     "@typescript-eslint/interface-name-prefix": "off",
     "no-console": "off",
+    "@typescript-eslint/no-empty-interface": "off",
   },
   globals: {}
 };

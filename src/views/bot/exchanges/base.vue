@@ -1,9 +1,9 @@
 <template>
   <a-layout-content class="page-bot-exchanges">
     <z-table
-      :loading="loading"
+      :loading="exchanges.loading"
       :columns="COLUMN"
-      :data="exchanges"
+      :data="exchanges.data"
       :hover="true"
       :scroll="false"
       :pagination="false"
@@ -14,8 +14,14 @@
             payload: item
           })
       "
-    />
-    <modal-exchange ref="modal-exchange" @updated="get_exchanges" />
+    >
+      <template slot="driver" slot-scope="{ item, column }">
+        <span :class="['driver', `text-${column.algin}`]">
+          {{ item.driver.toUpperCase() }}
+        </span>
+      </template>
+    </z-table>
+    <modal-exchange ref="modal-exchange" />
   </a-layout-content>
 </template>
 
@@ -30,21 +36,17 @@ import { Vue, Component } from "vue-property-decorator";
   }
 })
 export default class Base extends Vue {
-  loading = false;
-  limit = 50;
-  page = 1;
-  exchanges = Array<Quantex.Exchange>();
   COLUMN = [
     { title: "ID", key: "id", algin: "left" },
     { title: "Name", key: "name", algin: "left" },
-    { title: "Driver", key: "driver", algin: "left" },
-    { title: "Host", key: "host", algin: "left" },
-    { title: "WS", key: "ws", algin: "left" },
-    { title: "Action", key: "action", algin: "left" }
+    { title: "Driver", key: "driver", algin: "left", scopedSlots: true }
   ];
 
+  get exchanges() {
+    return QuantexController.exchanges;
+  }
+
   mounted() {
-    this.get_exchanges();
     this.set_action_header();
   }
 
@@ -65,18 +67,6 @@ export default class Base extends Vue {
     this.$nextTick(() => {
       ZSmartModel.emit("set-action-header");
     });
-  }
-
-  async get_exchanges() {
-    try {
-      this.loading = true;
-      const { data } = await QuantexController.get_exchanges();
-      this.exchanges = data;
-    } catch (error) {
-      return error;
-    } finally {
-      this.loading = false;
-    }
   }
 }
 </script>

@@ -57,10 +57,6 @@ declare global {
       id?: number;
       name?: string;
       driver?: string;
-      key?: string;
-      secret?: string;
-      host?: string;
-      ws?: string;
       created_at?: Date;
       updated_at?: Date;
     }

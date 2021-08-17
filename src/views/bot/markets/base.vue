@@ -1,9 +1,9 @@
 <template>
   <a-layout-content class="page-bot-exchanges">
     <z-table
-      :loading="loading"
+      :loading="markets.loading"
       :columns="COLUMN"
-      :data="markets"
+      :data="markets.data"
       :hover="true"
       :scroll="false"
       :pagination="false"
@@ -28,7 +28,7 @@
       </template>
     </z-table>
 
-    <modal-market ref="modal-market" @updated="get_markets" />
+    <modal-market ref="modal-market" />
   </a-layout-content>
 </template>
 
@@ -43,24 +43,24 @@ import { Vue, Component } from "vue-property-decorator";
   }
 })
 export default class Base extends Vue {
-  loading = false;
-  limit = 50;
-  page = 1;
-  markets = Array<Quantex.Market>();
-  exchanges = Array<Quantex.Exchange>();
   COLUMN = [
     { title: "Symbol", key: "symbol", algin: "left", scopedSlots: true },
     { title: "Exchange", key: "exchange", algin: "left", scopedSlots: true },
     { title: "Limit asks", key: "limit_asks_base", algin: "left" },
     { title: "Limit bids", key: "limit_bids_base", algin: "left" },
     { title: "Base precision", key: "base_precision", algin: "left" },
-    { title: "Quote precision", key: "quote_precision", algin: "left" },
-    { title: "Action", key: "action", algin: "center" }
+    { title: "Quote precision", key: "quote_precision", algin: "left" }
   ];
 
+  get exchanges() {
+    return QuantexController.exchanges;
+  }
+
+  get markets() {
+    return QuantexController.markets;
+  }
+
   mounted() {
-    this.get_exchanges();
-    this.get_markets();
     this.set_action_header();
   }
 
@@ -73,7 +73,7 @@ export default class Base extends Vue {
         callback: () => {
           (this.$refs["modal-market"] as any).create({
             type: "create",
-            exchanges: this.exchanges
+            exchanges: this.exchanges.data
           });
         }
       }
@@ -84,29 +84,9 @@ export default class Base extends Vue {
     });
   }
 
-  async get_markets() {
-    this.loading = true;
-    try {
-      const { data } = await QuantexController.get_markets();
-      this.markets = data;
-    } catch (error) {
-      return error;
-    } finally {
-      this.loading = false;
-    }
-  }
-
-  async get_exchanges() {
-    try {
-      const { data } = await QuantexController.get_exchanges();
-      this.exchanges = data;
-    } catch (error) {
-      return error;
-    }
-  }
-
   get_exchange_name(exchange_id: number) {
-    return this.exchanges.find(exchange => exchange.id == exchange_id)?.name;
+    return this.exchanges.data.find(exchange => exchange.id == exchange_id)
+      ?.name;
   }
 }
 </script>

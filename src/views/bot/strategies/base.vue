@@ -2,26 +2,29 @@
   <a-layout-content class="page-bot-strategies">
     <z-table
       class="strategies-table"
-      :loading="loading"
+      :loading="strategies.loading"
       :columns="COLUMN"
-      :data="strategies"
+      :data="strategies.data"
       :hover="true"
       :scroll="false"
       :pagination="false"
       @click="item => $router.push('/bot/strategies/' + item.id)"
     >
+      <template slot="type" slot-scope="{ item, column }">
+        <span :class="`type text-${column.algin}`">
+          {{ item.type.toUpperCase() }}
+        </span>
+      </template>
+      <template slot="side" slot-scope="{ item, column }">
+        <span :class="`side text-${column.algin}`">
+          {{ item.side.toUpperCase() }}
+        </span>
+      </template>
       <template slot="target_market" slot-scope="{ item, column }">
         <span :class="`target_market text-${column.algin}`">
-          {{
-            [
-              get_market(item.target_market_id).ask,
-              get_market(item.target_market_id).bid
-            ]
-              .join("/")
-              .toUpperCase()
-          }}
+          {{ get_market_name(item.target_market_id) }}
           - ({{
-            get_exchange(get_market(item.target_market_id).exchange_id).name
+            get_exchange_name(get_market_exchange_id(item.target_market_id))
           }})
         </span>
       </template>
@@ -59,13 +62,10 @@ export default class Base extends Vue {
   loading = false;
   limit = 50;
   page = 1;
-  exchanges = Array<Quantex.Exchange>();
-  markets = Array<Quantex.Market>();
-  strategies = Array<Quantex.Strategy>();
   COLUMN = [
     { title: "ID", key: "id", algin: "left" },
-    { title: "Type", key: "type", algin: "left" },
-    { title: "Side", key: "side", algin: "left" },
+    { title: "Type", key: "type", algin: "left", scopedSlots: true },
+    { title: "Side", key: "side", algin: "left", scopedSlots: true },
     {
       title: "Target Market",
       key: "target_market",
@@ -74,13 +74,20 @@ export default class Base extends Vue {
     },
     { title: "Action", key: "action", algin: "right", scopedSlots: true }
   ];
-  redo_loading?: number = null;
+
+  get exchanges() {
+    return QuantexController.exchanges;
+  }
+
+  get markets() {
+    return QuantexController.markets;
+  }
+
+  get strategies() {
+    return QuantexController.strategies;
+  }
 
   async mounted() {
-    this.loading = true;
-    await this.get_exchanges();
-    await this.get_markets();
-    await this.get_strategies();
     this.set_action_header();
   }
 
@@ -101,36 +108,6 @@ export default class Base extends Vue {
     });
   }
 
-  async get_markets() {
-    try {
-      const { data } = await QuantexController.get_markets();
-      this.markets = data;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async get_exchanges() {
-    try {
-      const { data } = await QuantexController.get_exchanges();
-      this.exchanges = data;
-    } catch (error) {
-      return error;
-    }
-  }
-
-  async get_strategies() {
-    this.loading = true;
-    try {
-      const { data } = await QuantexController.get_strategies();
-      this.strategies = data;
-    } catch (error) {
-      return error;
-    } finally {
-      this.loading = false;
-    }
-  }
-
   async update_strategy_state(
     strategy: Quantex.Strategy,
     state: Quantex.StrategyState
@@ -145,32 +122,34 @@ export default class Base extends Vue {
       state: state
     };
 
-    const strategies = [...this.strategies];
-    const index = this.strategies.findIndex(s => s.id == strategy.id);
-    this.strategies[index].loading = true;
-    this.strategies = strategies;
-    this.$forceUpdate();
+    const index = this.strategies.data.findIndex(s => s.id == strategy.id);
+    Vue.set(this.strategies.data[index], "loading", true);
 
     try {
-      const strategies = [...this.strategies];
       const { data } = await QuantexController.update_strategy(payload);
       runNotice("success", "Strategy updated successfully");
-      strategies[index] = data;
-      this.strategies = strategies;
-      this.$forceUpdate();
+      this.strategies.data[index] = data;
     } catch (error) {
       return error;
     } finally {
-      this.strategies[index].loading = null;
+      Vue.delete(this.strategies.data[index], "loading");
     }
   }
 
-  get_market(id: number) {
-    return this.markets.find(market => market.id == id);
+  get_market_name(id: number) {
+    const market = this.markets.data.find(market => market.id == id);
+
+    return (market?.ask + "/" + market?.bid).toUpperCase();
   }
 
-  get_exchange(id: number) {
-    return this.exchanges.find(exchange => exchange.id == id);
+  get_market_exchange_id(id: number) {
+    const market = this.markets.data.find(market => market.id == id);
+
+    return market?.exchange_id;
+  }
+
+  get_exchange_name(id: number) {
+    return this.exchanges.data.find(exchange => exchange.id == id)?.name;
   }
 }
 </script>
