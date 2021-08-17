@@ -16,6 +16,31 @@
           })
       "
     >
+      <template slot="spread_asks" slot-scope="{ item, column }">
+        <span :class="`spread_asks text-${column.algin}`">
+          {{ item.options.spread_asks }}
+        </span>
+      </template>
+      <template slot="spread_bids" slot-scope="{ item, column }">
+        <span :class="`spread_bids text-${column.algin}`">
+          {{ item.options.spread_bids }}
+        </span>
+      </template>
+      <template slot="levels_size" slot-scope="{ item, column }">
+        <span :class="`levels_size text-${column.algin}`">
+          {{ item.options.levels_size }}
+        </span>
+      </template>
+      <template slot="levels_count" slot-scope="{ item, column }">
+        <span :class="`levels_count text-${column.algin}`">
+          {{ item.options.levels_count }}
+        </span>
+      </template>
+      <template slot="levels_start" slot-scope="{ item, column }">
+        <span :class="`levels_start text-${column.algin}`">
+          {{ item.options.levels_start }}
+        </span>
+      </template>
       <template slot="action" slot-scope="{ item, column }">
         <span :class="`action text-${column.algin}`">
           <span @click.stop.prevent>
@@ -64,18 +89,18 @@ export default class FlowTable extends Vue {
       return [
         { title: "ID", key: "id", algin: "left" },
         { title: "Period", key: "period", algin: "left" },
-        { title: "Spread asks", key: "spread_asks", algin: "left" },
-        { title: "Spread bids", key: "spread_bids", algin: "left" },
-        { title: "Levels size", key: "levels_size", algin: "center" },
-        { title: "Levels count", key: "levels_count", algin: "right" },
-        { title: "Levels start", key: "levels_start", algin: "right" },
+        { title: "Spread asks", key: "spread_asks", algin: "left", scopedSlots: true },
+        { title: "Spread bids", key: "spread_bids", algin: "left", scopedSlots: true },
+        { title: "Levels size", key: "levels_size", algin: "center", scopedSlots: true },
+        { title: "Levels count", key: "levels_count", algin: "right", scopedSlots: true },
+        { title: "Levels start", key: "levels_start", algin: "right", scopedSlots: true },
         { title: "Action", key: "action", algin: "right", scopedSlots: true }
       ];
     } else {
       return [
         { title: "ID", key: "id", algin: "left" },
         { title: "Period", key: "period", algin: "left" },
-        { title: "Action", key: "action", algin: "right" }
+        { title: "Action", key: "action", algin: "right", scopedSlots: true }
       ];
     }
   }
@@ -120,11 +145,13 @@ export default class FlowTable extends Vue {
     Vue.set(this.flows[index], "loading", true);
 
     if (this.strategy.type == "copy") {
-      payload.spread_asks = flow.spread_asks;
-      payload.spread_bids = flow.spread_bids;
-      payload.levels_size = flow.levels_size;
-      payload.levels_count = Number(flow.levels_count);
-      payload.levels_start = Number(flow.levels_start);
+      payload.options = {
+        spread_asks: flow.options.spread_asks,
+        spread_bids: flow.options.spread_bids,
+        levels_size: flow.options.levels_size,
+        levels_count: Number(flow.options.levels_count),
+        levels_start: Number(flow.options.levels_start),
+      }
     }
 
     try {

@@ -28,11 +28,13 @@ declare global {
       id?: number;
       strategy_id?: number;
       period?: number;
-      spread_asks?: number;
-      spread_bids?: number;
-      levels_size?: number;
-      levels_count?: number;
-      levels_start?: number;
+      options?: {
+        spread_asks?: string;
+        spread_bids?: string;
+        levels_size?: string;
+        levels_count?: number;
+        levels_start?: number;
+      }
       state?: StrategyState;
       loading?: boolean;
       created_at?: Date;

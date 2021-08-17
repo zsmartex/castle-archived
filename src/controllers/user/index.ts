@@ -54,8 +54,7 @@ class UserController {
 
     try {
       const { data } = await new ApiClient("auth").post("identity/sessions", payload);
-
-      this.auth_success(data, url_callback);
+      await this.auth_success(data, url_callback);
     } catch (error) {
       this.auth_error();
       return error;
@@ -67,17 +66,7 @@ class UserController {
 
     try {
       const { data } = await this.get_session();
-
-      this.auth_success(data);
-
-      if (config.finex) {
-        await Promise.all([
-          QuantexController.get_exchanges(),
-          QuantexController.get_drivers(),
-          QuantexController.get_markets(),
-          QuantexController.get_strategies()
-        ])
-      }
+      await this.auth_success(data);
     } catch (error) {
       this.auth_error();
       return error;
@@ -106,6 +95,15 @@ class UserController {
     this.otp = payload.otp;
 
     this.need2fa = false;
+
+    if (config.finex) {
+      await Promise.all([
+        QuantexController.get_exchanges(),
+        QuantexController.get_drivers(),
+        QuantexController.get_markets(),
+        QuantexController.get_strategies()
+      ])
+    }
 
     if (payload.csrf_token) localStorage.setItem("csrf_token", payload.csrf_token);
 

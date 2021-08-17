@@ -13,6 +13,15 @@
       v-model="modal_payload[setting.key]"
     />
 
+    <template v-if="strategy.type == 'copy'">
+      <z-info-row
+        v-for="setting in  SETTING_OPTIONS_LIST"
+        :key="setting.key"
+        :item="setting"
+        v-model="modal_payload.options[setting.key]"
+      />
+    </template>
+
     <a-button
       type="primary"
       :loading="loading"
@@ -25,9 +34,9 @@
 </template>
 
 <script lang="ts">
+import ZModalMixin from "@/mixins/z-modal";
 import { QuantexController } from "@/controllers";
 import { runNotice } from "@/mixins";
-import ZModalMixin from "@/mixins/z-modal";
 import { Component, Mixins } from "vue-property-decorator";
 
 type ModalType = "edit" | "new";
@@ -36,7 +45,9 @@ type ModalType = "edit" | "new";
 export default class ModalExchange extends Mixins(ZModalMixin) {
   loading = false;
   modal_type?: ModalType = null;
-  modal_payload: Quantex.StrategyFlow = {};
+  modal_payload: Quantex.StrategyFlow = {
+    options: {}
+  };
   strategy: Quantex.Strategy = {};
 
   get title() {
@@ -46,83 +57,65 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
   }
 
   get SETTING_LIST() {
-    console.log(this.strategy)
-    if (this.strategy.type == "copy") {
-      return [
-        {
-          title: "Period",
-          key: "period",
-          value: this.modal_payload?.period,
-          type: "input",
-          edit: true
-        },
-        {
+    return [
+      {
+        title: "Period",
+        key: "period",
+        value: this.modal_payload?.period,
+        type: "input",
+        edit: true
+      },
+      {
+        title: "State",
+        key: "state",
+        value: this.modal_payload.state,
+        type: "select",
+        list: {
+          enabled: "Enabled",
+          disabled: "Disabled"
+        }
+      }
+    ];
+  }
+
+  get SETTING_OPTIONS_LIST() {
+    return [
+      {
           title: "Spread asks",
           key: "spread_asks",
-          value: this.modal_payload?.spread_asks,
+          value: this.modal_payload?.options?.spread_asks,
           type: "input",
           edit: true
         },
         {
           title: "Spread bids",
           key: "spread_bids",
-          value: this.modal_payload?.spread_bids,
+          value: this.modal_payload?.options?.spread_bids,
           type: "input",
           edit: true
         },
         {
           title: "Levels size",
           key: "levels_size",
-          value: this.modal_payload?.levels_size,
+          value: this.modal_payload?.options?.levels_size,
           type: "input",
           edit: true
         },
         {
           title: "Levels count",
           key: "levels_count",
-          value: this.modal_payload?.levels_count,
+          value: this.modal_payload?.options?.levels_count,
           type: "input",
           edit: true
         },
         {
           title: "Levels start",
           key: "levels_start",
-          value: this.modal_payload?.levels_start,
+          value: this.modal_payload?.options?.levels_start,
           type: "input",
           edit: true
-        },
-        {
-          title: "State",
-          key: "state",
-          value: this.modal_payload.state,
-          type: "select",
-          list: {
-            enabled: "Enabled",
-            disabled: "Disabled"
-          }
         }
-      ];
-    } else {
-      return [
-        {
-          title: "Period",
-          key: "period",
-          value: this.modal_payload?.period,
-          type: "input",
-          edit: true
-        },
-        {
-          title: "State",
-          key: "state",
-          value: this.modal_payload.state,
-          type: "select",
-          list: {
-            enabled: "Enabled",
-            disabled: "Disabled"
-          }
-        }
-      ]
-    }
+    ]
   }
 
   get button_disabled() {
@@ -142,7 +135,9 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
     if (this.modal_type == "edit") {
       this.modal_payload = payload.payload;
     } else {
-      this.modal_payload = {};
+      this.modal_payload = {
+        options: {}
+      };
     }
     this.strategy = payload.strategy;
   }
@@ -156,11 +151,13 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
     };
 
     if (this.strategy.type == "copy") {
-      payload.spread_asks = this.modal_payload.spread_asks;
-      payload.spread_bids = this.modal_payload.spread_bids;
-      payload.levels_size = this.modal_payload.levels_size;
-      payload.levels_count = Number(this.modal_payload.levels_count);
-      payload.levels_start = Number(this.modal_payload.levels_start);
+      payload.options = {
+        spread_asks: this.modal_payload.options.spread_asks || null,
+        spread_bids: this.modal_payload.options.spread_bids || null,
+        levels_size: this.modal_payload.options.levels_size || null,
+        levels_count: Number(this.modal_payload.options.levels_count) || null,
+        levels_start: Number(this.modal_payload.options.levels_start) || null,
+      }
     }
 
     try {
