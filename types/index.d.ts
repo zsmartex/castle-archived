@@ -140,16 +140,6 @@ declare global {
     updated_at?: Date;
   }
 
-  interface User {
-    email: string;
-    uid: string;
-    role: string;
-    level: number;
-    otp: boolean;
-    state: string;
-    phone: any;
-  }
-
   interface UserOrder {
     id: number;
     side: string;
