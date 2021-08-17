@@ -3,12 +3,44 @@ module.exports = {
   env: {
     node: true
   },
+  globals: {
+    User: true,
+    Member: true,
+    Blockchain: true,
+    Metrics: true,
+    Label: true,
+    UserLabel: true,
+    UserProfile: true,
+    Account: true,
+    UserOrder: true,
+    UserTrade: true,
+    UserDeposit: true,
+    Operator: true,
+    Market: true,
+    Currency: true,
+    BlockchainCurrency: true,
+    WalletSettings: true,
+    Wallet: true,
+    TradingFee: true,
+    Permission: true,
+    Restriction: true,
+    Operation: true,
+    Deposit: true,
+    Withdraw: true,
+    Adjustment: true,
+    SmartContract: true,
+    Banner: true,
+    BroadCast: true,
+    AdminState: true,
+    RootState: true,
+    Quantex: true,
+  },
   extends: [
     "plugin:vue/essential",
     "eslint:recommended",
     "@vue/typescript/recommended",
     "@vue/prettier",
-    "@vue/prettier/@typescript-eslint"
+    "@vue/prettier/@typescript-eslint",
   ],
   parserOptions: {
     ecmaVersion: 2020
@@ -23,6 +55,5 @@ module.exports = {
     "@typescript-eslint/interface-name-prefix": "off",
     "no-console": "off",
     "@typescript-eslint/no-empty-interface": "off",
-  },
-  globals: {}
+  }
 };
