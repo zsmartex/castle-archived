@@ -55,5 +55,6 @@ module.exports = {
     "@typescript-eslint/interface-name-prefix": "off",
     "no-console": "off",
     "@typescript-eslint/no-empty-interface": "off",
+    "ban-types": "off",
   }
 };
