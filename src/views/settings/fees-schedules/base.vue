@@ -210,7 +210,7 @@ export default class FeesSchedules extends Vue {
     });
   }
 
-  async update_trading_fee(payload, callback?: Function) {
+  async update_trading_fee(payload, callback?: () => void) {
     try {
       const { data } = await store.dispatch(UPDATE_TRADING_FEE, payload);
 
@@ -225,7 +225,7 @@ export default class FeesSchedules extends Vue {
     }
   }
 
-  async create_trading_fee(payload, callback?: Function) {
+  async create_trading_fee(payload, callback?: () => void) {
     try {
       await store.dispatch(CREATE_TRADING_FEE, payload);
 

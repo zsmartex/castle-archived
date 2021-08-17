@@ -87,7 +87,7 @@ export default class Restriction extends Vue {
   }
 
   //TODO: add support update create delete restriction
-  async update_restriction(item: Restriction, callback?: Function) {
+  async update_restriction(item: Restriction, callback?: () => void) {
     try {
       runNotice("success", "Restriction updated successfully");
 
@@ -97,7 +97,7 @@ export default class Restriction extends Vue {
     }
   }
 
-  create_restriction(item: Restriction, callback?: Function) {
+  create_restriction(item: Restriction, callback?: () => void) {
     try {
       runNotice("success", "Restriction created successfully");
       if (callback) callback();

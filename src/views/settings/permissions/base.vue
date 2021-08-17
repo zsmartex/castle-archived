@@ -129,7 +129,7 @@ export default class App extends Vue {
     });
   }
 
-  async update_permission(payload, callback?: Function) {
+  async update_permission(payload, callback?: () => void) {
     try {
       const { data } = await store.dispatch(UPDATE_PERMISSION, payload);
 

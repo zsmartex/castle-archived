@@ -27,7 +27,6 @@ interface Action {
   title: string;
   key: string;
   icon: string;
-  callback: Function;
 }
 
 @Component({})
