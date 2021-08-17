@@ -244,6 +244,10 @@ const routes = [
     path: "/login",
     component: () => import("@/views/login.vue"),
     meta: { guest: true }
+  },
+  {
+    path: "/*",
+    component: () => import("@/views/404.vue")
   }
 ];
 

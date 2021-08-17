@@ -22,7 +22,8 @@ import {
   Drawer,
   DatePicker,
   Upload,
-  Checkbox
+  Checkbox,
+  Result
 } from "ant-design-vue";
 import Vue from "vue";
 
@@ -50,3 +51,4 @@ Vue.use(Drawer);
 Vue.use(DatePicker);
 Vue.use(Upload);
 Vue.use(Checkbox);
+Vue.use(Result);
