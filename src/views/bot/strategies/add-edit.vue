@@ -126,7 +126,7 @@
         </div>
       </div>
     </z-configuration>
-    <flow-table v-if="page_type == 'edit' && !loading" :strategy="strategy" />
+    <flow-table v-if="page_type == 'edit' && !loading" :strategy_id="strategy_id" />
   </a-layout-content>
 </template>
 
@@ -276,7 +276,7 @@ export default class Base extends Vue {
     ];
   }
 
-  mounted() {
+  beforeMount() {
     if (this.page_type == "edit") {
       this.strategy =
         QuantexController.strategies.data.find(

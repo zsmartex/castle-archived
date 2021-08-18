@@ -8,11 +8,11 @@
       :pagination="false"
       :loading="loading"
       @click="
-        item =>
+        (item) =>
           this.$refs['modal-flow'].create({
             type: 'edit',
             payload: item,
-            strategy: this.strategy
+            strategy: this.strategy,
           })
       "
     >
@@ -75,32 +75,61 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
   components: {
-    "modal-flow": () => import("./modal-flow.vue")
-  }
+    "modal-flow": () => import("./modal-flow.vue"),
+  },
 })
 export default class FlowTable extends Vue {
-  @Prop() readonly strategy!: Quantex.Strategy;
+  @Prop() readonly strategy_id!: number;
 
   loading = false;
   flows = Array<Quantex.StrategyFlow>();
+
+  get strategy() {
+    return QuantexController.strategies.data.find(strategy => strategy.id == this.strategy_id);
+  }
 
   get FLOW_COLUMN() {
     if (this.strategy.type == "copy") {
       return [
         { title: "ID", key: "id", algin: "left" },
         { title: "Period", key: "period", algin: "left" },
-        { title: "Spread asks", key: "spread_asks", algin: "left", scopedSlots: true },
-        { title: "Spread bids", key: "spread_bids", algin: "left", scopedSlots: true },
-        { title: "Levels size", key: "levels_size", algin: "center", scopedSlots: true },
-        { title: "Levels count", key: "levels_count", algin: "right", scopedSlots: true },
-        { title: "Levels start", key: "levels_start", algin: "right", scopedSlots: true },
-        { title: "Action", key: "action", algin: "right", scopedSlots: true }
+        {
+          title: "Spread asks",
+          key: "spread_asks",
+          algin: "left",
+          scopedSlots: true,
+        },
+        {
+          title: "Spread bids",
+          key: "spread_bids",
+          algin: "left",
+          scopedSlots: true,
+        },
+        {
+          title: "Levels size",
+          key: "levels_size",
+          algin: "center",
+          scopedSlots: true,
+        },
+        {
+          title: "Levels count",
+          key: "levels_count",
+          algin: "right",
+          scopedSlots: true,
+        },
+        {
+          title: "Levels start",
+          key: "levels_start",
+          algin: "right",
+          scopedSlots: true,
+        },
+        { title: "Action", key: "action", algin: "right", scopedSlots: true },
       ];
     } else {
       return [
         { title: "ID", key: "id", algin: "left" },
         { title: "Period", key: "period", algin: "left" },
-        { title: "Action", key: "action", algin: "right", scopedSlots: true }
+        { title: "Action", key: "action", algin: "right", scopedSlots: true },
       ];
     }
   }
@@ -113,7 +142,7 @@ export default class FlowTable extends Vue {
     this.loading = true;
     try {
       const { data } = await QuantexController.get_strategy_flows(
-        this.strategy.id
+        this.strategy_id
       );
       this.flows = data;
     } catch (error) {
@@ -126,7 +155,7 @@ export default class FlowTable extends Vue {
   add_flow() {
     (this.$refs["modal-flow"] as any).create({
       type: "create",
-      strategy: this.strategy
+      strategy: this.strategy,
     });
   }
 
@@ -136,12 +165,12 @@ export default class FlowTable extends Vue {
   ) {
     const payload: Quantex.StrategyFlow = {
       id: flow.id,
-      strategy_id: this.strategy.id,
+      strategy_id: this.strategy_id,
       period: Number(flow.period),
-      state: state
+      state: state,
     };
 
-    const index = this.flows.findIndex(s => s.id == flow.id);
+    const index = this.flows.findIndex((s) => s.id == flow.id);
     Vue.set(this.flows[index], "loading", true);
 
     if (this.strategy.type == "copy") {
@@ -151,7 +180,7 @@ export default class FlowTable extends Vue {
         levels_size: flow.options.levels_size,
         levels_count: Number(flow.options.levels_count),
         levels_start: Number(flow.options.levels_start),
-      }
+      };
     }
 
     try {
@@ -159,7 +188,7 @@ export default class FlowTable extends Vue {
       runNotice("success", "Strategy flow update successfully");
       Vue.set(this.flows, index, data);
     } catch (error) {
-      return error;
+      return;
     } finally {
       Vue.set(this.flows[index], "loading", false);
     }

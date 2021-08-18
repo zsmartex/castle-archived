@@ -56,5 +56,6 @@ module.exports = {
     "no-console": "off",
     "@typescript-eslint/no-empty-interface": "off",
     "@typescript-eslint/ban-types": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
   }
 };
