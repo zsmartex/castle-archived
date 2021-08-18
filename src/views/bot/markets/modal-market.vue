@@ -37,7 +37,6 @@ export default class ModalMarket extends Mixins(ZModalMixin) {
   loading = false;
   modal_type?: ModalType = null;
   modal_payload: Quantex.Market = {};
-  exchanges = Array<Quantex.Exchange>();
 
   get title() {
     return this.modal_type === "edit" ? "Edit Exchange" : "Create Exchange";
@@ -76,7 +75,7 @@ export default class ModalMarket extends Mixins(ZModalMixin) {
         value: this.modal_payload.exchange_id,
         type: "select",
         list: (() => {
-          return this.exchanges.reduce((obj, exchange) => {
+          return QuantexController.exchanges.data.reduce((obj, exchange) => {
             return {
               ...obj,
               [exchange["id"]]: exchange.name
@@ -147,8 +146,6 @@ export default class ModalMarket extends Mixins(ZModalMixin) {
         quote_precision: null
       };
     }
-
-    this.exchanges = payload.exchanges;
   }
 
   async onSubmit() {

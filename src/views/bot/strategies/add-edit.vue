@@ -290,7 +290,7 @@ export default class Base extends Vue {
       const payload = { ...this.strategy };
       payload.source_market_ids = [
         ...this.source_market_cached,
-        ...payload.source_market_ids
+        ...(payload.source_market_ids || [])
       ];
       await QuantexController.update_strategy(payload);
       this.strategy = QuantexController.strategies.data.find(

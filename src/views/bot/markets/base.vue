@@ -11,8 +11,7 @@
         item =>
           this.$refs['modal-market'].create({
             type: 'edit',
-            payload: item,
-            exchanges: this.exchanges
+            payload: item
           })
       "
     >
@@ -72,8 +71,7 @@ export default class Base extends Vue {
         icon: "plus-circle",
         callback: () => {
           (this.$refs["modal-market"] as any).create({
-            type: "create",
-            exchanges: this.exchanges.data
+            type: "create"
           });
         }
       }
