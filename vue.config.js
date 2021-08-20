@@ -76,7 +76,7 @@ const configWebPack = {
       }*/
       //Test Server
       "^/api": {
-        target: "https://www.hypecoinexchange.com/",
+        target: "http://test.zsmartex.tech/",
         secure: false,
         ws: true,
         changeOrigin: true

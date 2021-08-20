@@ -106,7 +106,7 @@ export class QuantexController {
 
   async create_exchange(payload: Quantex.Exchange) {
     try {
-      const { data } = await new ApiClient("quantex").post("admin/exchanges");
+      const { data } = await new ApiClient("quantex").post("admin/exchanges", payload);
       this.exchanges.data.push(data);
     } catch (error) {
       return error;
