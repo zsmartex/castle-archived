@@ -44,6 +44,11 @@
               <a-icon slot="checkedChildren" type="check" />
               <a-icon slot="unCheckedChildren" type="close" />
             </a-switch>
+            <a-icon
+              type="delete"
+              theme="filled"
+              @click.stop="delete_strategy(item.id)"
+            />
           </span>
         </span>
       </template>
@@ -55,7 +60,6 @@
 import ZSmartModel from "@zsmartex/z-eventbus";
 import { QuantexController } from "@/controllers";
 import { Vue, Component } from "vue-property-decorator";
-import { runNotice } from "@/mixins";
 
 @Component
 export default class Base extends Vue {
@@ -108,32 +112,13 @@ export default class Base extends Vue {
     });
   }
 
-  async update_strategy_state(
+  update_strategy_state(
     strategy: Quantex.Strategy,
     state: Quantex.StrategyState
   ) {
-    const payload: Quantex.Strategy = {
-      id: strategy.id,
-      side: strategy.side,
-      type: strategy.type,
-      enable_orderback: strategy.enable_orderback,
-      target_market_id: strategy.target_market_id,
-      source_market_ids: strategy.source_market_ids,
-      state: state
-    };
-
-    const index = this.strategies.data.findIndex(s => s.id == strategy.id);
-    Vue.set(this.strategies.data[index], "loading", true);
-
-    try {
-      const { data } = await QuantexController.update_strategy(payload);
-      runNotice("success", "Strategy updated successfully");
-      this.strategies.data[index] = data;
-    } catch (error) {
-      return error;
-    } finally {
-      Vue.delete(this.strategies.data[index], "loading");
-    }
+    QuantexController.update_strategy(
+      Object.assign(strategy, { state: state })
+    );
   }
 
   get_market_name(id: number) {
@@ -150,6 +135,10 @@ export default class Base extends Vue {
 
   get_exchange_name(id: number) {
     return this.exchanges.data.find(exchange => exchange.id == id)?.name;
+  }
+
+  delete_strategy(id: number) {
+    QuantexController.delete_strategy(id);
   }
 }
 </script>

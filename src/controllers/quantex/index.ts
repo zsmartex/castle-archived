@@ -3,6 +3,9 @@ import ApiClient from "@zsmartex/z-apiclient";
 import GettersSetters from "./getters_setters";
 import store from "./store";
 import Vue from "vue";
+import { runNotice } from "@/mixins";
+import router from "@/router";
+import path from "@antv/g2/lib/geometry/path";
 
 export class QuantexController {
   constructor() {
@@ -25,6 +28,8 @@ export class QuantexController {
     try {
       const { data } = await new ApiClient("quantex").post("admin/strategies", payload);
       this.strategies.data.push(data);
+      runNotice("success", "Strategy created successfully");
+      router.push({ path: `/bot/strategies/${data.id}` });
     } catch (error) {
       return error;
     }
@@ -34,28 +39,90 @@ export class QuantexController {
     delete payload.created_at;
     delete payload.updated_at;
 
+    const index = this.strategies.data.findIndex(strategy => strategy.id == payload.id);
+    Vue.set(this.strategies.data[index], "loading", true);
+
     try {
       const { data } = await new ApiClient("quantex").put("admin/strategies", payload);
-      const index = this.strategies.data.findIndex(strategy => strategy.id == payload.id);
+      Vue.set(this.strategies.data, index, data);
+      runNotice("success", "Strategy updated successfully");
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[index], "loading");
+    }
+  }
+
+  async delete_strategy(id: number) {
+    const index = this.strategies.data.findIndex(strategy => strategy.id == id);
+    Vue.set(this.strategies.data[index], "loading", true);
+
+    try {
+      await new ApiClient("quantex").delete(`admin/strategies/${id}`);
+      const index = this.strategies.data.findIndex(strategy => strategy.id == id);
 
       if (index >= 0) {
-        Vue.set(this.strategies.data, index, data)
+        Vue.delete(this.strategies.data, index);
       }
     } catch (error) {
+      Vue.delete(this.strategies.data[index], "loading");
+
       return error;
     }
   }
 
-  get_strategy_flows(strategy_id: number) {
-    return new ApiClient("quantex").get(`admin/strategies/${strategy_id}/flows`);
+  async create_strategy_flow(payload: Quantex.StrategyFlow) {
+    const strategy_index = this.strategies.data.findIndex(strategy => strategy.id == payload.strategy_id);
+    const flows = this.strategies.data[strategy_index].flows;
+
+    try {
+      const { data } = await new ApiClient("quantex").post("admin/strategies/flows", payload);
+      flows.push(data);
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[strategy_index], "loading");
+    }
   }
 
-  create_strategy_flow(payload: Quantex.StrategyFlow) {
-    return new ApiClient("quantex").post("admin/strategies/flows", payload);
+  async update_strategy_flow(payload: Quantex.StrategyFlow) {
+    const strategy_index = this.strategies.data.findIndex(strategy => strategy.id == payload.strategy_id);
+    const flows = this.strategies.data[strategy_index].flows;
+    const flow_index = flows.findIndex(flow => flow.id == payload.id);
+
+    Vue.set(this.strategies.data[strategy_index], "loading", true);
+    Vue.set(flows[flow_index], "loading", true);
+
+    try {
+      const { data } = await new ApiClient("quantex").put("admin/strategies/flows", payload);
+      runNotice("success", "Strategy flow update successfully");
+      Vue.set(flows, flow_index, data);
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[strategy_index], "loading");
+      Vue.delete(flows[flow_index], "loading");
+    }
   }
 
-  update_strategy_flow(payload: Quantex.StrategyFlow) {
-    return new ApiClient("quantex").put("admin/strategies/flows", payload);
+  async delete_strategy_flow(id: number, strategy_id: number) {
+    const strategy_index = this.strategies.data.findIndex(strategy => strategy.id == strategy_id);
+    const flows = this.strategies.data[strategy_index].flows;
+    const flow_index = flows.findIndex(flow => flow.id == id);
+
+    Vue.set(this.strategies.data[strategy_index], "loading", true);
+    Vue.set(flows[flow_index], "loading", true);
+
+    try {
+      await new ApiClient("quantex").delete(`admin/strategies/flows/${id}`);
+      Vue.delete(flows, flow_index);
+    } catch (error) {
+      Vue.set(flows[flow_index], "loading", false);
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[strategy_index], "loading");
+      Vue.delete(flows[flow_index], "loading");
+    }
   }
 
   async get_markets() {
@@ -92,6 +159,23 @@ export class QuantexController {
     }
   }
 
+  async delete_market(id: number) {
+    const index = this.markets.data.findIndex(market => market.id == id);
+    Vue.set(this.markets.data[index], "loading", true);
+
+    try {
+      await new ApiClient("quantex").delete(`admin/markets/${id}`);
+      const index = this.markets.data.findIndex(market => market.id == id);
+
+      if (index >= 0) {
+        Vue.delete(this.markets.data, index);
+      }
+    } catch (error) {
+      Vue.delete(this.markets.data[index], "loading");
+      return error;
+    }
+  }
+
   async get_exchanges() {
     try {
       this.exchanges.loading = true;
@@ -122,6 +206,24 @@ export class QuantexController {
         Vue.set(this.exchanges.data, index, data);
       }
     } catch (error) {
+      return error;
+    }
+  }
+
+  async delete_exchange(id: number) {
+    const index = this.exchanges.data.findIndex(market => market.id == id);
+    console.log(index, id)
+    Vue.set(this.exchanges.data[index], "loading", true);
+
+    try {
+      await new ApiClient("quantex").delete(`admin/exchanges/${id}`);
+      const index = this.exchanges.data.findIndex(exchange => exchange.id == id);
+
+      if (index >= 0) {
+        Vue.delete(this.exchanges.data, index);
+      }
+    } catch (error) {
+      Vue.delete(this.markets.data[index], "loading");
       return error;
     }
   }

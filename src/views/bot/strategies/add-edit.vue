@@ -16,7 +16,8 @@
               switch: {
                 0: 'disabled',
                 1: 'enabled'
-              }
+              },
+              loading: strategy.loading
             }"
             style="width: auto;"
           />
@@ -29,7 +30,11 @@
             :item="setting"
           />
           <div class="z-edit-panel-action">
-            <a-button type="primary" @click="onSubmit">
+            <a-button
+              :loading="strategy.loading"
+              type="primary"
+              @click="onSubmit"
+            >
               Submit
             </a-button>
           </div>
@@ -126,7 +131,10 @@
         </div>
       </div>
     </z-configuration>
-    <flow-table v-if="page_type == 'edit' && !loading" :strategy_id="strategy_id" />
+    <flow-table
+      v-if="page_type == 'edit' && !loading"
+      :strategy_id="strategy_id"
+    />
   </a-layout-content>
 </template>
 
@@ -330,17 +338,12 @@ export default class Base extends Vue {
       state: this.strategy.state
     };
 
-    try {
-      if (this.page_type == "edit") {
-        payload.id = this.strategy.id;
-        await QuantexController.update_strategy(payload);
-      } else {
-        payload.source_market_ids = this.source_market_cached;
-        await QuantexController.create_strategy(payload);
-      }
-      this.$router.push("/bot/strategies");
-    } catch (error) {
-      return error;
+    if (this.page_type == "edit") {
+      payload.id = this.strategy.id;
+      await QuantexController.update_strategy(payload);
+    } else {
+      payload.source_market_ids = this.source_market_cached;
+      await QuantexController.create_strategy(payload);
     }
   }
 

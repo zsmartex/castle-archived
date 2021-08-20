@@ -54,7 +54,11 @@
         </a-select-option>
       </a-select>
       <template v-else-if="item.type === 'switch'">
-        <a-switch :checked="!!switch_active_key" @change="onChange">
+        <a-switch
+          :checked="!!switch_active_key"
+          :loading="item.loading"
+          @change="onChange"
+        >
           <a-icon slot="checkedChildren" type="check" />
           <a-icon slot="unCheckedChildren" type="close" />
         </a-switch>
@@ -90,6 +94,7 @@ export default class App extends Vue {
       0: string | number | number | boolean;
       1: string | number | number | boolean;
     };
+    loading: boolean;
   };
 
   get switch_active_key() {

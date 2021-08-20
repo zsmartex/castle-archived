@@ -76,7 +76,7 @@ const configWebPack = {
       }*/
       //Test Server
       "^/api": {
-        target: "http://test.zsmartex.tech/",
+        target: "https://test.zsmartex.tech",
         secure: false,
         ws: true,
         changeOrigin: true

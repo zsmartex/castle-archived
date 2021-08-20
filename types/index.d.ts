@@ -19,6 +19,7 @@ declare global {
       target_market_id?: number;
       source_market_ids?: number[];
       state?: StrategyState;
+      flows?: StrategyFlow[];
       loading?: boolean;
       created_at?: Date;
       updated_at?: Date;

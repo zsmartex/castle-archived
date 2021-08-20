@@ -25,6 +25,15 @@
           {{ get_exchange_name(item.exchange_id) }}
         </span>
       </template>
+      <template slot="action" slot-scope="{ item, column }">
+        <span :class="['action', `text-${column.algin}`]">
+          <a-icon
+            type="delete"
+            theme="filled"
+            @click.stop="delete_market(item.id)"
+          />
+        </span>
+      </template>
     </z-table>
 
     <modal-market ref="modal-market" />
@@ -48,7 +57,8 @@ export default class Base extends Vue {
     { title: "Limit asks", key: "limit_asks_base", algin: "left" },
     { title: "Limit bids", key: "limit_bids_base", algin: "left" },
     { title: "Base precision", key: "base_precision", algin: "left" },
-    { title: "Quote precision", key: "quote_precision", algin: "left" }
+    { title: "Quote precision", key: "quote_precision", algin: "left" },
+    { title: "Action", key: "action", algin: "right", scopedSlots: true }
   ];
 
   get exchanges() {
@@ -85,6 +95,10 @@ export default class Base extends Vue {
   get_exchange_name(exchange_id: number) {
     return this.exchanges.data.find(exchange => exchange.id == exchange_id)
       ?.name;
+  }
+
+  delete_market(id: number) {
+    QuantexController.delete_market(id);
   }
 }
 </script>

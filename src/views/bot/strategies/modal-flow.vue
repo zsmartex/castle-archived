@@ -15,7 +15,7 @@
 
     <template v-if="strategy.type == 'copy'">
       <z-info-row
-        v-for="setting in  SETTING_OPTIONS_LIST"
+        v-for="setting in SETTING_OPTIONS_LIST"
         :key="setting.key"
         :item="setting"
         v-model="modal_payload.options[setting.key]"
@@ -46,7 +46,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
   loading = false;
   modal_type?: ModalType = null;
   modal_payload: Quantex.StrategyFlow = {
-    options: {}
+    options: {},
   };
   strategy: Quantex.Strategy = {};
 
@@ -63,7 +63,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         key: "period",
         value: this.modal_payload?.period,
         type: "input",
-        edit: true
+        edit: true,
       },
       {
         title: "State",
@@ -72,50 +72,50 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         type: "select",
         list: {
           enabled: "Enabled",
-          disabled: "Disabled"
-        }
-      }
+          disabled: "Disabled",
+        },
+      },
     ];
   }
 
   get SETTING_OPTIONS_LIST() {
     return [
       {
-          title: "Spread asks",
-          key: "spread_asks",
-          value: this.modal_payload?.options?.spread_asks,
-          type: "input",
-          edit: true
-        },
-        {
-          title: "Spread bids",
-          key: "spread_bids",
-          value: this.modal_payload?.options?.spread_bids,
-          type: "input",
-          edit: true
-        },
-        {
-          title: "Levels size",
-          key: "levels_size",
-          value: this.modal_payload?.options?.levels_size,
-          type: "input",
-          edit: true
-        },
-        {
-          title: "Levels count",
-          key: "levels_count",
-          value: this.modal_payload?.options?.levels_count,
-          type: "input",
-          edit: true
-        },
-        {
-          title: "Levels start",
-          key: "levels_start",
-          value: this.modal_payload?.options?.levels_start,
-          type: "input",
-          edit: true
-        }
-    ]
+        title: "Spread asks",
+        key: "spread_asks",
+        value: this.modal_payload?.options?.spread_asks,
+        type: "input",
+        edit: true,
+      },
+      {
+        title: "Spread bids",
+        key: "spread_bids",
+        value: this.modal_payload?.options?.spread_bids,
+        type: "input",
+        edit: true,
+      },
+      {
+        title: "Levels size",
+        key: "levels_size",
+        value: this.modal_payload?.options?.levels_size,
+        type: "input",
+        edit: true,
+      },
+      {
+        title: "Levels count",
+        key: "levels_count",
+        value: this.modal_payload?.options?.levels_count,
+        type: "input",
+        edit: true,
+      },
+      {
+        title: "Levels start",
+        key: "levels_start",
+        value: this.modal_payload?.options?.levels_start,
+        type: "input",
+        edit: true,
+      },
+    ];
   }
 
   get button_disabled() {
@@ -136,7 +136,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
       this.modal_payload = payload.payload;
     } else {
       this.modal_payload = {
-        options: {}
+        options: {},
       };
     }
     this.strategy = payload.strategy;
@@ -147,7 +147,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
     const payload: Quantex.StrategyFlow = {
       strategy_id: this.strategy.id,
       period: Number(this.modal_payload.period),
-      state: this.modal_payload.state
+      state: this.modal_payload.state,
     };
 
     if (this.strategy.type == "copy") {
@@ -157,7 +157,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         levels_size: this.modal_payload.options.levels_size || null,
         levels_count: Number(this.modal_payload.options.levels_count) || null,
         levels_start: Number(this.modal_payload.options.levels_start) || null,
-      }
+      };
     }
 
     try {
@@ -169,7 +169,6 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         await QuantexController.create_strategy_flow(payload);
         runNotice("success", "Strategy flow created successfully");
       }
-      this.$emit("updated");
       this.delete();
     } catch (error) {
       return error;

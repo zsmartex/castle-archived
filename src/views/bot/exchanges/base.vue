@@ -20,6 +20,15 @@
           {{ item.driver.toUpperCase() }}
         </span>
       </template>
+      <template slot="action" slot-scope="{ item, column }">
+        <span :class="['action', `text-${column.algin}`]">
+          <a-icon
+            type="delete"
+            theme="filled"
+            @click.stop="delete_exchange(item.id)"
+          />
+        </span>
+      </template>
     </z-table>
     <modal-exchange ref="modal-exchange" />
   </a-layout-content>
@@ -39,7 +48,8 @@ export default class Base extends Vue {
   COLUMN = [
     { title: "ID", key: "id", algin: "left" },
     { title: "Name", key: "name", algin: "left" },
-    { title: "Driver", key: "driver", algin: "left", scopedSlots: true }
+    { title: "Driver", key: "driver", algin: "left", scopedSlots: true },
+    { title: "Action", key: "action", algin: "right", scopedSlots: true }
   ];
 
   get exchanges() {
@@ -67,6 +77,10 @@ export default class Base extends Vue {
     this.$nextTick(() => {
       ZSmartModel.emit("set-action-header");
     });
+  }
+
+  delete_exchange(id: number) {
+    QuantexController.delete_exchange(id);
   }
 }
 </script>

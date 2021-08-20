@@ -34,7 +34,15 @@
         padding-right: 0;
       }
 
-      i {
+      i.anticon:not(.anticon-check, .anticon-close) {
+        line-height: inherit;
+        font-size: 22px;
+        vertical-align: middle;
+        color: rgba(0, 0, 0, 0.45);
+        margin: 0 12px;
+      }
+
+      .anticon-check, .anticon-close {
         line-height: inherit;
         font-size: 16px;
         vertical-align: middle;

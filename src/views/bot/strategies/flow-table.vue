@@ -2,17 +2,16 @@
   <div class="flow-table">
     <z-table
       :columns="FLOW_COLUMN"
-      :data="flows"
+      :data="strategy.flows"
       :hover="true"
       :scroll="false"
       :pagination="false"
-      :loading="loading"
       @click="
-        (item) =>
+        item =>
           this.$refs['modal-flow'].create({
             type: 'edit',
-            payload: item,
-            strategy: this.strategy,
+            payload: { ...item },
+            strategy: this.strategy
           })
       "
     >
@@ -64,13 +63,12 @@
     <div class="add-flow">
       <a-button type="primary" @click="add_flow">ADD FLOW</a-button>
     </div>
-    <modal-flow ref="modal-flow" @updated="get_flows" />
+    <modal-flow ref="modal-flow" />
   </div>
 </template>
 
 <script lang="ts">
 import { QuantexController } from "@/controllers";
-import { runNotice } from "@/mixins";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component({
@@ -81,11 +79,10 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 export default class FlowTable extends Vue {
   @Prop() readonly strategy_id!: number;
 
-  loading = false;
-  flows = Array<Quantex.StrategyFlow>();
-
   get strategy() {
-    return QuantexController.strategies.data.find(strategy => strategy.id == this.strategy_id);
+    return QuantexController.strategies.data.find(
+      strategy => strategy.id == this.strategy_id
+    );
   }
 
   get FLOW_COLUMN() {
@@ -97,31 +94,31 @@ export default class FlowTable extends Vue {
           title: "Spread asks",
           key: "spread_asks",
           algin: "left",
-          scopedSlots: true,
+          scopedSlots: true
         },
         {
           title: "Spread bids",
           key: "spread_bids",
           algin: "left",
-          scopedSlots: true,
+          scopedSlots: true
         },
         {
           title: "Levels size",
           key: "levels_size",
           algin: "center",
-          scopedSlots: true,
+          scopedSlots: true
         },
         {
           title: "Levels count",
           key: "levels_count",
           algin: "right",
-          scopedSlots: true,
+          scopedSlots: true
         },
         {
           title: "Levels start",
           key: "levels_start",
           algin: "right",
-          scopedSlots: true,
+          scopedSlots: true
         },
         { title: "Action", key: "action", algin: "right", scopedSlots: true },
       ];
@@ -131,24 +128,6 @@ export default class FlowTable extends Vue {
         { title: "Period", key: "period", algin: "left" },
         { title: "Action", key: "action", algin: "right", scopedSlots: true },
       ];
-    }
-  }
-
-  mounted() {
-    this.get_flows();
-  }
-
-  async get_flows() {
-    this.loading = true;
-    try {
-      const { data } = await QuantexController.get_strategy_flows(
-        this.strategy_id
-      );
-      this.flows = data;
-    } catch (error) {
-      return error;
-    } finally {
-      this.loading = false;
     }
   }
 
@@ -165,13 +144,10 @@ export default class FlowTable extends Vue {
   ) {
     const payload: Quantex.StrategyFlow = {
       id: flow.id,
-      strategy_id: this.strategy_id,
+      strategy_id: this.strategy.id,
       period: Number(flow.period),
-      state: state,
+      state: state
     };
-
-    const index = this.flows.findIndex((s) => s.id == flow.id);
-    Vue.set(this.flows[index], "loading", true);
 
     if (this.strategy.type == "copy") {
       payload.options = {
@@ -179,19 +155,19 @@ export default class FlowTable extends Vue {
         spread_bids: flow.options.spread_bids,
         levels_size: flow.options.levels_size,
         levels_count: Number(flow.options.levels_count),
-        levels_start: Number(flow.options.levels_start),
+        levels_start: Number(flow.options.levels_start)
       };
     }
 
     try {
-      const { data } = await QuantexController.update_strategy_flow(payload);
-      runNotice("success", "Strategy flow update successfully");
-      Vue.set(this.flows, index, data);
+      await QuantexController.update_strategy_flow(payload);
     } catch (error) {
       return;
-    } finally {
-      Vue.set(this.flows[index], "loading", false);
     }
+  }
+
+  delete_strategy_flow(id: number, strategy_id: number) {
+    QuantexController.delete_strategy_flow(id, strategy_id);
   }
 }
 </script>
