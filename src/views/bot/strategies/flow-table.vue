@@ -7,22 +7,22 @@
       :scroll="false"
       :pagination="false"
       @click="
-        item =>
+        (item) =>
           this.$refs['modal-flow'].create({
             type: 'edit',
             payload: { ...item },
-            strategy: this.strategy
+            strategy: this.strategy,
           })
       "
     >
-      <template slot="spread_asks" slot-scope="{ item, column }">
-        <span :class="`spread_asks text-${column.algin}`">
-          {{ item.options.spread_asks }}
+      <template slot="first_spread" slot-scope="{ item, column }">
+        <span :class="`first_spread text-${column.algin}`">
+          {{ item.options.first_spread }}
         </span>
       </template>
-      <template slot="spread_bids" slot-scope="{ item, column }">
-        <span :class="`spread_bids text-${column.algin}`">
-          {{ item.options.spread_bids }}
+      <template slot="spread" slot-scope="{ item, column }">
+        <span :class="`spread text-${column.algin}`">
+          {{ item.options.spread }}
         </span>
       </template>
       <template slot="levels_size" slot-scope="{ item, column }">
@@ -86,49 +86,89 @@ export default class FlowTable extends Vue {
   }
 
   get FLOW_COLUMN() {
-    if (this.strategy.type == "copy") {
-      return [
-        { title: "ID", key: "id", algin: "left" },
-        { title: "Period", key: "period", algin: "left" },
-        {
-          title: "Spread asks",
-          key: "spread_asks",
-          algin: "left",
-          scopedSlots: true
-        },
-        {
-          title: "Spread bids",
-          key: "spread_bids",
-          algin: "left",
-          scopedSlots: true
-        },
-        {
-          title: "Levels size",
-          key: "levels_size",
-          algin: "center",
-          scopedSlots: true
-        },
-        {
-          title: "Levels count",
-          key: "levels_count",
-          algin: "right",
-          scopedSlots: true
-        },
-        {
-          title: "Levels start",
-          key: "levels_start",
-          algin: "right",
-          scopedSlots: true
-        },
-        { title: "Action", key: "action", algin: "right", scopedSlots: true },
-      ];
-    } else {
-      return [
-        { title: "ID", key: "id", algin: "left" },
-        { title: "Period", key: "period", algin: "left" },
-        { title: "Action", key: "action", algin: "right", scopedSlots: true },
-      ];
-    }
+    return [
+      { title: "ID", key: "id", algin: "left" },
+      { title: "Period", key: "period", algin: "left" },
+      {
+        title: "First Spread",
+        key: "first_spread",
+        algin: "left",
+        scopedSlots: true,
+      },
+      {
+        title: "Spread",
+        key: "spread",
+        algin: "left",
+        scopedSlots: true,
+      },
+      {
+        title: "Levels size",
+        key: "levels_size",
+        algin: "center",
+        scopedSlots: true,
+      },
+      {
+        title: "Levels count",
+        key: "levels_count",
+        algin: "right",
+        scopedSlots: true,
+      },
+      {
+        title: "Levels start",
+        key: "levels_start",
+        algin: "right",
+        scopedSlots: true,
+      },
+      { title: "Action", key: "action", algin: "right", scopedSlots: true },
+    ].filter(item => {
+      if (this.strategy.type == "trade" && item.key == "first_spread") {
+        return false;
+      } else if (this.strategy.type == "trade" && item.key == "spread") {
+        return false;
+      } else if (this.strategy.type == "trade" && item.key == "levels_size") {
+        return false;
+      } else if (this.strategy.type == "trade" && item.key == "levels_count") {
+        return false;
+      } else if (this.strategy.type == "trade" && item.key == "levels_start") {
+        return false;
+      } else if (
+        this.strategy.type == "fixed_trade" &&
+        item.key == "first_spread"
+      ) {
+        return false;
+      } else if (this.strategy.type == "fixed_trade" && item.key == "spread") {
+        return false;
+      } else if (
+        this.strategy.type == "fixed_trade" &&
+        item.key == "levels_size"
+      ) {
+        return false;
+      } else if (
+        this.strategy.type == "fixed_trade" &&
+        item.key == "levels_count"
+      ) {
+        return false;
+      } else if (
+        this.strategy.type == "fixed_trade" &&
+        item.key == "levels_start"
+      ) {
+        return false;
+      } else if (
+        this.strategy.type == "market_making" &&
+        item.key == "levels_size"
+      ) {
+        return false;
+      } else if (
+        this.strategy.type == "market_making" &&
+        item.key == "levels_start"
+      ) {
+        return false;
+      } else if (this.strategy.type == "copy" && item.key == "first_spread") {
+        return false;
+      }
+
+      return true;
+    });
   }
 
   add_flow() {
@@ -146,18 +186,9 @@ export default class FlowTable extends Vue {
       id: flow.id,
       strategy_id: this.strategy.id,
       period: Number(flow.period),
-      state: state
+      state: state,
+      options: flow.options
     };
-
-    if (this.strategy.type == "copy") {
-      payload.options = {
-        spread_asks: flow.options.spread_asks,
-        spread_bids: flow.options.spread_bids,
-        levels_size: flow.options.levels_size,
-        levels_count: Number(flow.options.levels_count),
-        levels_start: Number(flow.options.levels_start)
-      };
-    }
 
     try {
       await QuantexController.update_strategy_flow(payload);

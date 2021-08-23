@@ -13,6 +13,7 @@ export interface Store {
   exchanges: IStoreData<Quantex.Exchange>;
   markets: IStoreData<Quantex.Market>;
   strategies: IStoreData<Quantex.Strategy>;
+  strategy_types: IStoreData<string>;
 }
 
 const store: Store = reactive<Store>({
@@ -32,6 +33,10 @@ const store: Store = reactive<Store>({
     loading: false,
     data: []
   },
+  strategy_types: {
+    loading: false,
+    data: []
+  }
 });
 
 export default store;

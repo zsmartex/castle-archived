@@ -31,6 +31,7 @@
       <template slot="action" slot-scope="{ item, column }">
         <span :class="`action text-${column.algin}`">
           <span @click.stop.prevent>
+            <a-icon type="reload" @click.stop="reload_strategy(item.id)" />
             <a-switch
               :checked="item.state == 'enabled'"
               :loading="item.loading"
@@ -139,6 +140,10 @@ export default class Base extends Vue {
 
   delete_strategy(id: number) {
     QuantexController.delete_strategy(id);
+  }
+
+  reload_strategy(id: number) {
+    QuantexController.reload_strategy(id);
   }
 }
 </script>

@@ -101,7 +101,8 @@ class UserController {
         QuantexController.get_exchanges(),
         QuantexController.get_drivers(),
         QuantexController.get_markets(),
-        QuantexController.get_strategies()
+        QuantexController.get_strategies(),
+        QuantexController.get_strategy_types()
       ])
     }
 

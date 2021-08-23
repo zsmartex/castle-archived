@@ -35,4 +35,12 @@ export default class GettersSetters {
   set strategies(strategies: IStoreData<Quantex.Strategy>) {
     this.store.strategies = strategies;
   }
+
+  get strategy_types() {
+    return this.store.strategy_types;
+  }
+
+  set strategy_types(strategy_types: IStoreData<string>) {
+    this.store.strategy_types = strategy_types;
+  }
 }

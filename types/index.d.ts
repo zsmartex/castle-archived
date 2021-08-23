@@ -2,7 +2,9 @@ declare global {
   namespace Quantex {
     type StrategyTypeCopy = "copy";
     type StrategyTypeTrade = "trade";
-    type StrategyType = StrategyTypeCopy | StrategyTypeTrade;
+    type StrategyTypeMarketMaking = "market_making";
+    type StrategyTypeFixedTrade = "fixed_trade";
+    type StrategyType = StrategyTypeCopy | StrategyTypeTrade | StrategyTypeMarketMaking | StrategyTypeFixedTrade;
     type StrategySideBuy = "buy";
     type StrategySideSell = "sell";
     type StrategySideBoth = "both";
@@ -30,8 +32,8 @@ declare global {
       strategy_id?: number;
       period?: number;
       options?: {
-        spread_asks?: string;
-        spread_bids?: string;
+        first_spread?: string;
+        spread?: string;
         levels_size?: string;
         levels_count?: number;
         levels_start?: number;
@@ -48,10 +50,10 @@ declare global {
       ask?: string;
       bid?: string;
       exchange_id?: number;
-      limit_asks_base?: number;
-      limit_bids_base?: number;
-      base_precision?: number;
-      quote_precision?: number;
+      min_amount?: string;
+      max_amount?: string;
+      price_precision?: number;
+      amount_precision?: number;
       created_at?: Date;
       updated_at?: Date;
     }

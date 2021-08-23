@@ -54,10 +54,10 @@ export default class Base extends Vue {
   COLUMN = [
     { title: "Symbol", key: "symbol", algin: "left", scopedSlots: true },
     { title: "Exchange", key: "exchange", algin: "left", scopedSlots: true },
-    { title: "Limit asks", key: "limit_asks_base", algin: "left" },
-    { title: "Limit bids", key: "limit_bids_base", algin: "left" },
-    { title: "Base precision", key: "base_precision", algin: "left" },
-    { title: "Quote precision", key: "quote_precision", algin: "left" },
+    { title: "Min Amount", key: "min_amount", algin: "left" },
+    { title: "Max Amount", key: "max_amount", algin: "left" },
+    { title: "Price Precision", key: "price_precision", algin: "left" },
+    { title: "Amount Precision", key: "amount_precision", algin: "left" },
     { title: "Action", key: "action", algin: "right", scopedSlots: true }
   ];
 

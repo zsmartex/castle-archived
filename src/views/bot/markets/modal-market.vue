@@ -84,30 +84,30 @@ export default class ModalMarket extends Mixins(ZModalMixin) {
         })()
       },
       {
-        title: "Limit Ask Amount",
-        key: "limit_asks_base",
-        value: this.modal_payload?.limit_asks_base,
+        title: "Min Amount",
+        key: "min_amount",
+        value: this.modal_payload?.min_amount,
         type: "input",
         edit: true
       },
       {
-        title: "Limit Bid Amount",
-        key: "limit_bids_base",
-        value: this.modal_payload?.limit_bids_base,
+        title: "Max amount",
+        key: "max_amount",
+        value: this.modal_payload?.max_amount,
         type: "input",
         edit: true
       },
       {
-        title: "Base Precision",
-        key: "base_precision",
-        value: this.modal_payload?.base_precision,
+        title: "Price Precision",
+        key: "price_precision",
+        value: this.modal_payload?.price_precision,
         type: "input",
         edit: true
       },
       {
-        title: "Quote Precision",
-        key: "quote_precision",
-        value: this.modal_payload?.quote_precision,
+        title: "Amount Precision",
+        key: "amount_precision",
+        value: this.modal_payload?.amount_precision,
         type: "input",
         edit: true
       }
@@ -140,10 +140,10 @@ export default class ModalMarket extends Mixins(ZModalMixin) {
         ask: "",
         bid: "",
         exchange_id: null,
-        limit_asks_base: null,
-        limit_bids_base: null,
-        base_precision: null,
-        quote_precision: null
+        min_amount: null,
+        max_amount: null,
+        price_precision: null,
+        amount_precision: null
       };
     }
   }
@@ -152,10 +152,10 @@ export default class ModalMarket extends Mixins(ZModalMixin) {
     this.loading = true;
     let payload = {
       exchange_id: Number(this.modal_payload.exchange_id),
-      limit_asks_base: this.modal_payload.limit_asks_base,
-      limit_bids_base: this.modal_payload.limit_bids_base,
-      base_precision: Number(this.modal_payload.base_precision),
-      quote_precision: Number(this.modal_payload.quote_precision)
+      min_amount: this.modal_payload.min_amount,
+      max_amount: this.modal_payload.max_amount,
+      price_precision: Number(this.modal_payload.price_precision),
+      amount_precision: Number(this.modal_payload.amount_precision)
     };
 
     try {

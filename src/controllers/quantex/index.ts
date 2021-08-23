@@ -12,6 +12,18 @@ export class QuantexController {
     this.store = store;
   }
 
+  async get_strategy_types() {
+    try {
+      this.strategy_types.loading = true;
+      const { data } = await new ApiClient("quantex").get("admin/strategies/types");
+      this.strategy_types.data = data;
+    } catch (error) {
+      return error;
+    } finally {
+      this.strategy_types.loading = false;
+    }
+  }
+
   async get_strategies() {
     try {
       this.strategies.loading = true;
@@ -64,10 +76,25 @@ export class QuantexController {
       if (index >= 0) {
         Vue.delete(this.strategies.data, index);
       }
+      runNotice("success", "Strategy deleted successfully");
     } catch (error) {
       Vue.delete(this.strategies.data[index], "loading");
 
       return error;
+    }
+  }
+
+  async reload_strategy(id: number) {
+    const index = this.strategies.data.findIndex(strategy => strategy.id == id);
+    Vue.set(this.strategies.data[index], "loading", true);
+
+    try {
+      await new ApiClient("quantex").post(`admin/strategies/${id}/reload`);
+      runNotice("success", "Strategy reloaded successfully");
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[index], "loading");
     }
   }
 
@@ -78,6 +105,7 @@ export class QuantexController {
     try {
       const { data } = await new ApiClient("quantex").post("admin/strategies/flows", payload);
       flows.push(data);
+      runNotice("success", "Strategy flow created successfully");
     } catch (error) {
       return error;
     } finally {

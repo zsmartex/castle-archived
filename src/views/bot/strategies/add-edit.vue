@@ -244,11 +244,14 @@ export default class Base extends Vue {
         key: "type",
         value: this.strategy.type,
         type: "select",
-        list: {
-          copy: "COPY",
-          trade: "TRADE",
-          fixed_trade: "FIXED TRADE"
-        }
+        list: (() => {
+          return QuantexController.strategy_types.data.reduce((obj, type) => {
+            return {
+              ...obj,
+              [type]: type.toUpperCase()
+            };
+          }, {});
+        })()
       },
       {
         title: "Side",
