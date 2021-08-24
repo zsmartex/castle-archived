@@ -19,7 +19,6 @@ const configWebPack = {
   css: {
     loaderOptions: {
       less: {
-        modifyVars: {},
         javascriptEnabled: true
       }
     }
@@ -39,6 +38,22 @@ const configWebPack = {
             {
               loader: "less-loader",
               options: {
+                modifyVars: {
+                  "text-color": "#e1e7ef",
+                  "text-color-secondary": "#728bb9",
+                  "heading-color": "#728bb9",
+                  "primary-color": "#0095ff",
+                  "link-color": "#0095ff",
+                  "border-radius-base": "4px",
+                  "disabled-bg": "#576586",
+                  "disabled-color": "#576586",
+                  "border-color-split": "#314363",
+                  "tabs-card-head-background": "#1a243b",
+                  "component-background": "#1a243b",
+                  "checkbox-check-color": "#1d3863",
+                  "border-color-base": "#295e9f",
+                  "item-active-bg": "#0e182b"
+                },
                 javascriptEnabled: true
               }
             }

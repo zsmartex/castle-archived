@@ -34,7 +34,7 @@ type ModalType = "edit" | "new";
 
 @Component
 export default class ModalMarket extends Mixins(ZModalMixin) {
-  loading = false;
+  loading = true;
   modal_type?: ModalType = null;
   modal_payload: Quantex.Market = {};
 

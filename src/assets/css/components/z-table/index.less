@@ -6,9 +6,13 @@
   position: relative;
   height: auto;
   padding-bottom: 20px;
-  background-color: #fff;
-  border: 1px solid #e8e8e8;
+  background-color: var(--bg-card-color);
   box-shadow: 0 1px 16px rgba(0, 21, 41, 0.08);
+  border-radius: 6px;
+
+  &-head {
+    color: var(--color-gray);
+  }
 
   &-row,
   &-head {
@@ -17,7 +21,7 @@
     padding-left: 16px;
     padding-right: 16px;
     user-select: none;
-    border-bottom: @border-width-base @border-style-base @border-color-split;
+    border-bottom: @border-width-base @border-style-base var(--border-color);
     > * {
       flex: 1;
       vertical-align: middle;
@@ -38,7 +42,7 @@
         line-height: inherit;
         font-size: 22px;
         vertical-align: middle;
-        color: rgba(0, 0, 0, 0.45);
+        color: var(--color-gray);
         margin: 0 12px;
       }
 
@@ -53,14 +57,17 @@
   &-hoverable {
     .@{table-prefix-cls}-row {
       cursor: pointer;
+
       &:hover {
-        background-color: rgba(0, 0, 0, 0.025);
+        background-color: rgba(0,0,0,.15);
+        transition: background-color .35s;
       }
     }
   }
 
   &-row {
-    line-height: 32px;
+    height: 43px;
+    line-height: 43px;
   }
 
   &-no-scroll {
@@ -73,8 +80,6 @@
   &-head {
     position: absolute;
     top: 0;
-    font-weight: bold;
-    font-size: 14px;
     line-height: 40px;
   }
 

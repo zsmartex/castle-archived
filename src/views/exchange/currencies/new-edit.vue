@@ -2,6 +2,11 @@
   <a-layout-content v-if="!loading" class="page-exchange-currencies edit">
     <z-configuration>
       <div class="z-edit-panel">
+        <div class="z-edit-panel-head">
+          <div class="z-edit-panel-title">
+            {{ title }}
+          </div>
+        </div>
         <div class="z-edit-panel-content">
           <z-info-row
             v-for="setting in SETTING_PANEL_LEFT"
@@ -111,6 +116,10 @@ export default class App extends Vue {
     networks: []
   };
 
+  get title() {
+    return this.type == "edit" ? "Edit Currency" : "Create Currency";
+  }
+
   get NETWORK_COLUMN() {
     return [
       { title: "ID", key: "id", algin: "left" },
@@ -153,7 +162,7 @@ export default class App extends Vue {
         title: "Status",
         key: "status",
         value: this.currency.status,
-        style: "position: absolute; width: auto; right: 0px;",
+        style: "position: absolute; width: auto; right: 0px;padding-top: 24px;",
         type: "switch",
         switch: {
           0: "disabled",

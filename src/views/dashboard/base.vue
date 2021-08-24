@@ -1,14 +1,18 @@
 <template>
   <a-layout class="page-dashboard ant-layout-has-sider">
     <dashboard-menu :collapsed="collapsed" />
-    <div
-      class="page-dashboard-body ant-layout ant-layout-sider ant-layout-sider-light"
-    >
+    <div class="page-dashboard-body ant-layout ant-layout-sider">
       <dashboard-header
         :collapsed="collapsed"
         @change-collapsed="changeCollapsed"
       />
       <div class="page-dashboard-content">
+        <a-breadcrumb>
+          <a-breadcrumb-item v-for="(name, index) in routes" :key="index">
+            {{ name }}
+          </a-breadcrumb-item>
+        </a-breadcrumb>
+        <a-page-header :title="routes[routes.length - 1]" />
         <router-view />
       </div>
     </div>
@@ -21,11 +25,23 @@ import { Vue, Component } from "vue-property-decorator";
 @Component({
   components: {
     "dashboard-menu": () => import("@/layouts/dashboard/menu.vue"),
-    "dashboard-header": () => import("@/layouts/dashboard/header.vue")
-  }
+    "dashboard-header": () => import("@/layouts/dashboard/header.vue"),
+  },
 })
 export default class App extends Vue {
   collapsed = false;
+
+  get routes() {
+    const routes = new Array<string>();
+    this.$route.matched.forEach(route => {
+      if (route.meta["parent"]) {
+        routes.push(route.meta["parent"]);
+      }
+      routes.push(route.name);
+    });
+
+    return routes;
+  }
 
   changeCollapsed() {
     this.collapsed = !this.collapsed;

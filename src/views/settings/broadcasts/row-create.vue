@@ -9,7 +9,13 @@
       <a-textarea v-model="url" placeholder="URL" auto-size />
     </span>
     <span class="action text-center">
-      <a-button type="create" @click="create_broadcast" :disabled="button_disabled">Create</a-button>
+      <a-button
+        type="create"
+        @click="create_broadcast"
+        :disabled="button_disabled"
+      >
+        Create
+      </a-button>
     </span>
   </fragment>
 </template>

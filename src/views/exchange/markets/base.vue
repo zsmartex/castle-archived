@@ -30,14 +30,14 @@ import { GET_MARKETS } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
-export default class App extends Vue {
+export default class Markets extends Vue {
   loading = false;
   data: Market[] = [];
   page = 1;
   total = 0;
   limit = 50;
 
-  private readonly COLUMN = [
+  readonly COLUMN = [
     { title: "Market ID", key: "name", algin: "left" },
     { title: "Price precision", key: "price_precision", algin: "left" },
     { title: "Amount precision", key: "amount_precision", algin: "left" },

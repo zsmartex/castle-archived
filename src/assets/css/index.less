@@ -1,0 +1,123 @@
+
+
+:root {
+  --bg-color: #0e182b;
+  --bg-card-color: #1a243b;
+  --border-color: #314363;
+  --text-color: #e1e7ef;
+  --color-gray: #728bb9;
+  --blue-color: #0095ff;
+  --blue-dark-color: #295e9f;
+  --disabled-color: #576586;
+
+  --bg-dropdown-color: #25344e;
+  --border-dropdown-color: #3b4d6b;
+  --text-dropdown-color: #c6d8f3;
+}
+
+.ant-layout {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-size: 12px;
+}
+
+.ant-input {
+  background-color: var(--bg-color);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+}
+
+.ant-select-dropdown {
+  border: 1px solid var(--border-dropdown-color);
+  background-color: var(--bg-dropdown-color);
+
+  &-menu-item {
+    color: var(--text-dropdown-color);
+
+    &-selected, &:hover {
+      background-color: var(--bg-color) !important;
+    }
+
+    &-active:not(&-disabled) {
+      background-color: var(--bg-color) !important;
+    }
+  }
+}
+
+.ant-select-selection {
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+.ant-layout-header {
+  background-color: var(--bg-card-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.ant-breadcrumb {
+  color: var(--text-color);
+
+  &-link {
+    color: var(--color-gray);
+  }
+
+  &-separator {
+    color: var(--color-gray);
+  }
+
+  a {
+    color: var(--color-gray);
+  }
+
+  &>span:last-child, &>span:last-child a {
+    color: var(--text-color) !important;
+
+    .ant-breadcrumb-link {
+      color: var(--text-color) !important;
+    }
+  }
+}
+
+.ant-page-header {
+  padding: 0 24px;
+  &-heading-title {
+    color: var(--text-color);
+  }
+}
+
+.ant-breadcrumb {
+  margin: 12px 0;
+  padding: 0 24px;
+}
+
+.ant-btn-primary {
+  background-color: #1d3863;
+  border-color: var(--blue-dark-color);
+  border-radius: 2px;
+  text-shadow: 0 -1px 0 rgb(0 0 0 / 12%);
+  box-shadow: 0 2px 0 rgb(0 0 0 / 5%);
+}
+
+.ant-btn {
+  font-size: 12px;
+
+  &:disabled {
+    color: var(--text-color);
+    border: none;
+  }
+}
+
+.ant-calendar {
+  border: none;
+
+  &-selected-day &-date {
+    background-color: #1d3863;
+    border-color: var(--blue-dark-color);
+  }
+
+  &-date:hover {
+    background-color: #1d3863;
+    border-color: var(--blue-dark-color);
+  }
+}

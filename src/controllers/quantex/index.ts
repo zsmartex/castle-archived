@@ -39,9 +39,11 @@ export class QuantexController {
   async create_strategy(payload: Quantex.Strategy) {
     try {
       const { data } = await new ApiClient("quantex").post("admin/strategies", payload);
+      data.flows ||= [];
+      data.source_market_ids ||= [];
       this.strategies.data.push(data);
       runNotice("success", "Strategy created successfully");
-      router.push({ path: `/bot/strategies/${data.id}` });
+      router.push({ path: `/bot/strategies` });
     } catch (error) {
       return error;
     }

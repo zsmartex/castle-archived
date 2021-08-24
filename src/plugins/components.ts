@@ -7,6 +7,8 @@ import ZTable from "@/components/z-table";
 import ZContent from "@/layouts/z-content.vue";
 import ZModal from "@/layouts/z-modal.vue";
 import ZLoading from "@/components/z-loading";
+import ZPagination from "@/components/z-pagination";
+import ZEmpty from "@/components/z-empty";
 import Vue from "vue";
 
 Vue.component("z-content", ZContent);
@@ -17,3 +19,5 @@ Vue.component("z-filter-drawer", ZFilterDrawer);
 Vue.component("z-configuration", ZConfiguration);
 Vue.component("auth-button", AuthButton);
 Vue.component("z-loading", ZLoading);
+Vue.component("z-pagination", ZPagination);
+Vue.component("z-empty", ZEmpty);

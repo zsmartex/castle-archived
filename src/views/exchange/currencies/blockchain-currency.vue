@@ -199,6 +199,7 @@ export default class BlockchainCurrencyPage extends Vue {
         list: (() => {
           return this.currencies.reduce((obj, currency) => {
             return {
+              null: "NULL",
               ...obj,
               [currency["code"]]: currency.name
             };
@@ -371,7 +372,10 @@ export default class BlockchainCurrencyPage extends Vue {
     let payload = {
       currency_id: this.code,
       blockchain_key: this.blockchain_currency.blockchain_key,
-      parent_id: this.blockchain_currency.parent_id,
+      parent_id:
+        this.blockchain_currency.parent_id == "null"
+          ? null
+          : this.blockchain_currency.parent_id,
       subunits: this.blockchain_currency.subunits,
       status: this.blockchain_currency.status,
       deposit_enabled: this.blockchain_currency.deposit_enabled,

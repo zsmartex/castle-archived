@@ -68,7 +68,6 @@ export default class AuthInput extends Vue {
   input {
     height: 50px;
     width: 100%;
-    border: 1px solid;
     padding: 0 20px;
     font-size: 14px;
     z-index: 1;

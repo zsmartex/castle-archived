@@ -147,20 +147,3 @@ export default class Base extends Vue {
   }
 }
 </script>
-
-<style lang="less">
-.page-bot-strategies .strategies-table {
-  .ic-action {
-    i {
-      font-size: 20px;
-      margin: 0 12px;
-      cursor: pointer;
-      color: rgba(0, 0, 0, 0.45);
-
-      &.redo-loading {
-        animation: loadingCircle 1s infinite linear;
-      }
-    }
-  }
-}
-</style>

@@ -1,16 +1,11 @@
 <template>
   <form class="page-login-form-box" @submit.prevent="login">
-    <auth-input v-model="email" placeholder="Email" :is-error="email_error">
+    <auth-input v-model="email" placeholder="Email">
       <template v-slot:prefix>
         <a-icon type="user" />
       </template>
     </auth-input>
-    <auth-input
-      v-model="password"
-      type="password"
-      placeholder="Password"
-      :is-error="password_error"
-    >
+    <auth-input v-model="password" type="password" placeholder="Password">
       <template v-slot:prefix>
         <a-icon type="lock" />
       </template>
@@ -37,17 +32,9 @@ export default class App extends Vue {
   password = "";
   captcha_response = "";
 
-  get email_error() {
-    return !this.email;
-  }
-
-  get password_error() {
-    return !this.password;
-  }
-
   get button_disabled() {
-    if (this.email_error) return true;
-    if (this.password_error) return true;
+    if (!this.email) return true;
+    if (!this.password) return true;
 
     return false;
   }

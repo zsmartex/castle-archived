@@ -1,7 +1,5 @@
 <template>
-  <header
-    class="page-dashboard-header ant-layout-header ant-layout-sider-light"
-  >
+  <header class="page-dashboard-header ant-layout-header">
     <span class="ant-layout-header-trigger" @click="$emit('change-collapsed')">
       <a-icon :type="collapsed ? 'menu-unfold' : 'menu-fold'" />
     </span>

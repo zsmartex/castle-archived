@@ -18,7 +18,7 @@
     </div>
     <div class="z-table-content">
       <z-loading v-if="loading" />
-      <a-empty v-else-if="!data.length && allowEmpty" />
+      <z-empty v-else-if="!data.length && allowEmpty" />
       <p
         v-for="item of data"
         class="z-table-row"
@@ -44,16 +44,14 @@
         <slot name="row-extend" />
       </p>
     </div>
-    <a-pagination
-      v-if="pagination && !loading"
-      showSizeChanger
+    <z-pagination
       class="z-table-pagination"
-      :current="page"
-      :total="total"
+      v-if="pagination"
+      size="small"
+      :loading="loading"
       :page-size="pageSize"
-      :pageSizeOptions="['10', '25', '50', '100']"
+      :count-row="data.length"
       @change="onChange"
-      @showSizeChange="onChange"
     />
   </div>
 </template>
@@ -71,6 +69,7 @@ interface Column {
 
 @Component({})
 export default class ZTable extends Vue {
+  @Prop() readonly title!: string;
   @Prop({ default: false }) readonly loading!: boolean;
   @Prop() readonly columns!: Column[];
   @Prop() readonly data!: any[];
@@ -82,8 +81,8 @@ export default class ZTable extends Vue {
   @Prop() readonly pageSize!: number;
   @Prop({ default: true }) readonly allowEmpty!: boolean;
 
-  onChange(page: number, pageSize: number) {
-    this.$emit("change-pagination", { page, limit: pageSize });
+  onChange(page: number) {
+    this.$emit("change-pagination", { page, limit: this.pageSize });
   }
 
   onClick(item) {

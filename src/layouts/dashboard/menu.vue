@@ -16,7 +16,6 @@
       :defaultOpenKeys="[`${isMenuSelected}`]"
       :selectedKeys="[`${isSubMenuSelected}`]"
       mode="inline"
-      theme="dark"
     >
       <template v-for="(menu, mindex) in MENUS">
         <a-sub-menu v-if="menu.children" :key="`menu-${mindex}`">
