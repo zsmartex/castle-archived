@@ -56,6 +56,11 @@
               <a-icon slot="checkedChildren" type="check" />
               <a-icon slot="unCheckedChildren" type="close" />
             </a-switch>
+            <a-icon
+              type="delete"
+              theme="filled"
+              @click.stop="delete_strategy_flow(item.id, item.strategy_id)"
+            />
           </span>
         </span>
       </template>
