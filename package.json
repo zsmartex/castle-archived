@@ -13,7 +13,7 @@
     "@grainrigi/vue-fragment": "^1.5.1",
     "@types/ua-parser-js": "^0.7.33",
     "@vue/composition-api": "^1.0.0-beta.21",
-    "@zsmartex/z-apiclient": "^1.0.10",
+    "@zsmartex/z-apiclient": "^1.0.11",
     "@zsmartex/z-eventbus": "^1.0.2",
     "@zsmartex/z-types": "^1.10.16",
     "ant-design-vue": "^1.5.0",
