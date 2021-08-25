@@ -126,21 +126,21 @@ export default class App extends Vue {
       { title: "Key", key: "blockchain_key", algin: "left" },
       { title: "Min deposit", key: "min_deposit_amount", algin: "left" },
       { title: "Min withdrawal", key: "min_withdraw_amount", algin: "left" },
-      { title: "Withdrawal fee", key: "withdraw_fee", algin: "left" },
-      { title: "Subunits", key: "subunits", algin: "left" },
+      { title: "Withdrawal fee", key: "withdraw_fee", algin: "right" },
+      { title: "Subunits", key: "subunits", algin: "right" },
       {
-        title: "Deposit enabled",
+        title: "Deposit Enabled",
         key: "deposit_enabled",
         algin: "right",
         scopedSlots: true
       },
       {
-        title: "Withdrawal enabled",
+        title: "Withdrawal Enabled",
         key: "withdrawal_enabled",
         algin: "right",
         scopedSlots: true
       },
-      { title: "", key: "action", algin: "right" }
+      // { title: "", key: "action", algin: "right" }
     ];
   }
 

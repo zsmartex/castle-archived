@@ -41,15 +41,22 @@
         </div>
       </div>
     </z-configuration>
-    <z-configuration>
-      <div class="z-edit-panel">
-        <div class="z-edit-panel-head">
+    <z-configuration style="padding-left: 0; padding-right: 0;">
+      <div class="z-edit-panel" style="padding-left: 0; padding-right: 0;">
+        <div
+          class="z-edit-panel-head"
+          style="padding-left: 20px; padding-right: 20px;"
+        >
           <div class="z-edit-panel-title">
             Linked Source Market
           </div>
         </div>
         <div class="z-edit-panel-content">
-          <a-input placeholder="Search" v-model="linked_markets_search" />
+          <a-input
+            placeholder="Search"
+            v-model="linked_markets_search"
+            style="margin-left: 20px; margin-right: 20px;"
+          />
           <z-table
             :columns="market_columns('linked')"
             :data="linked_markets"
@@ -57,6 +64,7 @@
             :scroll="false"
             :pagination="false"
             :loading="loading"
+            style="border: none;"
           >
             <template slot="symbol" slot-scope="{ item, column }">
               <span :class="`symbol text-${column.algin}`">
@@ -80,14 +88,19 @@
           </z-table>
         </div>
       </div>
-      <div class="z-edit-panel">
-        <div class="z-edit-panel-head">
+      <div class="z-edit-panel" style="padding-left: 0; padding-right: 0;">
+        <div
+          class="z-edit-panel-head"
+          style="padding-left: 20px; padding-right: 20px;"
+        >
           <div class="z-edit-panel-title">
             Existing Source Market
           </div>
         </div>
         <div class="z-edit-panel-content">
-          <div style="display: flex;width: 100%">
+          <div
+            style="display: flex;width: 100%; padding-left: 20px; padding-right: 20px;"
+          >
             <a-input placeholder="Search" v-model="existing_markets_search" />
             <a-button
               v-if="page_type != 'create'"
@@ -106,6 +119,7 @@
             :scroll="false"
             :pagination="false"
             :loading="loading"
+            style="border: none;"
           >
             <template slot="symbol" slot-scope="{ item, column }">
               <span :class="`symbol text-${column.algin}`">
