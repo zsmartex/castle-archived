@@ -8,8 +8,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Watch } from "vue-property-decorator";
-import store from "@/store";
+import { Vue, Component } from "vue-property-decorator";
 import { PublicController } from "./controllers";
 
 @Component

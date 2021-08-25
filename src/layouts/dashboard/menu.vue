@@ -57,7 +57,6 @@
 
 <script lang="ts">
 import { UserController } from "@/controllers";
-import store from "@/store";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
 interface MenuAttrs {

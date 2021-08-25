@@ -11,6 +11,7 @@ const routes = [
         component: () => import("@/layouts/page-view.vue"),
         children: [
           {
+            name: "Analysis",
             path: "analysis",
             component: () => import("@/views/dashboard/analysis/base.vue")
           }

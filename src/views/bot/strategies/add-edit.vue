@@ -1,7 +1,7 @@
 <template>
   <a-layout-content v-if="!loading" class="page-bot-strategies edit">
     <z-configuration>
-      <div class="z-edit-panel">
+      <div class="z-edit-panel" style="padding: 0">
         <div class="z-edit-panel-head">
           <div class="z-edit-panel-title">
             {{ title }}
@@ -390,5 +390,7 @@ export default class Base extends Vue {
   .z-table {
     width: 100%;
   }
+
+
 }
 </style>

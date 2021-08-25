@@ -53,10 +53,11 @@ export default class App extends Vue {
     await store.dispatch("admin/GET_METRICS");
     this.loading = false;
     this.$nextTick(() => {
+
       if (!this.$refs.metrics) return;
       if (!this.is_chart_draw) {
         this.$refs.metrics.create_chart();
-        this.draw_chart();
+        this.draw_chart(this.metrics);
         this.is_chart_draw = true;
       }
       this.$refs.metrics.chart_data(this.metrics);
@@ -64,21 +65,44 @@ export default class App extends Vue {
     });
   }
 
-  draw_chart() {
+  draw_chart(metrics: MetricsLineChart[]) {
+    let max_sucessful_logins = 0;
+    let max_signups = 0;
+    let max_failed_logins = 0;
+
+    for (const metric of metrics) {
+      if (metric[this.metric_name_to_lang("signups")] > max_signups) {
+        max_signups = metric[this.metric_name_to_lang("signups")];
+      }
+      if (
+        metric[this.metric_name_to_lang("sucessful_logins")] >
+        max_sucessful_logins
+      ) {
+        max_sucessful_logins = metric[this.metric_name_to_lang("sucessful_logins")];
+      }
+      if (
+        metric[this.metric_name_to_lang("failed_logins")] > max_failed_logins
+      ) {
+        max_failed_logins = metric[this.metric_name_to_lang("failed_logins")];
+      }
+    }
+
+    const max = Math.max(max_signups, max_sucessful_logins, max_failed_logins)
+
     const { chart } = this.$refs.metrics;
 
     chart.scale({
       [this.metric_name_to_lang("signups")]: {
         min: 0,
-        max: 100
+        max: max + 5
       },
       [this.metric_name_to_lang("sucessful_logins")]: {
         min: 0,
-        max: 100
+        max: max + 5
       },
       [this.metric_name_to_lang("failed_logins")]: {
         min: 0,
-        max: 100
+        max: max + 5
       }
     });
 
@@ -86,40 +110,19 @@ export default class App extends Vue {
       shared: true
     });
 
-    chart.legend({
-      custom: true,
-      items: [
-        {
-          name: this.metric_name_to_lang("signups"),
-          value: this.metric_name_to_lang("signups"),
-          marker: { symbol: "line", style: { stroke: "#1890ff", lineWidth: 2 } }
-        },
-        {
-          name: this.metric_name_to_lang("sucessful_logins"),
-          value: this.metric_name_to_lang("sucessful_logins"),
-          marker: { symbol: "line", style: { stroke: "#2fc25b", lineWidth: 2 } }
-        },
-        {
-          name: this.metric_name_to_lang("failed_logins"),
-          value: this.metric_name_to_lang("failed_logins"),
-          marker: {
-            symbol: "line",
-            style: { stroke: "#e97878", lineWidth: 2 }
-          }
-        }
-      ]
-    });
-
     chart
-      .line()
+      .area()
+      .adjust("stack")
       .position(`date*${this.metric_name_to_lang("signups")}`)
       .color("#1890ff");
     chart
-      .line()
+      .area()
+      .adjust("stack")
       .position(`date*${this.metric_name_to_lang("sucessful_logins")}`)
       .color("#2fc25b");
     chart
-      .line()
+      .area()
+      .adjust("stack")
       .position(`date*${this.metric_name_to_lang("failed_logins")}`)
       .color("#e97878");
   }
@@ -142,13 +145,26 @@ export default class App extends Vue {
           return date === record.date;
         });
         if (index >= 0) {
-          out_data[index][name] = metric_value;
+          (out_data[index] as any) = {
+            ...out_data[index],
+            [name]: metric_value
+          };
           continue;
         }
 
         const data = { date };
         data[name] = metric_value;
         out_data.push(data);
+      }
+    }
+
+    for (let index = 0; index < out_data.length; index++) {
+      for (const metric_name of keys) {
+        const name = this.metric_name_to_lang(metric_name);
+
+        if (!out_data[index][name]) {
+          out_data[index][name] = 0;
+        }
       }
     }
 

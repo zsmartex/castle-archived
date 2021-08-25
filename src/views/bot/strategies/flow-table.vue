@@ -107,19 +107,19 @@ export default class FlowTable extends Vue {
         scopedSlots: true,
       },
       {
-        title: "Levels size",
+        title: "Levels Size",
         key: "levels_size",
         algin: "center",
         scopedSlots: true,
       },
       {
-        title: "Levels count",
+        title: "Levels Count",
         key: "levels_count",
         algin: "right",
         scopedSlots: true,
       },
       {
-        title: "Levels start",
+        title: "Levels Start",
         key: "levels_start",
         algin: "right",
         scopedSlots: true,

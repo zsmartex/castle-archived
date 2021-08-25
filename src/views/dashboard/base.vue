@@ -33,7 +33,7 @@ export default class App extends Vue {
 
   get routes() {
     const routes = new Array<string>();
-    this.$route.matched.forEach(route => {
+    this.$route.matched.slice(1, this.$route.matched.length).forEach(route => {
       if (route.meta["parent"]) {
         routes.push(route.meta["parent"]);
       }
