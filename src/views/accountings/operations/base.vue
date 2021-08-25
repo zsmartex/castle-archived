@@ -12,6 +12,7 @@
 import store from "@/store";
 import { getDate } from "@/mixins";
 import { Vue, Component } from "vue-property-decorator";
+import { reactive } from "@vue/composition-api";
 
 interface Pane {
   title: string;
@@ -63,7 +64,7 @@ export default class PageOperation extends Vue {
       { title: "Ref type", key: "reference_type", algin: "left" },
       { title: "Credit", key: "credit", algin: "left" },
       { title: "Debit", key: "debit", algin: "left" },
-      { title: "Created At", key: "created_at", algin: "left" }
+      { title: "Created At", key: "created_at", algin: "right" }
     ].filter(col => {
       if (col.key === "uid") {
         return pane_key === "liabilities";
@@ -89,15 +90,9 @@ export default class PageOperation extends Vue {
     this.$router.push(`/accountings/operations/${value}`);
   }
 
-  get is_root_path() {
-    const { matched, path } = this.$route;
-
-    return matched[2].regex.test(path);
-  }
-
   mounted() {
     this.panes.forEach(pane => {
-      this.operations[pane.key] = {
+      this.operations[pane.key] = reactive({
         type: pane.key,
         loading: false,
         columns: this.columns(pane.key),
@@ -106,10 +101,12 @@ export default class PageOperation extends Vue {
         total: 0,
         limit: 50,
         load_data: this.get_operations
-      };
+      });
     });
 
-    if (this.is_root_path) this.$router.push("/accountings/operations/assets");
+    if (this.$route.path == "/accountings/operations") {
+      this.$router.push("/accountings/operations/assets");
+    }
     this.panes.forEach(pane => {
       this.get_operations(pane.key);
     });
@@ -140,6 +137,7 @@ export default class PageOperation extends Vue {
     } catch (error) {
       return error;
     } finally {
+      console.log(type)
       this.operations[type].loading = false;
     }
   }

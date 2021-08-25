@@ -49,6 +49,7 @@
       v-if="pagination"
       size="small"
       :loading="loading"
+      :page="page"
       :page-size="pageSize"
       :count-row="data.length"
       @change="onChange"

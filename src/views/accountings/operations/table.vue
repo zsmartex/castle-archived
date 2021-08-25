@@ -7,7 +7,6 @@
     :hover="true"
     :scroll="false"
     :pagination="true"
-    :total="operation.total"
     :page="operation.page"
     :page-size="operation.limit"
     @change-pagination="change_pagination"

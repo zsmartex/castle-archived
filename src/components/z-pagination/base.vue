@@ -64,7 +64,6 @@ export default class ZPagination extends Vue {
   @Prop() readonly pageSize!: number;
   @Prop() readonly value?: number;
   @Prop({ default: 1 }) readonly page?: number;
-  @Prop() readonly total?: number;
   @Prop() readonly countRow?: number;
 
   max_prev_showing = 2;
