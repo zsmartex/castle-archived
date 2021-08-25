@@ -71,6 +71,15 @@ export default class AuthInput extends Vue {
     padding: 0 20px;
     font-size: 14px;
     z-index: 1;
+    border-radius: 0;
+
+    &:-webkit-autofill,
+    &:-webkit-autofill:hover,
+    &:-webkit-autofill:focus,
+    &:-webkit-autofill:active {
+      box-shadow: 0 0 0 1000px var(--bg-color) inset !important;
+      -webkit-text-fill-color: var(--text-color) !important;
+    }
   }
 }
 </style>
