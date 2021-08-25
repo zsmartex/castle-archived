@@ -18,7 +18,6 @@
       <a-tag
         v-for="label in labels"
         :key="label.key"
-        :color="get_color(label.key)"
         @click="
           render_modal({
             type: 'edit',
@@ -88,19 +87,6 @@ export default class App extends Vue {
       runNotice("success", "Label updated successfully");
     } catch (error) {
       return error;
-    }
-  }
-
-  get_color(label: string) {
-    switch (label) {
-      case "email":
-        return "green";
-      case "phone":
-        return "cyan";
-      case "profile":
-        return "blue";
-      case "document":
-        return "darkblue";
     }
   }
 

@@ -44,7 +44,7 @@ const configWebPack = {
                   "heading-color": "#728bb9",
                   "primary-color": "#0095ff",
                   "link-color": "#0095ff",
-                  "border-radius-base": "4px",
+                  "border-radius-base": "0px",
                   "disabled-bg": "#576586",
                   "disabled-color": "#576586",
                   "border-color-split": "#314363",
@@ -52,7 +52,11 @@ const configWebPack = {
                   "component-background": "#1a243b",
                   "checkbox-check-color": "#1d3863",
                   "border-color-base": "#295e9f",
-                  "item-active-bg": "#0e182b"
+                  "item-active-bg": "#0e182b",
+                  "green-base": "#16c393",
+                  "red-base": "#ea4d4d",
+                  "blue-base": "#0095ff",
+                  "orange-base": "#dea959"
                 },
                 javascriptEnabled: true
               }

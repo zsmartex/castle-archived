@@ -25,6 +25,8 @@
   background-color: var(--bg-color);
   border: 1px solid var(--border-color);
   color: var(--text-color);
+  line-height: 40px;
+  height: 40px;
 
   &::placeholder {
     color: var(--color-gray);
@@ -40,6 +42,10 @@
 
   &-affix-wrapper .ant-input:not(:first-child) {
     padding-left: 40px;
+  }
+
+  &[disabled] {
+    color: var(--text-color);
   }
 }
 
@@ -64,6 +70,13 @@
   border: 1px solid var(--border-color);
   color: var(--text-color);
   background-color: var(--bg-color);
+  height: 40px;
+  line-height: 40px;
+
+  &__rendered {
+    height: 40px;
+    line-height: 40px;
+  }
 }
 
 .ant-layout-header {
@@ -133,5 +146,16 @@
   &-date:hover {
     background-color: #1d3863;
     border-color: var(--blue-dark-color);
+  }
+}
+
+.ant-tag {
+  background-color: #1d3863;
+  border-color: var(--blue-dark-color);
+}
+
+.ant-checkbox {
+  &-disabled &-inner {
+    border: none;
   }
 }

@@ -1,6 +1,5 @@
 <template>
   <a-layout-content class="page-user-directory profile">
-    <profile-header class="profile-head" :UID="UID" />
     <a-tabs
       class="profile-content"
       :activeKey="active_tab_key"
@@ -35,7 +34,6 @@ import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   components: {
-    "profile-header": () => import("./header.vue"),
     "user-kyc": () => import("./kyc/base.vue"),
     "user-balance": () => import("./user-balance/base.vue"),
     "user-info": () => import("./user-profile/user-info/base.vue"),
