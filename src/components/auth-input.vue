@@ -34,8 +34,6 @@
 import "reflect-metadata";
 import { Vue, Component, Prop } from "vue-property-decorator";
 
-type InputVM = Vue & { value: string };
-
 @Component
 export default class AuthInput extends Vue {
   @Prop() readonly type!: string;

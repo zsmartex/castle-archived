@@ -25,6 +25,22 @@
   background-color: var(--bg-color);
   border: 1px solid var(--border-color);
   color: var(--text-color);
+
+  &::placeholder {
+    color: var(--color-gray);
+  }
+
+  &-prefix i {
+    color: var(--color-gray);
+  }
+
+  &-affix-wrapper .ant-input:not(:last-child) {
+    padding-right: 40px;
+  }
+
+  &-affix-wrapper .ant-input:not(:first-child) {
+    padding-left: 40px;
+  }
 }
 
 .ant-select-dropdown {

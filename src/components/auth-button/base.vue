@@ -37,8 +37,7 @@ export default class AuthButton extends Vue {
   border: 0;
   border-radius: 0;
   cursor: pointer;
-  border-radius: 4px;
   color: #fff;
-  background-color: #1890ff;
+  background-color: var(--blue-color);
 }
 </style>
