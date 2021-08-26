@@ -233,7 +233,7 @@ export default class Deposits extends Vue {
 
   async get_deposits(payload = { limit: this.limit, page: this.page }) {
     this.loading = true;
-    payload = Object.assign(payload, { ordering: "asc" });
+    payload = Object.assign(payload, { ordering: "desc" });
     try {
       const { data, headers } = await store.dispatch(
         GET_DEPOSITS,
