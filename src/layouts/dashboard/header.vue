@@ -10,7 +10,7 @@
         :key="action.key"
         @click="action.callback"
       >
-        <a-icon :type="action.icon" />
+        <a-icon :type="action.icon" :theme="action.theme" />
         {{ action.title }}
       </div>
     </div>

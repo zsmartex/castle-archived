@@ -100,6 +100,22 @@ export class QuantexController {
     }
   }
 
+  async copy_strategy_flows(target_strategy_id: number, source_strategy_id: number, callback: () => void) {
+    const index = this.strategies.data.findIndex(strategy => strategy.id == target_strategy_id);
+    Vue.set(this.strategies.data[index], "loading", true);
+
+    try {
+      const { data } = await new ApiClient("quantex").post(`admin/strategies/${target_strategy_id}/copy-flows/${source_strategy_id}`);
+      Vue.set(this.strategies.data, index, data);
+      runNotice("success", "Copy Strategy flows successfully");
+      callback();
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[index], "loading");
+    }
+  }
+
   async create_strategy_flow(payload: Quantex.StrategyFlow) {
     const strategy_index = this.strategies.data.findIndex(strategy => strategy.id == payload.strategy_id);
     const flows = this.strategies.data[strategy_index].flows;
@@ -128,10 +144,10 @@ export class QuantexController {
       runNotice("success", "Strategy flow update successfully");
       Vue.set(flows, flow_index, data);
     } catch (error) {
+      Vue.delete(flows[flow_index], "loading");
       return error;
     } finally {
       Vue.delete(this.strategies.data[strategy_index], "loading");
-      Vue.delete(flows[flow_index], "loading");
     }
   }
 
@@ -151,7 +167,6 @@ export class QuantexController {
       return error;
     } finally {
       Vue.delete(this.strategies.data[strategy_index], "loading");
-      Vue.delete(flows[flow_index], "loading");
     }
   }
 

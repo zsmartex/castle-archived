@@ -149,16 +149,23 @@
       v-if="page_type == 'edit' && !loading"
       :strategy_id="strategy_id"
     />
+    <modal-copy-flows
+      v-if="page_type == 'edit' && !loading"
+      ref="modal-copy-flows"
+      :strategy_id="strategy_id"
+    />
   </a-layout-content>
 </template>
 
 <script lang="ts">
+import ZSmartModel from "@zsmartex/z-eventbus";
 import { QuantexController } from "@/controllers";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component({
   components: {
-    "flow-table": () => import("./flow-table.vue")
+    "flow-table": () => import("./flow-table.vue"),
+    "modal-copy-flows": () => import("./modal-copy-flows.vue")
   }
 })
 export default class Base extends Vue {
@@ -301,12 +308,36 @@ export default class Base extends Vue {
     ];
   }
 
+  set_action_header() {
+    this.$route.meta["action-header"] = [
+      {
+        title: "Copy Strategy",
+        key: "copy_strategy",
+        icon: "copy",
+        theme: "filled",
+        callback: () => {
+          (this.$refs["modal-copy-flows"] as any).create();
+        }
+      }
+    ];
+
+    this.$nextTick(() => {
+      ZSmartModel.emit("set-action-header");
+    });
+  }
+
   beforeMount() {
     if (this.page_type == "edit") {
       this.strategy =
         QuantexController.strategies.data.find(
           strategy => strategy.id == this.strategy_id
         ) || {};
+    }
+  }
+
+  mounted() {
+    if (this.page_type == "edit") {
+      this.set_action_header();
     }
   }
 

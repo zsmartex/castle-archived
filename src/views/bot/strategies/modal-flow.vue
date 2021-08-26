@@ -42,7 +42,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
   loading = false;
   modal_type?: ModalType = null;
   modal_payload: Quantex.StrategyFlow = {
-    options: {},
+    options: {}
   };
   strategy: Quantex.Strategy = {};
 
