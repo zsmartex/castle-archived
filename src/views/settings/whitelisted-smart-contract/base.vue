@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="whitelisted-smart-contract">
+  <div class="whitelisted-smart-contract">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -22,7 +22,7 @@
     >
     </z-table>
     <modal-edit-new ref="modal-edit-new" @updated="get_smart_contracts" />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

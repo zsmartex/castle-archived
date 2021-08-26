@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-fee-schedules">
+  <div class="page-settings-fee-schedules">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -57,7 +57,7 @@
       >
       </z-info-row>
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

@@ -39,6 +39,7 @@
       </span>
       <slot v-else-if="item.type === 'slot'" :name="item.key" :item="item" />
       <a-select
+        show-search
         v-else-if="item.type === 'select'"
         :value="(item.value || '').toString()"
         @change="onChange"

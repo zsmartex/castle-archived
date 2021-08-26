@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-user-directory profile">
+  <div class="page-user-directory profile">
     <a-tabs
       class="profile-content"
       :activeKey="active_tab_key"
@@ -24,7 +24,7 @@
         <user-history :user_info="user_info" />
       </a-tab-pane>
     </a-tabs>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-bot-strategies">
+  <div class="page-bot-strategies">
     <z-table
       class="strategies-table"
       :loading="strategies.loading"
@@ -54,7 +54,7 @@
         </span>
       </template>
     </z-table>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

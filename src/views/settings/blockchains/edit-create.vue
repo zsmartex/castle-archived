@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content v-if="!loading" class="page-settings-blockchains edit">
+  <div v-if="!loading" class="page-settings-blockchains edit">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-content">
@@ -27,7 +27,7 @@
     </z-configuration>
 
     <modal-block-scanning :blockchain="blockchain" ref="modal-block-scanning" />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

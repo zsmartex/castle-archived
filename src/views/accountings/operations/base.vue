@@ -1,11 +1,11 @@
 <template>
-  <a-layout-content class="page-accountings-operations">
+  <div class="page-accountings-operations">
     <a-tabs v-model="active_hey">
       <a-tab-pane v-for="pane in panes" :key="pane.key" :tab="pane.title">
         <operation-table :operation="operations[pane.key]" />
       </a-tab-pane>
     </a-tabs>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

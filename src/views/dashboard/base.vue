@@ -1,12 +1,15 @@
 <template>
   <a-layout class="page-dashboard ant-layout-has-sider">
     <dashboard-menu :collapsed="collapsed" />
-    <div class="page-dashboard-body ant-layout ant-layout-sider">
+    <div
+      class="page-dashboard-body ant-layout ant-layout-sider"
+      :class="{ 'collapsed-dashboard': collapsed }"
+    >
       <dashboard-header
         :collapsed="collapsed"
         @change-collapsed="changeCollapsed"
       />
-      <div class="page-dashboard-content">
+      <a-layout-content>
         <a-breadcrumb>
           <a-breadcrumb-item v-for="(name, index) in routes" :key="index">
             {{ name }}
@@ -14,6 +17,11 @@
         </a-breadcrumb>
         <a-page-header :title="routes[routes.length - 1]" />
         <router-view />
+      </a-layout-content>
+      <div class="page-dashboard-footer">
+        © 2019-2021
+        <a href="https://demo.zsmartex.tech" target="_blank">ZSmartex</a>
+        . All rights reserved.
       </div>
     </div>
   </a-layout>

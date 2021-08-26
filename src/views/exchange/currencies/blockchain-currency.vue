@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content v-if="!loading" class="blockchain-currency">
+  <div v-if="!loading" class="blockchain-currency">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -125,7 +125,7 @@
         </div>
       </div>
     </z-configuration>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

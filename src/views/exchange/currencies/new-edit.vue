@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content v-if="!loading" class="page-exchange-currencies edit">
+  <div v-if="!loading" class="page-exchange-currencies edit">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -85,7 +85,7 @@
     <div v-if="type == 'edit'" class="add-network">
       <a-button type="primary" @click="add_network">ADD NETWORK</a-button>
     </div>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

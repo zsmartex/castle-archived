@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-accountings-adjustments details">
+  <div class="page-accountings-adjustments details">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-content">
@@ -113,7 +113,7 @@
         </div>
       </div>
     </z-configuration>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

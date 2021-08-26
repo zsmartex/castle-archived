@@ -6,13 +6,22 @@
   min-height: 100%;
   background: #f0f2f5;
   &-content {
-    margin: 24px;
+    margin: 65px 24px 24px;
+  }
+
+  .collapsed-dashboard {
+    width: calc(100vw - 80px);
+
+    .ant-layout-header {
+      width: calc(100vw - 80px);
+    }
   }
 
   &-header {
     padding: 0;
     z-index: 1;
     box-shadow: 0 1px 4px rgba(0, 21, 41, 0.08);
+    transition: width 0.2s;
     &-trigger {
       display: inline-block;
       height: 64px;
@@ -24,6 +33,9 @@
   }
 
   &-sider {
+    position: fixed;
+    min-height: 100vh;
+
     &-logo {
       position: absolute;
       width: 100%;
@@ -80,7 +92,7 @@
 
 .ant-menu {
   &-root {
-    height: calc(100% - 64px - 50px);
+    height: calc(100vh - 64px - 50px);
     overflow: auto;
     margin-top: 64px;
     margin-bottom: 50px;

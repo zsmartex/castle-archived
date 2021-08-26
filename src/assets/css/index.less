@@ -13,6 +13,38 @@
   --bg-dropdown-color: #25344e;
   --border-dropdown-color: #3b4d6b;
   --text-dropdown-color: #c6d8f3;
+
+  --header-text-color: #97b0d6;
+  --footer-text-color: #97b0d6;
+}
+
+html {
+  background: var(--bg-color);
+
+  body {
+    ::-webkit-scrollbar,
+    &::-webkit-scrollbar {
+      width: 0px;
+    }
+
+    ::-webkit-scrollbar-track-piece,
+    &::-webkit-scrollbar-track-piece {
+      background-color: transparent;
+      border-radius: 6px;
+    }
+  
+    ::-webkit-scrollbar-track,
+    &:-webkit-scrollbar-track {
+      background-color: var(--bg-color);
+    }
+  
+    ::-webkit-scrollbar-thumb,
+    &::-webkit-scrollbar-thumb {
+      height: 0px;
+      background-color: var(--border-color);
+      border-radius: 6px;
+    }
+  }
 }
 
 .ant-layout {
@@ -66,16 +98,23 @@
   }
 }
 
-.ant-select-selection {
-  border: 1px solid var(--border-color);
-  color: var(--text-color);
-  background-color: var(--bg-card-color);
-  height: 40px;
-  line-height: 40px;
-
-  &__rendered {
+.ant-select {
+  &-selection {
+    border: 1px solid var(--border-color);
+    color: var(--text-color);
+    background-color: var(--bg-card-color);
     height: 40px;
     line-height: 40px;
+  
+    &__rendered {
+      height: 40px;
+      line-height: 40px;
+    }
+  }
+
+  &-focused &-selection-selected-value {
+    color: var(--color-gray);
+    opacity: 1 !important;
   }
 }
 
@@ -88,15 +127,15 @@
   color: var(--text-color);
 
   &-link {
-    color: var(--color-gray);
+    color: var(--header-text-color);
   }
 
   &-separator {
-    color: var(--color-gray);
+    color: var(--header-text-color);
   }
 
   a {
-    color: var(--color-gray);
+    color: var(--header-text-color);
   }
 
   &>span:last-child, &>span:last-child a {
@@ -109,7 +148,8 @@
 }
 
 .ant-page-header {
-  padding: 0 24px;
+  padding: 0;
+  margin: 12px 0;
   &-heading-title {
     color: var(--text-color);
   }
@@ -117,7 +157,6 @@
 
 .ant-breadcrumb {
   margin: 12px 0;
-  padding: 0 24px;
 }
 
 .ant-btn-primary {
@@ -162,4 +201,8 @@
 
 .ant-tabs-bar {
   border: 1px solid var(--border-color);
+}
+
+.ant-switch-loading-icon, .ant-switch::after {
+  background-color: var(--text-color);
 }

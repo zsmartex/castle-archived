@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-exchange-currencies">
+  <div class="page-exchange-currencies">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -39,7 +39,7 @@
         :key="item.key"
       />
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

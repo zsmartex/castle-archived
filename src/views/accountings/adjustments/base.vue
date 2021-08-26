@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-accountings-adjustments">
+  <div class="page-accountings-adjustments">
     <z-table
       :loading="loading"
       :data="adjustments"
@@ -49,7 +49,7 @@
         </template>
       </z-info-row>
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

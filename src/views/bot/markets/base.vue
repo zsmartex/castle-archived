@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-bot-exchanges">
+  <div class="page-bot-exchanges">
     <z-table
       :loading="markets.loading"
       :columns="COLUMN"
@@ -37,7 +37,7 @@
     </z-table>
 
     <modal-market ref="modal-market" />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

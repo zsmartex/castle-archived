@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content v-if="!loading" class="page-bot-strategies edit">
+  <div v-if="!loading" class="page-bot-strategies edit">
     <z-configuration>
       <div class="z-edit-panel" style="padding: 0">
         <div class="z-edit-panel-head">
@@ -154,7 +154,7 @@
       ref="modal-copy-flows"
       :strategy_id="strategy_id"
     />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

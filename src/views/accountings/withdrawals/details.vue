@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-accountings-withdrawals details">
+  <div class="page-accountings-withdrawals details">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -128,7 +128,7 @@
       :load-data="get_withdrawals"
       @click="on_table_click"
     />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

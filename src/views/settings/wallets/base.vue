@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-wallets">
+  <div class="page-settings-wallets">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -43,7 +43,7 @@
         </span>
       </template>
     </z-table>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

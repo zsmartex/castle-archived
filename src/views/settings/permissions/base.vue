@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-permissions">
+  <div class="page-settings-permissions">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -30,7 +30,7 @@
       </template>
     </z-table>
     <modal-permission ref="modal-permission" @submit="onModalSubmit" />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

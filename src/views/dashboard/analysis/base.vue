@@ -1,8 +1,8 @@
 <template>
-  <a-layout-content class="page-dashboard-analysis">
+  <div class="page-dashboard-analysis">
     <status-bars />
     <metrics />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-exchange-markets info">
+  <div class="page-exchange-markets info">
     <a-tabs v-if="!loading" defaultActiveKey="1">
       <a-tab-pane tab="Orderbook" key="1">
         <orderbook :market="market" />
@@ -12,7 +12,7 @@
         />
       </a-tab-pane>
     </a-tabs>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

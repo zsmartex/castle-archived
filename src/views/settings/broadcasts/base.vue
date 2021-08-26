@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-broadcasts">
+  <div class="page-settings-broadcasts">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -29,7 +29,7 @@
         <row-create @created="get_broadcasts" />
       </template>
     </z-table>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

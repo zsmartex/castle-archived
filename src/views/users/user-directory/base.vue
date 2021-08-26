@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-user-directory">
+  <div class="page-user-directory">
     <z-table
       :loading="loading"
       :columns="columns"
@@ -56,7 +56,7 @@
         </template>
       </z-info-row>
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

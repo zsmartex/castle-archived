@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-banners">
+  <div class="page-settings-banners">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -24,7 +24,7 @@
         <row-create @created="get_banners" />
       </template>
     </z-table>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

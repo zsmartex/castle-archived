@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-accountings-deposits details">
+  <div class="page-accountings-deposits details">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -28,7 +28,7 @@
       </div>
       <z-loading v-if="loading" />
     </z-configuration>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

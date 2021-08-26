@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-blockchains">
+  <div class="page-settings-blockchains">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -30,7 +30,7 @@
         </span>
       </template>
     </z-table>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

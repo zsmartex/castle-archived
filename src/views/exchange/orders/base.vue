@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content v-if="!loading" class="page-exchange-orders">
+  <div v-if="!loading" class="page-exchange-orders">
     <a-tabs @change="tabChange" :animated="false">
       <a-tab-pane tab="Open Orders" key="1" forceRender>
         <open-orders ref="open-orders" :markets="markets" />
@@ -8,7 +8,7 @@
         <orders-history ref="orders-history" :markets="markets" />
       </a-tab-pane>
     </a-tabs>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

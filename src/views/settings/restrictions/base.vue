@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-settings-restrictions">
+  <div class="page-settings-restrictions">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -25,7 +25,7 @@
       </template>
     </z-table>
     <modal-restriction ref="modal-restriction" @submit="onModalSubmit" />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-accountings-deposits">
+  <div class="page-accountings-deposits">
     <z-table
       :loading="loading"
       :data="deposits"
@@ -79,7 +79,7 @@
         </template>
       </z-info-row>
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

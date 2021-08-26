@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-exchange-markets">
+  <div class="page-exchange-markets">
     <z-table
       :loading="loading"
       :columns="COLUMN"
@@ -19,7 +19,7 @@
         </span>
       </template>
     </z-table>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

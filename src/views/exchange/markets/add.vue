@@ -1,11 +1,11 @@
 <template>
-  <a-layout-content class="page-exchange-markets add">
+  <div class="page-exchange-markets add">
     <configuration
       :market="market"
       :setting_list="setting_list"
       @submit="create_market"
     />
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

@@ -1,11 +1,11 @@
 <template>
-  <a-layout-content class="page-users-pending">
+  <div class="page-users-pending">
     <a-tabs v-model="active_hey">
       <a-tab-pane v-for="pane in panes" :key="pane.key" :tab="pane.title">
         <pending-table :pending="pendings[pane.key]" />
       </a-tab-pane>
     </a-tabs>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

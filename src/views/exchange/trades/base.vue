@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-exchange-trades">
+  <div class="page-exchange-trades">
     <trades
       :loading="loading"
       :data="data"
@@ -40,7 +40,7 @@
         </template>
       </z-info-row>
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">

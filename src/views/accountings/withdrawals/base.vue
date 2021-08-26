@@ -1,5 +1,5 @@
 <template>
-  <a-layout-content class="page-accountings-withdrawals">
+  <div class="page-accountings-withdrawals">
     <withdrawals-table
       :loading="loading"
       :data="withdrawals"
@@ -40,7 +40,7 @@
         </template>
       </z-info-row>
     </z-filter-drawer>
-  </a-layout-content>
+  </div>
 </template>
 
 <script lang="ts">
