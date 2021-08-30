@@ -26,7 +26,11 @@
       </div>
     </z-configuration>
 
-    <modal-block-scanning :blockchain="blockchain" ref="modal-block-scanning" />
+    <modal-block-scanning
+      v-if="page_type === 'edit'"
+      :blockchain="blockchain"
+      ref="modal-block-scanning"
+    />
   </div>
 </template>
 

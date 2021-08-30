@@ -81,7 +81,11 @@ export default class ModalBlockScanning extends Mixins(ZModalMixin) {
   async get_latest_block() {
     this.loading_get_latest_block = true;
     try {
-      await store.dispatch(GET_BLOCKCHAIN_LATEST_BLOCK, this.blockchain.id);
+      const { data } = await store.dispatch(
+        GET_BLOCKCHAIN_LATEST_BLOCK,
+        this.blockchain.id
+      );
+      this.latest_block = data;
     } catch (error) {
       return error;
     } finally {
