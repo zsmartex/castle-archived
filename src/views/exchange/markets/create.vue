@@ -1,5 +1,5 @@
 <template>
-  <div class="page-exchange-markets add">
+  <div class="page-exchange-markets create">
     <configuration
       :market="market"
       :setting_list="setting_list"

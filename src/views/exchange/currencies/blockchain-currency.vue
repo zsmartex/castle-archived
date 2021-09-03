@@ -290,7 +290,7 @@ export default class BlockchainCurrencyPage extends Vue {
   async mounted() {
     this.loading = true;
     await Promise.all([this.get_currencies(), this.get_blockchains()]);
-    if (this.page_type == "edit") {
+    if (this.page_type == "update") {
       this.blockchain_currency = this.currency.networks.find(
         network => network.id == this.id
       );
@@ -389,13 +389,13 @@ export default class BlockchainCurrencyPage extends Vue {
       options: this.blockchain_currency.options
     };
 
-    if (this.page_type == "edit") {
+    if (this.page_type == "update") {
       payload = Object.assign(payload, { id: this.blockchain_currency.id });
     }
 
     try {
       await store.dispatch(
-        this.page_type == "edit"
+        this.page_type == "update"
           ? UPDATE_BLOCKCHAIN_CURRENCY
           : CREATE_BLOCKCHAIN_CURRENCY,
         payload
@@ -403,7 +403,7 @@ export default class BlockchainCurrencyPage extends Vue {
 
       runNotice(
         "success",
-        this.page_type == "edit"
+        this.page_type == "update"
           ? "Update network successfuly"
           : "Network create successfuly"
       );

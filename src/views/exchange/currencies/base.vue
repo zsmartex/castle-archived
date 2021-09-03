@@ -109,11 +109,11 @@ export default class App extends Vue {
   set_action_header() {
     this.$route.meta["action-header"] = [
       {
-        title: "Add Currency",
-        key: "add_currency",
+        title: "Create Currency",
+        key: "create_currency",
         icon: "plus-circle",
         callback: () => {
-          this.$router.push("/exchange/currencies/add");
+          this.$router.push("/exchange/currencies/create");
         }
       },
       {

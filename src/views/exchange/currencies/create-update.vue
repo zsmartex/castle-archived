@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="page-exchange-currencies edit">
+  <div v-if="!loading" class="page-exchange-currencies update">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-head">
@@ -40,7 +40,7 @@
       </div>
     </z-configuration>
     <z-table
-      v-if="type == 'edit'"
+      v-if="type == 'update'"
       :columns="NETWORK_COLUMN"
       :data="currency.networks"
       :hover="true"
@@ -82,7 +82,7 @@
       </template>
     </z-table>
 
-    <div v-if="type == 'edit'" class="add-network">
+    <div v-if="type == 'update'" class="add-network">
       <a-button type="primary" @click="add_network">ADD NETWORK</a-button>
     </div>
   </div>
@@ -117,7 +117,7 @@ export default class App extends Vue {
   };
 
   get title() {
-    return this.type == "edit" ? "Edit Currency" : "Create Currency";
+    return this.type == "update" ? "Update Currency" : "Create Currency";
   }
 
   get NETWORK_COLUMN() {
@@ -228,7 +228,7 @@ export default class App extends Vue {
 
   async beforeMount() {
     this.loading = true;
-    if (this.type === "edit") await this.get_currency();
+    if (this.type === "update") await this.get_currency();
     this.loading = false;
   }
 
@@ -284,19 +284,19 @@ export default class App extends Vue {
       icon_url: this.currency.icon_url
     };
 
-    if (this.type == "edit") {
+    if (this.type == "update") {
       payload = Object.assign(payload, { id: this.currency.id });
     }
 
     try {
       await store.dispatch(
-        this.type === "edit" ? UPDATE_CURRENCY : CREATE_CURRENCY,
+        this.type === "update" ? UPDATE_CURRENCY : CREATE_CURRENCY,
         payload
       );
 
       runNotice(
         "success",
-        this.type === "edit"
+        this.type === "update"
           ? "Currency updated successfully"
           : "Currency created successfully"
       );
@@ -314,7 +314,7 @@ export default class App extends Vue {
 
   add_network() {
     this.$router.push({
-      path: `/exchange/currencies/${this.currency.code}/networks/new`
+      path: `/exchange/currencies/${this.currency.code}/networks/create`
     });
   }
 
@@ -335,5 +335,5 @@ export default class App extends Vue {
 </script>
 
 <style lang="less">
-@import "~@styles/views/exchange/currencies/edit";
+@import "~@styles/views/exchange/currencies/update";
 </style>

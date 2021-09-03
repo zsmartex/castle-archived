@@ -79,11 +79,11 @@ export default class Markets extends Vue {
   set_action_header() {
     this.$route.meta["action-header"] = [
       {
-        title: "Add Market",
-        key: "add_market",
+        title: "Create Market",
+        key: "create_market",
         icon: "plus-circle",
         callback: () => {
-          this.$router.push("/exchange/markets/add");
+          this.$router.push("/exchange/markets/create");
         }
       }
     ];
@@ -124,7 +124,7 @@ export default class Markets extends Vue {
   }
 
   on_table_click(item) {
-    this.$router.push(`/exchange/markets/${item.id.toLowerCase()}/info`);
+    this.$router.push(`/exchange/markets/${item.id.toLowerCase()}`);
   }
 }
 </script>

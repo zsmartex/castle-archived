@@ -61,16 +61,16 @@ const routes = [
             component: () => import("@/views/exchange/currencies/base.vue")
           },
           {
-            name: "Add Currency",
-            path: "currencies/add",
-            meta: { type: "new", parent: "Currencies" },
-            component: () => import("@/views/exchange/currencies/new-edit.vue")
+            name: "Create Currency",
+            path: "currencies/create",
+            meta: { type: "create", parent: "Currencies" },
+            component: () => import("@/views/exchange/currencies/create-update.vue")
           },
           {
-            name: "Edit Currency",
+            name: "Update Currency",
             path: "currencies/:code",
-            meta: { type: "edit", parent: "Currencies" },
-            component: () => import("@/views/exchange/currencies/new-edit.vue")
+            meta: { type: "update", parent: "Currencies" },
+            component: () => import("@/views/exchange/currencies/create-update.vue")
           },
           {
             name: "New Currency Network",
@@ -92,15 +92,15 @@ const routes = [
             component: () => import("@/views/exchange/markets/base.vue")
           },
           {
-            name: "Add Market",
-            path: "markets/add",
+            name: "Create Market",
+            path: "markets/create",
             meta: { type: "new", parent: "Markets" },
-            component: () => import("@/views/exchange/markets/add.vue")
+            component: () => import("@/views/exchange/markets/create.vue")
           },
           {
-            name: "Edit Market",
-            path: "markets/:market/info",
-            meta: { type: "info", parent: "Markets" },
+            name: "Update Market",
+            path: "markets/:market",
+            meta: { type: "update", parent: "Markets" },
             component: () => import("@/views/exchange/markets/info/base.vue")
           },
           {
@@ -280,15 +280,15 @@ const routes = [
           },
           {
             name: "Create Strategy",
-            path: "strategies/new",
+            path: "strategies/create",
             meta: { type: "create", parent: "Strategies" },
-            component: () => import("@/views/bot/strategies/add-edit.vue"),
+            component: () => import("@/views/bot/strategies/create-update.vue"),
           },
           {
             name: "Update Strategy",
             path: "strategies/:id",
-            meta: { type: "edit", parent: "Strategies" },
-            component: () => import("@/views/bot/strategies/add-edit.vue"),
+            meta: { type: "update", parent: "Strategies" },
+            component: () => import("@/views/bot/strategies/create-update.vue"),
           },
         ]
       }

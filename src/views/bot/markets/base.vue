@@ -10,7 +10,7 @@
       @click="
         item =>
           this.$refs['modal-market'].create({
-            type: 'edit',
+            type: 'update',
             payload: item
           })
       "
@@ -76,8 +76,8 @@ export default class Base extends Vue {
   set_action_header() {
     this.$route.meta["action-header"] = [
       {
-        title: "Add Market",
-        key: "add_exchange",
+        title: "Create Market",
+        key: "create_exchange",
         icon: "plus-circle",
         callback: () => {
           (this.$refs["modal-market"] as any).create({

@@ -30,7 +30,7 @@ import { runNotice } from "@/mixins";
 import ZModalMixin from "@/mixins/z-modal";
 import { Component, Mixins } from "vue-property-decorator";
 
-type ModalType = "edit" | "new";
+type ModalType = "update" | "create";
 
 @Component
 export default class ModalExchange extends Mixins(ZModalMixin) {
@@ -39,7 +39,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
   modal_payload: Quantex.Exchange = {};
 
   get title() {
-    return this.modal_type === "edit" ? "Edit Exchange" : "Create Exchange";
+    return this.modal_type === "update" ? "Update Exchange" : "Create Exchange";
   }
 
   get SETTING_LIST() {
@@ -73,12 +73,12 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
   }
 
   get button_string() {
-    return this.modal_type === "edit" ? "Edit" : "Create";
+    return this.modal_type === "update" ? "Update" : "Create";
   }
 
   onCreate(payload: { type: ModalType; payload: Quantex.Exchange }) {
     this.modal_type = payload.type;
-    if (this.modal_type == "edit") {
+    if (this.modal_type == "update") {
       this.modal_payload = payload.payload;
     } else {
       this.modal_payload = {
@@ -96,7 +96,7 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
     };
 
     try {
-      if (this.modal_type == "edit") {
+      if (this.modal_type == "update") {
         await QuantexController.update_exchange(
           Object.assign(payload, { id: this.modal_payload.id })
         );

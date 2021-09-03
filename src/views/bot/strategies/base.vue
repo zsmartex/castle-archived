@@ -99,11 +99,11 @@ export default class Base extends Vue {
   set_action_header() {
     this.$route.meta["action-header"] = [
       {
-        title: "Add Strategy",
-        key: "add_strategy",
+        title: "Create Strategy",
+        key: "create_strategy",
         icon: "plus-circle",
         callback: () => {
-          this.$router.push("/bot/strategies/new");
+          this.$router.push("/bot/strategies/create");
         }
       }
     ];

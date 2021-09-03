@@ -146,11 +146,11 @@
       </div>
     </z-configuration>
     <flow-table
-      v-if="page_type == 'edit' && !loading"
+      v-if="page_type == 'update' && !loading"
       :strategy_id="strategy_id"
     />
     <modal-copy-flows
-      v-if="page_type == 'edit' && !loading"
+      v-if="page_type == 'update' && !loading"
       ref="modal-copy-flows"
       :strategy_id="strategy_id"
     />
@@ -185,7 +185,7 @@ export default class Base extends Vue {
   }
 
   get title() {
-    return this.page_type == "edit" ? "Edit Strategy" : "Create Strategy";
+    return this.page_type == "update" ? "Update Strategy" : "Create Strategy";
   }
 
   get strategy_id() {
@@ -327,7 +327,7 @@ export default class Base extends Vue {
   }
 
   beforeMount() {
-    if (this.page_type == "edit") {
+    if (this.page_type == "update") {
       this.strategy =
         QuantexController.strategies.data.find(
           strategy => strategy.id == this.strategy_id
@@ -336,7 +336,7 @@ export default class Base extends Vue {
   }
 
   mounted() {
-    if (this.page_type == "edit") {
+    if (this.page_type == "update") {
       this.set_action_header();
     }
   }
@@ -367,7 +367,7 @@ export default class Base extends Vue {
       state: this.strategy.state
     };
 
-    if (this.page_type == "edit") {
+    if (this.page_type == "update") {
       payload.id = this.strategy.id;
       await QuantexController.update_strategy(payload);
     } else {
@@ -401,7 +401,5 @@ export default class Base extends Vue {
   .z-table {
     width: 100%;
   }
-
-
 }
 </style>

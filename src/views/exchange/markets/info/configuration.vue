@@ -6,7 +6,7 @@
           <div>Setting</div>
           <div class="note">
             Last updated:
-            {{ $route.meta.type === "info" ? getDate(market.updated_at) : "" }}
+            {{ $route.meta.type === "update" ? getDate(market.updated_at) : "" }}
           </div>
         </div>
         <z-info-row :item="setting_head_list">
