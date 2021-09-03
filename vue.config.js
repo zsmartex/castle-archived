@@ -56,7 +56,9 @@ const configWebPack = {
                   "green-base": "#16c393",
                   "red-base": "#ea4d4d",
                   "blue-base": "#0095ff",
-                  "orange-base": "#dea959"
+                  "orange-base": "#dea959",
+                  "success-color": "#12b886",
+                  "error-color": "#fa5252"
                 },
                 javascriptEnabled: true
               }

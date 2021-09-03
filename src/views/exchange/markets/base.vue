@@ -13,9 +13,23 @@
       @change-pagination="get_markets"
       @click="on_table_click"
     >
-      <template slot="info" slot-scope="{ column }">
-        <span :class="`info text-${column.algin}`">
-          <a-icon type="right" />
+      <template slot="status" slot-scope="{ item, column }">
+        <span :class="`status text-${column.algin}`">
+          <span @click.stop.prevent>
+            <a-switch
+              :checked="item.state == 'enabled'"
+              :loading="item.loading"
+              @click="
+                update_market_state(
+                  item.id,
+                  item.state == 'enabled' ? 'disabled' : 'enabled'
+                )
+              "
+            >
+              <a-icon slot="checkedChildren" type="check" />
+              <a-icon slot="unCheckedChildren" type="close" />
+            </a-switch>
+          </span>
         </span>
       </template>
     </z-table>
@@ -26,7 +40,7 @@
 import ZSmartModel from "@zsmartex/z-eventbus";
 import store from "@/store";
 import { getDate } from "@/mixins";
-import { GET_MARKETS } from "@/store/types";
+import { GET_MARKETS, UPDATE_MARKET } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
@@ -46,8 +60,7 @@ export default class Markets extends Vue {
     { title: "Max Price", key: "max_price", algin: "left" },
     { title: "Min Amount", key: "min_amount", algin: "left" },
     { title: "Created", key: "created_at", algin: "left" },
-    { title: "Status", key: "state", algin: "left" },
-    { title: "", key: "info", algin: "center", scopedSlots: true }
+    { title: "Status", key: "status", algin: "right", scopedSlots: true }
   ];
 
   get markets_data() {
@@ -92,6 +105,21 @@ export default class Markets extends Vue {
     } catch (error) {
       this.loading = false;
       return error;
+    }
+  }
+
+  async update_market_state(id: string, state: "enabled" | "disabled") {
+    const index = this.data.findIndex(market => market.id == id);
+    Vue.set(this.data[index], "loading", true);
+
+    try {
+      const { data } = await store.dispatch(UPDATE_MARKET, { id, state });
+      Vue.set(this.data, index, data);
+    } catch (error) {
+      Vue.set(this.data[index], "loading", false);
+      return error;
+    } finally {
+      Vue.delete(this.data[index], "loading");
     }
   }
 

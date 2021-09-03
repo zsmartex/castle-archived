@@ -35,6 +35,17 @@
         {{ item[key] }}
       </router-link>
     </template>
+    <template slot="taker_type" slot-scope="{ item, column }">
+      <span
+        :class="[
+          'taker_type',
+          `text-${column.algin}`,
+          `text-${item.taker_type === 'buy' ? 'up' : 'down'}`
+        ]"
+      >
+        {{ item.taker_type }}
+      </span>
+    </template>
   </z-table>
 </template>
 
@@ -82,7 +93,7 @@ export default class TradesComponent extends Vue {
       { title: "Price", key: "price", algin: "left" },
       { title: "Amount", key: "amount", algin: "left" },
       { title: "Total", key: "total", algin: "left" },
-      { title: "Side", key: "taker_type", algin: "left" },
+      { title: "Side", key: "taker_type", algin: "left", scopedSlots: true },
       { title: "Trade time", key: "created_at", algin: "left" }
     ];
   }
@@ -130,6 +141,10 @@ export default class TradesComponent extends Vue {
       &:hover {
         text-decoration: underline;
       }
+    }
+
+    .taker_type {
+      text-transform: capitalize;
     }
   }
 }

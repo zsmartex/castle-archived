@@ -4,6 +4,7 @@ module.exports = {
     node: true
   },
   globals: {
+    ZTypes: true,
     User: true,
     Member: true,
     Blockchain: true,

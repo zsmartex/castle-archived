@@ -19,6 +19,11 @@
         {{ item.email }}
       </router-link>
     </template>
+    <template slot="price" slot-scope="{ item, column }">
+      <span :class="`price text-${column.algin}`">
+        {{ item.price || "NULL" }}
+      </span>
+    </template>
     <template slot="side" slot-scope="{ item, column }">
       <span
         :class="[
@@ -67,12 +72,11 @@ export default class OrdersComponent extends Vue {
       { title: "Type", key: "ord_type", algin: "left" },
       { title: "Amount", key: "origin_volume", algin: "left" },
       { title: "Executed", key: "executed_volume", algin: "left" },
-      { title: "Price", key: "price", algin: "left" },
-      { title: "Side", key: "side", algin: "left", scopedSlots: true },
-      { title: "Created", key: "created_at", algin: "left" },
-      { title: "Updated", key: "updated_at", algin: "left" },
+      { title: "Price", key: "price", algin: "left", scopedSlots: true },
+      { title: "Side", key: "side", algin: "center", scopedSlots: true },
+      { title: "Created", key: "created_at", algin: "right" },
       { title: "Action", key: "action", algin: "center", scopedSlots: true },
-      { title: "Status", key: "state", algin: "center" }
+      { title: "Status", key: "state", algin: "right" }
     ];
 
     return columns.filter(col => {
@@ -130,11 +134,13 @@ export default class OrdersComponent extends Vue {
   .email {
     flex: 1.75;
   }
-  .type {
+  .ord_type {
     flex: 0.75;
+    text-transform: capitalize;
   }
   .side {
     flex: 0.75;
+    text-transform: capitalize;
   }
   .created_at,
   .updated_at {

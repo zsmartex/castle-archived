@@ -13,17 +13,28 @@
       @change-pagination="get_currencies"
       @click="on_table_click"
     >
-      <template slot="status" slot-scope="{ item, column }">
-        <span :class="`status text-${column.algin}`">
-          <a-switch :checked="item.status == 'enabled'">
-            <a-icon slot="checkedChildren" type="check" />
-            <a-icon slot="unCheckedChildren" type="close" />
-          </a-switch>
+      <template slot="code" slot-scope="{ item, column }">
+        <span :class="`code text-${column.algin}`">
+          {{ item.code.toUpperCase() }}
         </span>
       </template>
-      <template slot="action" slot-scope="{ column }">
-        <span :class="`action text-${column.algin}`">
-          <a-icon type="right" />
+      <template slot="status" slot-scope="{ item, column }">
+        <span :class="`status text-${column.algin}`">
+          <span @click.stop.prevent>
+            <a-switch
+              :checked="item.status == 'enabled'"
+              :loading="item.loading"
+              @click="
+                update_currency_status(
+                  item.code,
+                  item.status == 'enabled' ? 'disabled' : 'enabled'
+                )
+              "
+            >
+              <a-icon slot="checkedChildren" type="check" />
+              <a-icon slot="unCheckedChildren" type="close" />
+            </a-switch>
+          </span>
         </span>
       </template>
     </z-table>
@@ -46,7 +57,7 @@
 import ZSmartModel from "@zsmartex/z-eventbus";
 import { getDate } from "@/mixins";
 import store from "@/store";
-import { GET_CURRENCIES } from "@/store/types";
+import { GET_CURRENCIES, UPDATE_CURRENCY } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
@@ -60,12 +71,11 @@ export default class App extends Vue {
     type: ""
   };
   private readonly COLUMN = [
-    { title: "Code", key: "code", algin: "left" },
+    { title: "Code", key: "code", algin: "left", scopedSlots: true },
     { title: "Name", key: "name", algin: "left" },
     { title: "Type", key: "type", algin: "left" },
     { title: "Price", key: "price", algin: "left" },
-    { title: "Status", key: "status", algin: "left", scopedSlots: true },
-    { title: "", key: "action", algin: "center", scopedSlots: true }
+    { title: "Status", key: "status", algin: "right", scopedSlots: true }
   ];
 
   get filter_list() {
@@ -85,7 +95,6 @@ export default class App extends Vue {
 
   get currencies_data() {
     return this.data.map(currency => {
-      currency.code = currency.code.toUpperCase();
       (currency as any).created_at = getDate(currency.created_at as Date, true);
 
       return currency;
@@ -142,6 +151,21 @@ export default class App extends Vue {
     } catch (error) {
       this.loading = false;
       return error;
+    }
+  }
+
+  async update_currency_status(code: string, status: "enabled" | "disabled") {
+    const index = this.data.findIndex(currency => currency.code == code);
+    Vue.set(this.data[index], "loading", true);
+
+    try {
+      const { data } = await store.dispatch(UPDATE_CURRENCY, { code, status });
+      Vue.set(this.data, index, data);
+    } catch (error) {
+      Vue.set(this.data[index], "loading", false);
+      return error;
+    } finally {
+      Vue.delete(this.data[index], "loading");
     }
   }
 
