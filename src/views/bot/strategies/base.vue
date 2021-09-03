@@ -22,9 +22,9 @@
       </template>
       <template slot="target_market" slot-scope="{ item, column }">
         <span :class="`target_market text-${column.algin}`">
-          {{ get_market_name(item.target_market_id) }}
+          {{ get_market_name(item.target_market) }}
           - ({{
-            get_exchange_name(get_market_exchange_id(item.target_market_id))
+            get_exchange_name(get_market_exchange_id(item.target_market))
           }})
         </span>
       </template>

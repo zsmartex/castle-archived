@@ -170,6 +170,35 @@ export class QuantexController {
     }
   }
 
+  async add_strategy_source_market(strategy_id: number, markets: number[], callback: () => void) {
+    const strategy_index = this.strategies.data.findIndex(strategy => strategy.id == strategy_id);
+    Vue.set(this.strategies.data[strategy_index], "loading", true);
+    try {
+      await new ApiClient("quantex").post("admin/strategies/source_markets", { id: strategy_id, markets });
+      Vue.set(this.strategies.data[strategy_index], "source_markets", [ ...markets, ...this.strategies.data[strategy_index].source_markets ]);
+      if (callback) callback();
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[strategy_index], "loading");
+    }
+  }
+
+  async delete_strategy_source_market(strategy_id: number, market_id: number) {
+    const strategy_index = this.strategies.data.findIndex(strategy => strategy.id == strategy_id);
+    Vue.set(this.strategies.data[strategy_index], "loading", true);
+    try {
+      await new ApiClient("quantex").delete("admin/strategies/source_markets", { id: strategy_id, market: market_id });
+
+      const source_market_index = this.strategies.data[strategy_index].source_markets.indexOf(market_id)
+      Vue.delete(this.strategies.data[strategy_index].source_markets, source_market_index);
+    } catch (error) {
+      return error;
+    } finally {
+      Vue.delete(this.strategies.data[strategy_index], "loading");
+    }
+  }
+
   async get_markets() {
     try {
       this.markets.loading = true;

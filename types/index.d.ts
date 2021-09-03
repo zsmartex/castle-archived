@@ -18,8 +18,8 @@ declare global {
       type?: StrategyType;
       side?: StrategySide;
       enable_orderback?: boolean;
-      target_market_id?: number;
-      source_market_ids?: number[];
+      target_market?: number;
+      source_markets?: number[];
       state?: StrategyState;
       flows?: StrategyFlow[];
       loading?: boolean;

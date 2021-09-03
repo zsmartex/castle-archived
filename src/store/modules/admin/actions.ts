@@ -1,3 +1,4 @@
+import config from "@/config";
 import ApiClient from "@zsmartex/z-apiclient";
 import { ActionTree } from "vuex";
 import {
@@ -166,7 +167,7 @@ const actions: ActionTree<AdminState, any> = {
     return new ApiClient("trade").post(`admin/orders/${id}/cancel`);
   },
   [GET_TRADES](store, payload) {
-    return new ApiClient("trade").get("admin/trades", payload);
+    return new ApiClient(config.finex ? "finex" : "trade").get("admin/trades", payload);
   },
   [GET_OPERATORS](store, payload) {
     return new ApiClient("auth").get("admin/activities/admin", payload);

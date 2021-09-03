@@ -131,7 +131,7 @@
                 <a-checkbox
                   :value="item.id"
                   :checked="source_market_cached.includes(item.id)"
-                  :disabled="strategy.target_market_id == item.id"
+                  :disabled="strategy.target_market == item.id"
                   @change="onCheckboxMarketChanged"
                 />
               </span>
@@ -173,7 +173,7 @@ export default class Base extends Vue {
   existing_markets_search = "";
 
   strategy: Quantex.Strategy = {
-    source_market_ids: []
+    source_markets: []
   };
 
   source_market_cached = Array<number>();
@@ -235,7 +235,7 @@ export default class Base extends Vue {
   get linked_markets() {
     const search = this.linked_markets_search;
 
-    return (this.strategy.source_market_ids || [])
+    return (this.strategy.source_markets || [])
       .map(id => this.markets.data.find(market => market.id == id))
       .filter(market => {
         return market?.symbol.includes(search.toLowerCase());
@@ -246,7 +246,7 @@ export default class Base extends Vue {
     const search = this.existing_markets_search;
 
     return this.markets.data.filter(market => {
-      for (const id of this.strategy.source_market_ids || []) {
+      for (const id of this.strategy.source_markets || []) {
         if (market.id == id) return false;
       }
 
@@ -287,8 +287,8 @@ export default class Base extends Vue {
       },
       {
         title: "Target Market",
-        key: "target_market_id",
-        value: this.strategy.target_market_id,
+        key: "target_market",
+        value: this.strategy.target_market,
         type: "select",
         list: (() => {
           return this.markets.data.reduce((obj, market) => {
@@ -341,39 +341,21 @@ export default class Base extends Vue {
     }
   }
 
-  async add_source_markets() {
-    try {
-      const payload = { ...this.strategy };
-      payload.source_market_ids = [
-        ...this.source_market_cached,
-        ...(payload.source_market_ids || [])
-      ];
-      await QuantexController.update_strategy(payload);
-      this.strategy = QuantexController.strategies.data.find(
-        strategy => strategy.id == this.strategy_id
-      );
-
-      this.source_market_cached = [];
-    } catch (error) {
-      return error;
-    }
+  add_source_markets() {
+    QuantexController.add_strategy_source_market(
+      Number(this.strategy_id),
+      this.source_market_cached,
+      () => {
+        this.source_market_cached = [];
+      }
+    );
   }
 
-  async delete_linked_market(id: number) {
-    try {
-      const payload = { ...this.strategy };
-      payload.source_market_ids = payload.source_market_ids.filter(
-        _id => _id != id
-      );
-      await QuantexController.update_strategy(payload);
-      this.strategy = QuantexController.strategies.data.find(
-        strategy => strategy.id == this.strategy_id
-      );
-
-      this.source_market_cached = [];
-    } catch (error) {
-      return error;
-    }
+  delete_linked_market(market_id: number) {
+    QuantexController.delete_strategy_source_market(
+      Number(this.strategy_id),
+      market_id
+    );
   }
 
   async onSubmit() {
@@ -381,8 +363,7 @@ export default class Base extends Vue {
       type: this.strategy.type,
       side: this.strategy.side,
       enable_orderback: this.strategy.enable_orderback,
-      target_market_id: Number(this.strategy.target_market_id),
-      source_market_ids: this.strategy.source_market_ids,
+      target_market: Number(this.strategy.target_market),
       state: this.strategy.state
     };
 
@@ -390,7 +371,6 @@ export default class Base extends Vue {
       payload.id = this.strategy.id;
       await QuantexController.update_strategy(payload);
     } else {
-      payload.source_market_ids = this.source_market_cached;
       await QuantexController.create_strategy(payload);
     }
   }

@@ -13,10 +13,10 @@
       -
       {{ source_strategy.type.toUpperCase() }}
       -
-      {{ get_market_name(source_strategy.target_market_id) }}
+      {{ get_market_name(source_strategy.target_market) }}
       - ({{
         get_exchange_name(
-          get_market_exchange_id(source_strategy.target_market_id)
+          get_market_exchange_id(source_strategy.target_market)
         )
       }})
     </template>
