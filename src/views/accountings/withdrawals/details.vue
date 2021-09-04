@@ -122,7 +122,6 @@
     <withdrawals-table
       :loading="loading"
       :data="withdrawals"
-      :total="total"
       :page="page"
       :limit="limit"
       :load-data="get_withdrawals"
@@ -155,7 +154,6 @@ export default class WithdrawDetails extends Vue {
   member?: Member = null;
   currency?: Currency = null;
   page = 1;
-  total = 0;
   limit = 50;
   txid_load = "";
 
@@ -326,7 +324,6 @@ export default class WithdrawDetails extends Vue {
         })
       );
 
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

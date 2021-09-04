@@ -76,7 +76,12 @@ import {
   UPDATE_WHITELISTED_SMART_CONTRACT,
   GET_BLOCKCHAIN_LATEST_BLOCK,
   SCAN_BLOCK,
-  SEND_DEPOSIT_ACTION
+  SEND_DEPOSIT_ACTION,
+  GET_IEO_LIST,
+  CREATE_IEO,
+  GET_IEO,
+  UPDATE_IEO,
+  DELETE_IEO
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -398,7 +403,22 @@ const actions: ActionTree<AdminState, any> = {
   },
   [SEND_DEPOSIT_ACTION](store, payload) {
     return new ApiClient("trade").post("admin/deposits/actions", payload);
-  }
+  },
+  [GET_IEO_LIST](store, payload) {
+    return new ApiClient("finex").get("admin/ieo/list", payload);
+  },
+  [CREATE_IEO](store, payload) {
+    return new ApiClient("finex").post("admin/ieo", payload);
+  },
+  [GET_IEO](store, id) {
+    return new ApiClient("finex").get("admin/ieo/" + id);
+  },
+  [UPDATE_IEO](store, payload) {
+    return new ApiClient("finex").put("admin/ieo", payload);
+  },
+  [DELETE_IEO](store, payload) {
+    return new ApiClient("finex").delete("admin/ieo", payload);
+  },
 };
 
 export default actions;

@@ -7,7 +7,6 @@
       :scroll="false"
       :pagination="true"
       :hover="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_deposits"
@@ -94,7 +93,6 @@ export default class Deposits extends Vue {
   loading = false;
   data: Deposit[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   payload_filter = {
     from: "",
@@ -241,7 +239,6 @@ export default class Deposits extends Vue {
       );
 
       this.data = data;
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.loading = false;

@@ -7,7 +7,6 @@
       :scroll="false"
       :pagination="true"
       :hover="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_adjustments"
@@ -64,7 +63,6 @@ export default class Adjustments extends Vue {
   data: Adjustment[] = [];
   page = 1;
   limit = 50;
-  total = 0;
   payload_filter = {
     from: "",
     to: "",
@@ -168,7 +166,6 @@ export default class Adjustments extends Vue {
       );
 
       this.data = data;
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.loading = false;

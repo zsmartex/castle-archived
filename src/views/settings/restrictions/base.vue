@@ -7,7 +7,6 @@
       :scroll="false"
       :pagination="true"
       :hover="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_restrictions"
@@ -45,7 +44,6 @@ export default class Restriction extends Vue {
   data: Restriction[] = [];
   limit = 50;
   page = 1;
-  total = 0;
 
   COLUMN = [
     { title: "Scope", key: "scope", algin: "left" },
@@ -68,7 +66,6 @@ export default class Restriction extends Vue {
     this.loading = false;
     try {
       const { data, headers } = await store.dispatch(GET_RESTRICTIONS, payload);
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

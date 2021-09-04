@@ -7,7 +7,6 @@
       :scroll="false"
       :pagination="true"
       :hover="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_permissions"
@@ -55,7 +54,6 @@ export default class App extends Vue {
   loading = false;
   data: Permission[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   $refs!: {
     "modal-permission": ModalPermission;
@@ -104,7 +102,6 @@ export default class App extends Vue {
     this.loading = true;
     try {
       const { data, headers } = await store.dispatch(GET_PERMISSIONS, payload);
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;
@@ -169,7 +166,6 @@ export default class App extends Vue {
 
       if (index >= 0) {
         this.data.splice(index, 1);
-        this.total--;
       }
     } catch (error) {
       return error;

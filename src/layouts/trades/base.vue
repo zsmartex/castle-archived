@@ -6,7 +6,6 @@
     :data="trades"
     :scroll="false"
     :pagination="true"
-    :total="total"
     :page="page"
     :page-size="pageSize"
     @change-pagination="change_pagination"

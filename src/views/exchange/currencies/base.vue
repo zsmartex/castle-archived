@@ -7,7 +7,6 @@
       :hover="true"
       :scroll="false"
       :pagination="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_currencies"
@@ -65,7 +64,6 @@ export default class App extends Vue {
   loading = false;
   data: Currency[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   payload_filter = {
     type: ""
@@ -143,7 +141,6 @@ export default class App extends Vue {
         GET_CURRENCIES,
         Object.assign(payload, this.payload_filter)
       );
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

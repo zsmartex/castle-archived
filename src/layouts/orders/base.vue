@@ -6,7 +6,6 @@
     :data="orders"
     :scroll="false"
     :pagination="true"
-    :total="total"
     :page="page"
     :page-size="pageSize"
     @change-pagination="change_pagination"
@@ -57,7 +56,6 @@ export default class OrdersComponent extends Vue {
   @Prop() readonly type: "open" | "history";
   @Prop({ default: false }) readonly loading: boolean;
   @Prop({ default: () => [] }) readonly data: UserOrder[];
-  @Prop({ default: 0 }) readonly total: number;
   @Prop({ default: 1 }) readonly page: number;
   @Prop({ default: 50 }) readonly pageSize: number;
   @Prop({ default: () => [] }) readonly disabled_columns!: string[];

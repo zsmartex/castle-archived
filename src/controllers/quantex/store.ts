@@ -19,23 +19,23 @@ export interface Store {
 const store: Store = reactive<Store>({
   drivers: {
     loading: false,
-    data: []
+    data: reactive([])
   },
   exchanges: {
     loading: false,
-    data: []
+    data: reactive([])
   },
   markets: {
     loading: false,
-    data: []
+    data: reactive([])
   },
   strategies: {
     loading: false,
-    data: []
+    data: reactive([])
   },
   strategy_types: {
     loading: false,
-    data: []
+    data: reactive([])
   }
 });
 

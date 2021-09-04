@@ -485,6 +485,20 @@ declare global {
     updated_at?: Date;
   }
 
+  interface IEO {
+    id?: number;
+    currency_id?: string;
+    main_payment_currency?: string;
+    price?: string;
+    payment_currencies?: string[];
+    min_amount?: string;
+    state?: string;
+    start_time?: number;
+    end_time?: number;
+    created_at?: Date;
+    updated_at?: Date;
+  }
+
   interface Banner extends ZTypes.Banner {
     id: number;
     state: "active" | "deleted";

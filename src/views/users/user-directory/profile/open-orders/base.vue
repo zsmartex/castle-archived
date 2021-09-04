@@ -3,7 +3,6 @@
     type="open"
     :loading="loading"
     :data="data"
-    :total="total"
     :page="page"
     :page-size="limit"
     :disabled_columns="['email']"
@@ -26,7 +25,6 @@ import { GET_ORDERS } from "@/store/types";
 export default class App extends Vue {
   loading = false;
   data: UserOrder[] = [];
-  total = 0;
   page = 1;
   limit = 50;
 
@@ -52,7 +50,6 @@ export default class App extends Vue {
         )
       );
       this.data = data;
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.loading = false;
@@ -81,7 +78,6 @@ export default class App extends Vue {
       if (index < 0) return;
 
       this.data.splice(index, 1);
-      this.total--;
     } catch (error) {
       return error;
     }

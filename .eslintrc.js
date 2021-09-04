@@ -35,6 +35,7 @@ module.exports = {
     AdminState: true,
     RootState: true,
     Quantex: true,
+    IEO: true
   },
   extends: [
     "plugin:vue/essential",

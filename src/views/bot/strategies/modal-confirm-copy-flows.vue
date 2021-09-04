@@ -89,7 +89,6 @@ export default class ModalConfirmCopyFlows extends Mixins(ZModalMixin) {
       this.source_strategy_id,
       () => {
         this.delete();
-        this.$emit("success");
       }
     );
   }

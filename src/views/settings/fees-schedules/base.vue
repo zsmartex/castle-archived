@@ -7,7 +7,6 @@
       :scroll="false"
       :pagination="true"
       :hover="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_trading_fees"
@@ -82,7 +81,6 @@ import { Vue, Component } from "vue-property-decorator";
 export default class FeesSchedules extends Vue {
   data: TradingFee[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   loading_trading_fees = false;
   loading_markets = false;
@@ -186,7 +184,6 @@ export default class FeesSchedules extends Vue {
         GET_TRADING_FEES,
         Object.assign(payload, this.payload_filter)
       );
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;
@@ -249,7 +246,6 @@ export default class FeesSchedules extends Vue {
 
       if (index >= 0) {
         this.data.splice(index, 1);
-        this.total--;
       }
     } catch (error) {
       return error;

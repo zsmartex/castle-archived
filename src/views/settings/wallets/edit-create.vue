@@ -97,78 +97,47 @@
         </div>
       </div>
     </z-configuration>
-    <z-configuration>
-      <div class="z-edit-panel">
-        <div class="z-edit-panel-head">
-          <div class="z-edit-panel-title">
-            Linked Currencies
-          </div>
-        </div>
-        <div class="z-edit-panel-content">
-          <a-input placeholder="Search" v-model="linked_currencies_search" />
-          <z-table
-            :columns="currency_columns('linked')"
-            :data="linked_currencies"
-            :hover="false"
-            :scroll="false"
-            :pagination="false"
-          >
-            <template slot="action" slot-scope="{ item, column }">
-              <span :class="`action text-${column.algin}`">
-                <a-icon
-                  type="delete"
-                  theme="filled"
-                  @click="delete_wallet_currency(item.code)"
-                />
-              </span>
-            </template>
-          </z-table>
-        </div>
-      </div>
-      <div class="z-edit-panel">
-        <div class="z-edit-panel-head">
-          <div class="z-edit-panel-title">
-            Existing Currencies
-          </div>
-        </div>
-        <div class="z-edit-panel-content">
-          <div style="display: flex;width: 100%">
-            <a-input
-              placeholder="Search"
-              v-model="existing_currencies_search"
-            />
-            <a-button
-              v-if="page_type != 'create'"
-              type="primary"
-              style="margin-left: 12px"
-              :disabled="wallet_currencies_cache.length == 0"
-              @click="add_wallet_currencies"
-            >
-              Add selected
-            </a-button>
-          </div>
-          <z-table
-            :columns="currency_columns('existing')"
-            :data="existing_currencies"
-            :hover="false"
-            :scroll="false"
-            :pagination="false"
-          >
-            <template slot="checkbox" slot-scope="{ item, column }">
-              <span :class="`checkbox text-${column.algin}`">
-                <a-checkbox
-                  :value="item.code.toLowerCase()"
-                  :checked="
-                    wallet_currencies_cache.includes(item.code.toLowerCase())
-                  "
-                  @change="onCheckboxCurrenciesChanged"
-                />
-              </span>
-            </template>
-          </z-table>
-        </div>
-      </div>
-    </z-configuration>
+    <z-table-select
+      left-title="Linked Currencies"
+      right-title="Existing Currencies"
+      :left-columns="currency_columns('linked')"
+      :right-columns="currency_columns('existing')"
+      :left-data="linked_currencies"
+      :right-data="existing_currencies"
+      :search-keys="['name', 'code']"
+      style="margin-top: 12px"
+    >
+      <template slot="right-search-action">
+        <a-button
+          v-if="page_type != 'create'"
+          type="primary"
+          style="margin-left: 12px"
+          :disabled="wallet_currencies_cache.length == 0"
+          @click="add_wallet_currencies"
+        >
+          Add Selected
+        </a-button>
+      </template>
+
+      <template slot="action" slot-scope="{ item, column }">
+        <span :class="`action text-${column.algin}`">
+          <a-icon
+            type="delete"
+            theme="filled"
+            @click="delete_wallet_currency(item.code)"
+          />
+        </span>
+      </template>
+      <template slot="checkbox" slot-scope="{ item, column }">
+        <span :class="`checkbox text-${column.algin}`">
+          <a-checkbox
+            :value="item.code.toLowerCase()"
+            :checked="wallet_currencies_cache.includes(item.code.toLowerCase())"
+            @change="onCheckboxCurrenciesChanged"
+          />
+        </span>
+      </template>
+    </z-table-select>
   </div>
 </template>
 

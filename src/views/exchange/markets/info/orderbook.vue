@@ -14,7 +14,6 @@
         :hover="true"
         :scroll="false"
         :pagination="true"
-        :total="total[side]"
         :page="page[side]"
         :page-size="limit[side]"
         @change-pagination="payload => get_orders(side, payload)"
@@ -66,10 +65,6 @@ export default class App extends Vue {
     asks: 1,
     bids: 1
   };
-  total = {
-    asks: 0,
-    bids: 0
-  };
   limit = {
     asks: 50,
     bids: 50
@@ -119,7 +114,6 @@ export default class App extends Vue {
           payload
         )
       );
-      this.total[side] = Number(headers.total);
       this.page[side] = Number(headers.page);
       this.limit[side] = Number(headers["per-page"]);
       this.data[side] = data;
@@ -143,7 +137,6 @@ export default class App extends Vue {
         if (index < 0) return;
 
         this.data[side].splice(index, 1);
-        this.total[side]--;
       });
     } catch (error) {
       return error;

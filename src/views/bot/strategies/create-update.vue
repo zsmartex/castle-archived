@@ -41,110 +41,58 @@
         </div>
       </div>
     </z-configuration>
-    <z-configuration style="padding-left: 0; padding-right: 0;">
-      <div class="z-edit-panel" style="padding-left: 0; padding-right: 0;">
-        <div
-          class="z-edit-panel-head"
-          style="padding-left: 20px; padding-right: 20px;"
+    <z-table-select
+      left-title="Linked Source Market"
+      right-title="Existing Source Market"
+      :left-columns="market_columns('linked')"
+      :right-columns="market_columns('existing')"
+      :left-data="linked_markets"
+      :right-data="existing_markets"
+      :search-keys="['symbol']"
+      style="margin-top: 12px"
+    >
+      <template slot="right-search-action">
+        <a-button
+          v-if="page_type != 'create'"
+          type="primary"
+          style="margin-left: 12px"
+          :disabled="source_market_cached.length == 0"
+          @click="add_source_markets"
         >
-          <div class="z-edit-panel-title">
-            Linked Source Market
-          </div>
-        </div>
-        <div class="z-edit-panel-content">
-          <a-input
-            placeholder="Search"
-            v-model="linked_markets_search"
-            style="margin-left: 20px; margin-right: 20px;"
+          Add selected
+        </a-button>
+      </template>
+      <template slot="symbol" slot-scope="{ item, column }">
+        <span :class="`symbol text-${column.algin}`">
+          {{ item.ask.toUpperCase() }}/{{ item.bid.toUpperCase() }}
+        </span>
+      </template>
+      <template slot="exchange" slot-scope="{ item, column }">
+        <span :class="`exchange text-${column.algin}`">
+          {{ get_exchange_name(item.exchange_id) }}
+        </span>
+      </template>
+
+      <template slot="action" slot-scope="{ item, column }">
+        <span :class="`action text-${column.algin}`">
+          <a-icon
+            type="delete"
+            theme="filled"
+            @click="delete_linked_market(item.id)"
           />
-          <z-table
-            :columns="market_columns('linked')"
-            :data="linked_markets"
-            :hover="false"
-            :scroll="false"
-            :pagination="false"
-            :loading="loading"
-            style="border: none;"
-          >
-            <template slot="symbol" slot-scope="{ item, column }">
-              <span :class="`symbol text-${column.algin}`">
-                {{ item.ask.toUpperCase() }}/{{ item.bid.toUpperCase() }}
-              </span>
-            </template>
-            <template slot="action" slot-scope="{ item, column }">
-              <span :class="`action text-${column.algin}`">
-                <a-icon
-                  type="delete"
-                  theme="filled"
-                  @click="delete_linked_market(item.id)"
-                />
-              </span>
-            </template>
-            <template slot="exchange" slot-scope="{ item, column }">
-              <span :class="`exchange text-${column.algin}`">
-                {{ get_exchange_name(item.exchange_id) }}
-              </span>
-            </template>
-          </z-table>
-        </div>
-      </div>
-      <div class="z-edit-panel" style="padding-left: 0; padding-right: 0;">
-        <div
-          class="z-edit-panel-head"
-          style="padding-left: 20px; padding-right: 20px;"
-        >
-          <div class="z-edit-panel-title">
-            Existing Source Market
-          </div>
-        </div>
-        <div class="z-edit-panel-content">
-          <div
-            style="display: flex;width: 100%; padding-left: 20px; padding-right: 20px;"
-          >
-            <a-input placeholder="Search" v-model="existing_markets_search" />
-            <a-button
-              v-if="page_type != 'create'"
-              type="primary"
-              style="margin-left: 12px"
-              :disabled="source_market_cached.length == 0"
-              @click="add_source_markets"
-            >
-              Add selected
-            </a-button>
-          </div>
-          <z-table
-            :columns="market_columns('existing')"
-            :data="existing_markets"
-            :hover="false"
-            :scroll="false"
-            :pagination="false"
-            :loading="loading"
-            style="border: none;"
-          >
-            <template slot="symbol" slot-scope="{ item, column }">
-              <span :class="`symbol text-${column.algin}`">
-                {{ item.ask.toUpperCase() }}/{{ item.bid.toUpperCase() }}
-              </span>
-            </template>
-            <template slot="checkbox" slot-scope="{ item, column }">
-              <span :class="`checkbox text-${column.algin}`">
-                <a-checkbox
-                  :value="item.id"
-                  :checked="source_market_cached.includes(item.id)"
-                  :disabled="strategy.target_market == item.id"
-                  @change="onCheckboxMarketChanged"
-                />
-              </span>
-            </template>
-            <template slot="exchange" slot-scope="{ item, column }">
-              <span :class="`exchange text-${column.algin}`">
-                {{ get_exchange_name(item.exchange_id) }}
-              </span>
-            </template>
-          </z-table>
-        </div>
-      </div>
-    </z-configuration>
+        </span>
+      </template>
+      <template slot="checkbox" slot-scope="{ item, column }">
+        <span :class="`checkbox text-${column.algin}`">
+          <a-checkbox
+            :value="item.id"
+            :checked="source_market_cached.includes(item.id)"
+            :disabled="strategy.target_market == item.id"
+            @change="onCheckboxMarketChanged"
+          />
+        </span>
+      </template>
+    </z-table-select>
     <flow-table
       v-if="page_type == 'update' && !loading"
       :strategy_id="strategy_id"

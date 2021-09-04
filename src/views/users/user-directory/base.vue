@@ -6,7 +6,6 @@
       :data="users"
       :scroll="false"
       :pagination="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_users"
@@ -70,7 +69,6 @@ export default class Template extends Vue {
   loading = false;
   users: User[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   payload_filter = {
     from: null,
@@ -183,7 +181,6 @@ export default class Template extends Vue {
         GET_USERS,
         Object.assign(payload, this.payload_filter)
       );
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.users = data;

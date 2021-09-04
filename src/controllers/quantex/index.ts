@@ -109,6 +109,7 @@ export class QuantexController {
       Vue.set(this.strategies.data, index, data);
       runNotice("success", "Copy Strategy flows successfully");
       callback();
+      router.push("/bot/strategies");
     } catch (error) {
       return error;
     } finally {

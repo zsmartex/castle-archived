@@ -7,7 +7,6 @@
       :hover="true"
       :scroll="false"
       :pagination="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_wallets"
@@ -56,7 +55,6 @@ export default class App extends Vue {
   data: Wallet[] = [];
   loading = false;
   page = 1;
-  total = 0;
   limit = 50;
   blockchains: Blockchain[] = [];
 
@@ -120,7 +118,6 @@ export default class App extends Vue {
       const { data, headers } = await store.dispatch(GET_WALLETS, payload);
 
       this.data = data;
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
     } catch (error) {

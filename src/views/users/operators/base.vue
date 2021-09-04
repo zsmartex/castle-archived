@@ -6,7 +6,6 @@
       :data="operators_data"
       :scroll="false"
       :pagination="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_operators"
@@ -87,7 +86,6 @@ export default class App extends Vue {
   loading = false;
   data: Operator[] = [];
   page = 1;
-  total = 0;
   limit = 50;
 
   readonly COLUMN = [
@@ -135,7 +133,6 @@ export default class App extends Vue {
     this.loading = true;
     try {
       const { data, headers } = await store.dispatch(GET_OPERATORS, payload);
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

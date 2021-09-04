@@ -7,7 +7,6 @@
       :hover="true"
       :scroll="false"
       :pagination="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_smart_contracts"
@@ -44,7 +43,6 @@ export default class WhitelistedSmartContractPage extends Vue {
   blockchains: Blockchain[] = [];
   loading = false;
   page = 1;
-  total = 0;
   limit = 50;
   readonly COLUMN = [
     { title: "Title", key: "description", algin: "left" },

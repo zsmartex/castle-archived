@@ -7,7 +7,6 @@
       :hover="true"
       :scroll="false"
       :pagination="true"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_blockchains"
@@ -45,7 +44,6 @@ export default class App extends Vue {
   loading = false;
   data: Blockchain[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   readonly COLUMN = [
     { title: "Id", key: "id", algin: "left" },
@@ -95,7 +93,6 @@ export default class App extends Vue {
     this.loading = true;
     try {
       const { data, headers } = await store.dispatch(GET_BLOCKCHAINS, payload);
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

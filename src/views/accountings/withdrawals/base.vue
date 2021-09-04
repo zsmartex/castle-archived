@@ -3,7 +3,6 @@
     <withdrawals-table
       :loading="loading"
       :data="withdrawals"
-      :total="total"
       :page="page"
       :limit="limit"
       :load-data="get_withdrawals"
@@ -59,7 +58,6 @@ export default class Withdrawals extends Vue {
   loading = false;
   data: Withdraw[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   payload_filter = {
     from: "",
@@ -186,7 +184,6 @@ export default class Withdrawals extends Vue {
     try {
       const { data, headers } = await store.dispatch(GET_WITHDRAWS, payload);
 
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

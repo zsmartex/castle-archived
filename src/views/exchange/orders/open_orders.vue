@@ -4,7 +4,6 @@
       type="open"
       :loading="loading"
       :data="data"
-      :total="total"
       :page="page"
       :page-size="limit"
       @change-pagination="get_orders"
@@ -69,7 +68,6 @@ export default class OpenOrders extends Vue {
   loading = false;
   data: UserOrder[] = [];
   page = 1;
-  total = 0;
   limit = 50;
   payload_filter = {
     market: "",
@@ -217,7 +215,6 @@ export default class OpenOrders extends Vue {
           this.payload_filter
         )
       );
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.data = data;

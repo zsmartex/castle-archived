@@ -6,7 +6,6 @@
     :scroll="false"
     :pagination="true"
     :hover="true"
-    :total="total"
     :page="page"
     :page-size="limit"
     @change-pagination="loadData"

@@ -43,7 +43,6 @@ interface Pendings {
 })
 export default class PendingApplications extends Vue {
   page = 1;
-  total = 0;
   limit = 50;
 
   panes: Pane[] = [
@@ -134,7 +133,6 @@ export default class PendingApplications extends Vue {
     try {
       const { data, headers } = await store.dispatch(GET_LABELS, payload);
 
-      this.pendings[type].total = Number(headers.total);
       this.pendings[type].page = Number(headers.page);
       this.pendings[type].limit = Number(headers["per-page"]);
       this.pendings[type].data = data.map(record => {

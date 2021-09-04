@@ -104,6 +104,23 @@ const routes = [
             component: () => import("@/views/exchange/markets/info/base.vue")
           },
           {
+            name: "IEO",
+            path: "ieo",
+            component: () => import("@/views/exchange/ieo/base.vue")
+          },
+          {
+            name: "Create IEO",
+            path: "ieo/create",
+            meta: { type: "Create", parent: "IEO" },
+            component: () => import("@/views/exchange/ieo/create-update.vue")
+          },
+          {
+            name: "Update IEO",
+            path: "ieo/:id",
+            meta: { type: "Create", parent: "IEO" },
+            component: () => import("@/views/exchange/ieo/create-update.vue")
+          },
+          {
             name: "Orders",
             path: "orders",
             component: () => import("@/views/exchange/orders/base.vue")

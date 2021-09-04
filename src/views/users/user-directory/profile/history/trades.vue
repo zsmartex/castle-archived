@@ -2,7 +2,6 @@
   <trades
     :loading="loading"
     :data="data"
-    :total="total"
     :page="page"
     :page-size="limit"
     @change-pagination="get_trades"
@@ -21,7 +20,6 @@ import { Vue, Component, Prop } from "vue-property-decorator";
 })
 export default class App extends Vue {
   loading = false;
-  total = 0;
   page = 1;
   limit = 50;
   data: UserTrade[] = [];
@@ -48,7 +46,6 @@ export default class App extends Vue {
         )
       );
       this.data = data;
-      this.total = Number(headers.total);
       this.page = Number(headers.page);
       this.limit = Number(headers["per-page"]);
       this.loading = false;

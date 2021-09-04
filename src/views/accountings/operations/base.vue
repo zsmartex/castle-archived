@@ -126,7 +126,6 @@ export default class PageOperation extends Vue {
         payload
       );
 
-      this.operations[type].total = Number(headers.total);
       this.operations[type].page = Number(headers.page);
       this.operations[type].limit = Number(headers["per-page"]);
       this.operations[type].data = data.map(record => {

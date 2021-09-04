@@ -161,6 +161,15 @@ export default class MenuComponent extends Vue {
           }
         },
         {
+          name: "IEO",
+          icon: "radar-chart",
+          path: "ieo",
+          attrs: {
+            "exact-active-class": "",
+            "active-class": ""
+          }
+        },
+        {
           name: "Orders",
           icon: "database",
           path: "orders",
