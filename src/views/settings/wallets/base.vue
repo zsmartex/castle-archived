@@ -85,11 +85,11 @@ export default class App extends Vue {
   set_action_header() {
     this.$route.meta["action-header"] = [
       {
-        title: "Add Wallet",
-        key: "add_wallet",
+        title: "Create Wallet",
+        key: "create_wallet",
         icon: "plus-circle",
         callback: () => {
-          this.$router.push("/settings/wallets/add");
+          this.$router.push("/settings/wallets/create");
         }
       }
     ];
@@ -137,7 +137,7 @@ export default class App extends Vue {
   }
 
   on_table_click(item: Wallet) {
-    this.$router.push(`/settings/wallets/${item.id}/edit`);
+    this.$router.push(`/settings/wallets/${item.id}/update`);
   }
 }
 </script>

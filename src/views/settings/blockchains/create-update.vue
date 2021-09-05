@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading" class="page-settings-blockchains edit">
+  <div v-if="!loading" class="page-settings-blockchains update">
     <z-configuration>
       <div class="z-edit-panel">
         <div class="z-edit-panel-content">
@@ -27,7 +27,7 @@
     </z-configuration>
 
     <modal-block-scanning
-      v-if="page_type === 'edit'"
+      v-if="page_type === 'update'"
       :blockchain="blockchain"
       ref="modal-block-scanning"
     />
@@ -235,7 +235,7 @@ export default class App extends Vue {
 
   async mounted() {
     if (!store.state.admin.clients.length) this.get_clients();
-    if (this.page_type === "edit") {
+    if (this.page_type === "update") {
       await this.get_blockchain();
       this.set_action_header();
     }
@@ -277,20 +277,20 @@ export default class App extends Vue {
       status: this.blockchain.status
     };
 
-    if (this.page_type == "edit") {
+    if (this.page_type == "update") {
       payload = Object.assign(payload, { id: this.blockchain.id });
     }
 
     try {
       await store.dispatch(
-        this.page_type === "edit" ? UPDATE_BLOCKCHAIN : CREATE_BLOCKCHAIN,
+        this.page_type === "update" ? UPDATE_BLOCKCHAIN : CREATE_BLOCKCHAIN,
         payload
       );
 
       runNotice(
         "success",
         `Blockchain ${this.blockchain.name} ${
-          this.page_type === "edit" ? "updated" : "created"
+          this.page_type === "update" ? "updated" : "created"
         } successfully`
       );
 

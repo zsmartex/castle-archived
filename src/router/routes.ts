@@ -73,16 +73,16 @@ const routes = [
             component: () => import("@/views/exchange/currencies/create-update.vue")
           },
           {
-            name: "New Currency Network",
+            name: "Create Currency Network",
             path: "currencies/:code/networks/new",
-            meta: { type: "new", parent: "Edit Currency" },
+            meta: { type: "create", parent: "Create Currency" },
             component: () =>
               import("@/views/exchange/currencies/blockchain-currency.vue")
           },
           {
-            name: "Edit Currency Network",
+            name: "Update Currency Network",
             path: "currencies/:code/networks/:id",
-            meta: { type: "edit", parent: "Edit Currency" },
+            meta: { type: "update", parent: "Update Currency" },
             component: () =>
               import("@/views/exchange/currencies/blockchain-currency.vue")
           },
@@ -213,17 +213,17 @@ const routes = [
           },
           {
             name: "Create Blockchain",
-            path: "blockchains/add",
+            path: "blockchains/create",
             meta: { type: "create", parent: "Blockchains" },
             component: () =>
-              import("@/views/settings/blockchains/edit-create.vue")
+              import("@/views/settings/blockchains/create-update.vue")
           },
           {
             name: "Update Blockchain",
-            path: "blockchains/:id/edit",
-            meta: { type: "edit", parent: "Blockchains" },
+            path: "blockchains/:id/update",
+            meta: { type: "update", parent: "Blockchains" },
             component: () =>
-              import("@/views/settings/blockchains/edit-create.vue")
+              import("@/views/settings/blockchains/create-update.vue")
           },
           {
             name: "Wallets",
@@ -232,15 +232,15 @@ const routes = [
           },
           {
             name: "Update Wallet",
-            path: "wallets/:id/edit",
-            meta: { type: "edit", parent: "Wallets" },
-            component: () => import("@/views/settings/wallets/edit-create.vue"),
+            path: "wallets/:id/update",
+            meta: { type: "update", parent: "Wallets" },
+            component: () => import("@/views/settings/wallets/create-update.vue"),
           },
           {
             name: "Create Wallet",
-            path: "wallets/add",
+            path: "wallets/create",
             meta: { type: "create", parent: "Wallets" },
-            component: () => import("@/views/settings/wallets/edit-create.vue"),
+            component: () => import("@/views/settings/wallets/create-update.vue"),
           },
           {
             name: "Fees Schedules",

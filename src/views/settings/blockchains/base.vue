@@ -67,11 +67,11 @@ export default class App extends Vue {
   set_action_header() {
     this.$route.meta["action-header"] = [
       {
-        title: "Add Blockchain",
-        key: "add_blockchain",
+        title: "Create Blockchain",
+        key: "create_blockchain",
         icon: "plus-circle",
         callback: () => {
-          this.$router.push("/settings/blockchains/add");
+          this.$router.push("/settings/blockchains/create");
         }
       }
     ];
@@ -104,7 +104,7 @@ export default class App extends Vue {
   }
 
   on_table_click(item) {
-    this.$router.push(`/settings/blockchains/${item.id}/edit`);
+    this.$router.push(`/settings/blockchains/${item.id}/update`);
   }
 }
 </script>

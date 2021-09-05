@@ -370,7 +370,7 @@ export default class WalletSettingUpdateAndCreate extends Vue {
   async mounted() {
     this.page_state = "loading";
     await Promise.all([
-      this.page_type === "edit" ? this.get_wallet() : null,
+      this.page_type === "update" ? this.get_wallet() : null,
       store.state.admin.kinds.length ? null : await this.get_kinds(),
       store.state.admin.gateways.length ? null : await this.get_gateways(),
       this.get_blockchains(),
