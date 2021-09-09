@@ -40,6 +40,11 @@
           {{ item.options.levels_start }}
         </span>
       </template>
+      <template slot="update_chance" slot-scope="{ item, column }">
+        <span :class="`update_chance text-${column.algin}`">
+          {{ item.options.update_chance }}
+        </span>
+      </template>
       <template slot="action" slot-scope="{ item, column }">
         <span :class="`action text-${column.algin}`">
           <span @click.stop.prevent>
@@ -124,13 +129,17 @@ export default class FlowTable extends Vue {
         algin: "right",
         scopedSlots: true,
       },
+      {
+        title: "Update Chance",
+        key: "update_chance",
+        algin: "right",
+        scopedSlots: true,
+      },
       { title: "Action", key: "action", algin: "right", scopedSlots: true },
     ].filter(item => {
       if (this.strategy.type == "trade" && item.key == "first_spread") {
         return false;
       } else if (this.strategy.type == "trade" && item.key == "spread") {
-        return false;
-      } else if (this.strategy.type == "trade" && item.key == "levels_size") {
         return false;
       } else if (this.strategy.type == "trade" && item.key == "levels_count") {
         return false;
@@ -169,6 +178,13 @@ export default class FlowTable extends Vue {
       ) {
         return false;
       } else if (this.strategy.type == "copy" && item.key == "first_spread") {
+        return false;
+      }
+
+      if (
+        this.strategy.type != "market_making" &&
+        item.key == "update_chance"
+      ) {
         return false;
       }
 

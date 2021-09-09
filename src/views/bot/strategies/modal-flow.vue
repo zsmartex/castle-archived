@@ -110,13 +110,18 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         value: this.modal_payload?.options?.levels_start,
         type: "input",
         edit: true
+      },
+      {
+        title: "Update Chance",
+        key: "update_chance",
+        value: this.modal_payload?.options?.update_chance,
+        type: "input",
+        edit: true
       }
     ].filter(item => {
       if (this.strategy.type == "trade" && item.key == "first_spread") {
         return false;
       } else if (this.strategy.type == "trade" && item.key == "spread") {
-        return false;
-      } else if (this.strategy.type == "trade" && item.key == "levels_size") {
         return false;
       } else if (this.strategy.type == "trade" && item.key == "levels_count") {
         return false;
@@ -158,6 +163,13 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         return false;
       }
 
+      if (
+        this.strategy.type != "market_making" &&
+        item.key == "update_chance"
+      ) {
+        return false;
+      }
+
       return true;
     });
   }
@@ -196,7 +208,8 @@ export default class ModalExchange extends Mixins(ZModalMixin) {
         first_spread: this.modal_payload.options.first_spread || null,
         levels_size: this.modal_payload.options.levels_size || null,
         levels_count: Number(this.modal_payload.options.levels_count) || null,
-        levels_start: Number(this.modal_payload.options.levels_start) || null
+        levels_start: Number(this.modal_payload.options.levels_start) || null,
+        update_chance: Number(this.modal_payload.options.update_chance) || null
       },
       state: this.modal_payload.state
     };

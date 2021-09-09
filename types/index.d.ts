@@ -37,6 +37,7 @@ declare global {
         levels_size?: string;
         levels_count?: number;
         levels_start?: number;
+        update_chance?: number;
       }
       state?: StrategyState;
       loading?: boolean;
