@@ -50,7 +50,7 @@
           <span @click.stop.prevent>
             <a-switch
               :checked="item.state == 'enabled'"
-              :loading="item.loading"
+              :loading="true"
               @click="
                 update_strategy_flow_state(
                   item,

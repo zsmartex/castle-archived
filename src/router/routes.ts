@@ -74,8 +74,8 @@ const routes = [
           },
           {
             name: "Create Currency Network",
-            path: "currencies/:code/networks/new",
-            meta: { type: "create", parent: "Create Currency" },
+            path: "currencies/:code/networks/create",
+            meta: { type: "create", parent: "Update Currency" },
             component: () =>
               import("@/views/exchange/currencies/blockchain-currency.vue")
           },

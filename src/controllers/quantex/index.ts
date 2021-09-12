@@ -58,6 +58,7 @@ export class QuantexController {
 
     try {
       const { data } = await new ApiClient("quantex").put("admin/strategies", payload);
+      Vue.set(this.strategies.data[index], "loading", false);
       Vue.set(this.strategies.data, index, data);
       runNotice("success", "Strategy updated successfully");
     } catch (error) {
