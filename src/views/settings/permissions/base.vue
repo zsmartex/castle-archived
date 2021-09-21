@@ -119,7 +119,7 @@ export default class App extends Vue {
         id: item.id,
         role: item.role,
         path: item.path,
-        topic: item.topic,
+        topic: item.topic || null,
         verb: item.verb,
         action: item.action
       }
