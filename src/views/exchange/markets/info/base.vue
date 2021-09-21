@@ -48,7 +48,7 @@ export default class App extends Vue {
       {
         title: "Base currency",
         key: "base_unit",
-        value: this.market.base_unit,
+        value: this.market.base_unit.toUpperCase(),
         style: "width: 30%",
         type: "input",
         edit: false
@@ -56,7 +56,7 @@ export default class App extends Vue {
       {
         title: "Quote currency",
         key: "quote_unit",
-        value: this.market.quote_unit,
+        value: this.market.quote_unit.toUpperCase(),
         style: "width: 30%",
         type: "input",
         edit: false
