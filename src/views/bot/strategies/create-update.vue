@@ -312,7 +312,7 @@ export default class Base extends Vue {
       side: this.strategy.side,
       enable_orderback: this.strategy.enable_orderback,
       target_market: Number(this.strategy.target_market),
-      state: this.strategy.state
+      state: this.strategy.state || "disabled"
     };
 
     if (this.page_type == "update") {

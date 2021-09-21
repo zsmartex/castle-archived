@@ -18,15 +18,24 @@
             </a-button>
           </div>
         </div>
-        <div class="z-edit-panel-content">
+        <div v-if="!loading" class="z-edit-panel-content">
           <z-info-row
             v-for="setting in SETTING_PANEL_LEFT"
             :key="setting.key"
             :item="setting"
-          />
+          >
+            <template slot="txid">
+              <a
+                :href="getTxIDUrl(deposit.blockchain_key, deposit.txid)"
+                target="_blank"
+              >
+                {{ deposit.txid }}
+              </a>
+            </template>
+          </z-info-row>
         </div>
+        <z-loading v-else />
       </div>
-      <z-loading v-if="loading" />
     </z-configuration>
   </div>
 </template>
@@ -34,7 +43,7 @@
 <script lang="ts">
 import store from "@/store";
 import { GET_DEPOSITS, SEND_DEPOSIT_ACTION } from "@/store/types";
-import { getDate, runNotice } from "@/mixins";
+import { getDate, runNotice, getTxIDUrl } from "@/mixins";
 import { Vue, Component } from "vue-property-decorator";
 
 @Component
@@ -42,6 +51,7 @@ export default class DepositDetails extends Vue {
   loading = false;
   deposit?: Deposit = null;
   process_loading = false;
+  getTxIDUrl = getTxIDUrl;
 
   get tid(): string {
     return this.$route.params.tid;
@@ -86,7 +96,15 @@ export default class DepositDetails extends Vue {
         key: "amount",
         value: this.deposit?.amount,
         type: "input",
+        style: "width: 45%",
         edit: false
+      },
+      {
+        title: "TxID",
+        key: "txid",
+        value: this.deposit?.txid,
+        type: "slot",
+        style: "width: 45%"
       }
     ];
   }

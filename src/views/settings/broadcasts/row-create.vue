@@ -10,7 +10,7 @@
     </span>
     <span class="action text-center">
       <a-button
-        type="create"
+        type="primary"
         @click="create_broadcast"
         :disabled="button_disabled"
       >

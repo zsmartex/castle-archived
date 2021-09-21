@@ -5,7 +5,7 @@ import ZSmartModel from "@zsmartex/z-eventbus";
 import ApiClient from "@zsmartex/z-apiclient";
 import router from "@/router";
 import { runNotice } from "@/mixins";
-import { QuantexController } from "..";
+import { QuantexController, TradeController } from "..";
 import config from "@/config";
 
 class UserController {
@@ -102,8 +102,9 @@ class UserController {
         QuantexController.get_drivers(),
         QuantexController.get_markets(),
         QuantexController.get_strategies(),
-        QuantexController.get_strategy_types()
-      ])
+        QuantexController.get_strategy_types(),
+        TradeController.get_blockchains()
+      ]);
     }
 
     if (payload.csrf_token) localStorage.setItem("csrf_token", payload.csrf_token);

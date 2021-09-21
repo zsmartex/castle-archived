@@ -1,6 +1,7 @@
 import { json2csvAsync } from "json-2-csv";
 import { saveAs } from "file-saver";
 import { notification } from "@/plugins/antd/custom";
+import { TradeController } from "@/controllers";
 
 const fixTime = (time: number) => ("00" + time).slice(-2);
 
@@ -56,8 +57,20 @@ export const isValidUrl = (string: string) => {
   try {
     new URL(string);
   } catch (error) {
-    return false;  
+    return false;
   }
 
   return true;
 }
+
+export const getTxIDUrl = (blockchain_key: string, txid: string) => {
+  return TradeController.blockchains
+    .find(b => b.key == blockchain_key)
+    ?.explorer_transaction?.replace("#{txid}", txid);
+};
+
+export const getAddressUrl = (blockchain_key: string, txid: string) => {
+  return TradeController.blockchains
+    .find(b => b.key == blockchain_key)
+    ?.explorer_address?.replace("#{address}", txid);
+};

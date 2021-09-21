@@ -5,12 +5,29 @@
         <div class="z-edit-panel-head">
           <div class="z-edit-panel-title">Member info</div>
         </div>
-        <div class="z-edit-panel-content">
+        <div v-if="!loading" class="z-edit-panel-content">
           <z-info-row
             v-for="setting in MEMBER_INFO"
             :key="setting.key"
             :item="setting"
-          />
+          >
+            <template slot="email">
+              <router-link
+                class="email"
+                :to="`/users/user-directory/${withdraw.uid}`"
+              >
+                {{ withdraw.email }}
+              </router-link>
+            </template>
+            <template slot="uid">
+              <router-link
+                class="uid"
+                :to="`/users/user-directory/${withdraw.uid}`"
+              >
+                {{ withdraw.uid }}
+              </router-link>
+            </template>
+          </z-info-row>
         </div>
         <div class="z-edit-panel-head" style="margin: 20px 0">
           <div class="z-edit-panel-title" v-if="currency">
@@ -28,7 +45,7 @@
           />
         </div>
       </div>
-      <div class="z-edit-panel">
+      <div v-if="!loading" class="z-edit-panel">
         <div class="z-edit-panel-head">
           <div class="z-edit-panel-title">Withdraw info</div>
           <div v-if="withdraw" class="z-edit-panel-action">
@@ -101,7 +118,24 @@
             v-for="setting in WITHDRAW_INFO"
             :key="setting.key"
             :item="setting"
-          />
+          >
+            <template slot="blockchain_txid">
+              <a
+                :href="getTxIDUrl(withdraw.blockchain_key, withdraw.blockchain_txid)"
+                target="_blank"
+              >
+                {{ withdraw.blockchain_txid }}
+              </a>
+            </template>
+            <template slot="rid">
+              <a
+                :href="getAddressUrl(withdraw.blockchain_key, withdraw.rid)"
+                target="_blank"
+              >
+                {{ withdraw.rid }}
+              </a>
+            </template>
+          </z-info-row>
         </div>
         <div class="z-edit-panel-content" style="margin-top: 20px">
           <z-info-row :item="WITHDRAW_INFO_EXTRA" v-model="txid_load" />
@@ -132,7 +166,7 @@
 
 <script lang="ts">
 import store from "@/store";
-import { getDate } from "@/mixins";
+import { getDate, getTxIDUrl, getAddressUrl } from "@/mixins";
 import {
   GET_CURRENCY,
   GET_MEMBER,
@@ -156,6 +190,9 @@ export default class WithdrawDetails extends Vue {
   page = 1;
   limit = 50;
   txid_load = "";
+
+  getTxIDUrl = getTxIDUrl;
+  getAddressUrl = getAddressUrl;
 
   get id() {
     return this.$route.params.id;
@@ -182,15 +219,13 @@ export default class WithdrawDetails extends Vue {
         title: "Email",
         key: "email",
         value: this.member?.email,
-        type: "input",
-        edit: false
+        type: "slot"
       },
       {
         title: "UID",
         key: "uid",
         value: this.member?.uid,
-        type: "input",
-        edit: false
+        type: "slot"
       },
       {
         title: "Created at",
@@ -241,10 +276,9 @@ export default class WithdrawDetails extends Vue {
       },
       {
         title: "TxID",
-        key: "txid",
+        key: "blockchain_txid",
         value: this.withdraw?.blockchain_txid,
-        type: "input",
-        edit: false
+        type: "slot"
       },
       {
         title: "Created At",
@@ -261,18 +295,10 @@ export default class WithdrawDetails extends Vue {
         edit: false
       },
       {
-        title: "Email",
-        key: "email",
-        value: this.withdraw?.email,
-        type: "input",
-        edit: false
-      },
-      {
         title: "Recipient Address",
         key: "rid",
         value: this.withdraw?.rid,
-        type: "input",
-        edit: false
+        type: "slot"
       },
       {
         title: "Amount",

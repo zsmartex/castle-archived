@@ -197,13 +197,15 @@ export default class BlockchainCurrencyPage extends Vue {
         value: this.blockchain_currency.parent_id,
         type: "select",
         list: (() => {
-          return this.currencies.reduce((obj, currency) => {
-            return {
-              null: "NULL",
-              ...obj,
-              [currency["code"]]: currency.name
-            };
-          }, {});
+          return this.currencies
+            .filter(c => !c.networks.every(n => n.parent_id))
+            .reduce((obj, currency) => {
+              return {
+                null: "NULL",
+                ...obj,
+                [currency["code"]]: currency.name
+              };
+            }, {});
         })()
       },
       {

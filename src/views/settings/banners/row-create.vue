@@ -9,7 +9,7 @@
     </span>
     <span class="action text-center">
       <a-button type="preview" @click="open_modal_image">Image</a-button>
-      <a-button type="create" @click="create_banner" :disabled="button_disabled">Create</a-button>
+      <a-button type="primary" @click="create_banner" :disabled="button_disabled">Create</a-button>
     </span>
 
     <modal-upload-image ref="modal-upload-image" @change="onFileChanged" v-model="image_base64" />
