@@ -3,7 +3,7 @@
     <z-table
       :loading="loading"
       :columns="COLUMN"
-      :data="data"
+      :data="ieo_list"
       :hover="true"
       :scroll="false"
       :pagination="true"
@@ -21,13 +21,25 @@ import store from "@/store";
 import ZSmartModel from "@zsmartex/z-eventbus";
 import { GET_IEO_LIST } from "@/store/types";
 import { Vue, Component } from "vue-property-decorator";
+import moment from "moment";
 
 @Component({})
-export default class IEO extends Vue {
+export default class IEOPage extends Vue {
   loading = false;
   data: IEO[] = [];
   page = 1;
   limit = 50;
+
+  get ieo_list() {
+    return this.data.map(ieo => {
+      ieo.currency_id = ieo.currency_id.toUpperCase();
+      ieo.main_payment_currency = ieo.main_payment_currency.toUpperCase();
+      ieo.start_time = moment.unix(ieo.start_time).format("YYYY-DD-MM") as any;
+      ieo.end_time = moment.unix(ieo.end_time).format("YYYY-DD-MM") as any;
+
+      return ieo;
+    });
+  }
 
   get COLUMN() {
     return [
@@ -42,7 +54,6 @@ export default class IEO extends Vue {
       { title: "Min Amount", key: "min_amount", algin: "left" },
       { title: "Start Time", key: "start_time", algin: "left" },
       { title: "End Time", key: "end_time", algin: "left" },
-      { title: "Action", key: "action", algin: "right", scopedSlots: true },
     ];
   }
 
@@ -69,7 +80,7 @@ export default class IEO extends Vue {
   }
 
   on_table_click(item: IEO) {
-    //
+    this.$router.push("/exchange/ieo/" + item.id);
   }
 
   async get_ieo_list(payload = { page: this.page, limit: this.limit }) {

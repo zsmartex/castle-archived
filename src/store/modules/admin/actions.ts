@@ -81,7 +81,9 @@ import {
   CREATE_IEO,
   GET_IEO,
   UPDATE_IEO,
-  DELETE_IEO
+  DELETE_IEO,
+  ADD_IEO_CURRENCIES,
+  REMOVE_IEO_CURRENCIES
 } from "./action-types";
 
 const actions: ActionTree<AdminState, any> = {
@@ -419,6 +421,12 @@ const actions: ActionTree<AdminState, any> = {
   [DELETE_IEO](store, payload) {
     return new ApiClient("finex").delete("admin/ieo", payload);
   },
+  [ADD_IEO_CURRENCIES](store, payload) {
+    return new ApiClient("finex").post("admin/ieo/currencies", payload);
+  },
+  [REMOVE_IEO_CURRENCIES](store, payload) {
+    return new ApiClient("finex").delete("admin/ieo/currencies", payload);
+  }
 };
 
 export default actions;

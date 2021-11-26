@@ -82,3 +82,5 @@ export const CREATE_IEO = "admin/CREATE_IEO";
 export const GET_IEO = "admin/GET_IEO";
 export const UPDATE_IEO = "admin/UPDATE_IEO";
 export const DELETE_IEO = "admin/DELETE_IEO";
+export const ADD_IEO_CURRENCIES = "admin/ADD_IEO_CURRENCIES";
+export const REMOVE_IEO_CURRENCIES = "admin/REMOVE_IEO_CURRENCIES";

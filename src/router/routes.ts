@@ -111,13 +111,13 @@ const routes = [
           {
             name: "Create IEO",
             path: "ieo/create",
-            meta: { type: "Create", parent: "IEO" },
+            meta: { type: "create", parent: "IEO" },
             component: () => import("@/views/exchange/ieo/create-update.vue")
           },
           {
             name: "Update IEO",
             path: "ieo/:id",
-            meta: { type: "Create", parent: "IEO" },
+            meta: { type: "update", parent: "IEO" },
             component: () => import("@/views/exchange/ieo/create-update.vue")
           },
           {

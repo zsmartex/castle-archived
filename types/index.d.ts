@@ -492,10 +492,15 @@ declare global {
     main_payment_currency?: string;
     price?: string;
     payment_currencies?: string[];
+    executed_quantity?: string;
+    origin_quantity?: string;
+    limit_per_user?: string;
     min_amount?: string;
     state?: string;
     start_time?: number;
     end_time?: number;
+    data?: string;
+    banner_url?: string;
     created_at?: Date;
     updated_at?: Date;
   }

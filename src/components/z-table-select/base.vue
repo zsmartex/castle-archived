@@ -146,5 +146,9 @@ export default class ZTableSelect extends Vue {
 </script>
 
 <style lang="less">
-
+.z-table-transfer {
+  .z-table {
+    width: 100%;
+  }
+}
 </style>

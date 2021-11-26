@@ -4,9 +4,11 @@ import router from "./router";
 import store from "./store";
 import "@/assets/css";
 import "@/plugins";
-import { Plugin } from "@grainrigi/vue-fragment"
+import { Plugin } from "@grainrigi/vue-fragment";
+import CKEditor from '@ckeditor/ckeditor5-vue2';
 
 Vue.use(Plugin);
+Vue.use(CKEditor);
 
 Vue.config.productionTip = false;
 

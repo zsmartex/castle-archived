@@ -10,6 +10,8 @@
   "dependencies": {
     "@antv/data-set": "^0.11.1",
     "@antv/g2": "^4.0.1",
+    "@ckeditor/ckeditor5-build-classic": "^31.0.0",
+    "@ckeditor/ckeditor5-vue2": "^1.0.5",
     "@grainrigi/vue-fragment": "^1.5.1",
     "@types/ua-parser-js": "^0.7.33",
     "@vue/composition-api": "^1.0.0-beta.21",
