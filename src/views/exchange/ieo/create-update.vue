@@ -382,6 +382,7 @@ export default class IEOCreateUpdate extends Vue {
         this.page_type == "update" ? UPDATE_IEO : CREATE_IEO,
         payload
       );
+      this.$router.push("/exchange/ieo");
     } catch (error) {
       return error;
     }
@@ -403,9 +404,9 @@ export default class IEOCreateUpdate extends Vue {
   --ck-color-button-on-background: var(--blue-color);
   --ck-color-list-background: var(--bg-dropdown-color);
   --ck-color-dropdown-panel-background: var(--bg-dropdown-color);
+}
 
-  .ck-editor {
-    width: 100%;
-  }
+.ck-editor {
+  width: 100%;
 }
 </style>
