@@ -29,7 +29,7 @@ import { Vue, Component } from "vue-property-decorator";
 })
 export default class App extends Vue {
   loading = false;
-  market!: Market;
+  market: Market | null = null;
 
   get market_id() {
     return this.$route.params.market;

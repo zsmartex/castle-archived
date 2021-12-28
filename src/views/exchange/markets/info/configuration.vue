@@ -28,7 +28,7 @@
       <div class="z-edit-panel-content">
         <z-info-row
           v-for="setting in setting_list"
-          v-model="syncedMarket[setting.key]"
+          v-model="market[setting.key]"
           :key="setting.key"
           :item="setting"
         />
@@ -42,11 +42,11 @@
 
 <script lang="ts">
 import { getDate } from "@/mixins";
-import { Vue, Component, PropSync, Prop } from "vue-property-decorator";
+import { Vue, Component, Prop } from "vue-property-decorator";
 
 @Component
 export default class App extends Vue {
-  @PropSync("market") readonly syncedMarket!: Market;
+  @Prop() readonly market!: Market;
   @Prop() readonly setting_list!: any;
 
   getDate(date: Date, allow_year = true) {
@@ -57,7 +57,7 @@ export default class App extends Vue {
     return {
       title: "Status",
       key: "state",
-      value: this.syncedMarket.state,
+      value: this.market.state,
       style: "width: auto",
       style_title: "text-align: right",
       style_content:
@@ -73,7 +73,7 @@ export default class App extends Vue {
   }
 
   onStatusChanged(checked: boolean) {
-    this.syncedMarket.state = checked ? "enabled" : "disabled";
+    this.market.state = checked ? "enabled" : "disabled";
 
     this.$nextTick(() => {
       this.$forceUpdate();
