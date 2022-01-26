@@ -168,13 +168,21 @@ const actions: ActionTree<AdminState, any> = {
     return new ApiClient("trade").get("admin/orders", payload);
   },
   [CANCEL_ORDERS](store, payload: { market: string; side: ZTypes.OrderSide }) {
-    return new ApiClient("trade").post("admin/orders/cancel", payload);
+    return new ApiClient(config.finex ? "finex" : "trade").post(
+      "admin/orders/cancel",
+      payload
+    );
   },
-  [CANCEL_ORDER](store, id) {
-    return new ApiClient("trade").post(`admin/orders/${id}/cancel`);
+  [CANCEL_ORDER](store, uuid) {
+    return new ApiClient(config.finex ? "finex" : "trade").post(
+      `admin/orders/${uuid}/cancel`
+    );
   },
   [GET_TRADES](store, payload) {
-    return new ApiClient(config.finex ? "finex" : "trade").get("admin/trades", payload);
+    return new ApiClient(config.finex ? "finex" : "trade").get(
+      "admin/trades",
+      payload
+    );
   },
   [GET_OPERATORS](store, payload) {
     return new ApiClient("auth").get("admin/activities/admin", payload);
