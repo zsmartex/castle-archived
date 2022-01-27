@@ -66,6 +66,11 @@ class UserController {
 
     try {
       const { data } = await this.get_session();
+
+      if (data.state === 'member') {
+        throw "YOU ARE NOT ADMIN"
+      }
+
       await this.auth_success(data);
     } catch (error) {
       this.auth_error();
