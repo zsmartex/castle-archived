@@ -27,7 +27,7 @@
     </z-configuration>
 
     <modal-block-scanning
-      v-if="page_type === 'update'"
+      v-if="page_type === 'update' && !loading"
       :blockchain="blockchain"
       ref="modal-block-scanning"
     />
