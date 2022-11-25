@@ -6,10 +6,6 @@ WORKDIR /app
 
 RUN apk add git
 
-ARG NPM_TOKEN
-
-COPY .npmrc .npmrc
-
 COPY package.json ./
 
 RUN npm install
